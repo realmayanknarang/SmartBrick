@@ -1,9 +1,10 @@
 {
-  "name": "frontend",
+  "name": "client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "vite",
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
