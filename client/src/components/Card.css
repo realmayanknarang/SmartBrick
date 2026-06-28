@@ -1,0 +1,41 @@
+/*
+ * Card.css — SmartBrick Card component styles
+ * ─────────────────────────────────────────────
+ * All values reference tokens from styles/tokens.css.
+ * Do NOT hard-code colours or spacing here — use var(--token-name).
+ *
+ * Surfaces
+ * ────────
+ *   .card--navy           Primary dark surface (#1A2B3C)
+ *   .card--navy-secondary Raised dark surface  (#2E4154) — default
+ *   .card--light          Light surface        (#FFFFFF)
+ */
+
+/* ─── Base ─────────────────────────────────────────────────────────────────── */
+.card {
+  border-radius: var(--radius-md);         /* 8px */
+  padding:       var(--space-5);           /* 24px default */
+  box-sizing:    border-box;
+}
+
+/* ─── Surface: navy (primary dark) ─────────────────────────────────────────── */
+.card--navy {
+  background-color: var(--color-surface-dark);       /* #1A2B3C */
+  border:           1px solid var(--color-border-dark); /* #4A5D6E */
+  color:            var(--color-text-on-dark);        /* #FFFFFF */
+}
+
+/* ─── Surface: navy-secondary (raised / cards on navy) ─────────────────────── */
+.card--navy-secondary {
+  background-color: var(--color-surface-dark-raised); /* #2E4154 */
+  border:           1px solid var(--color-border-dark); /* #4A5D6E */
+  color:            var(--color-text-on-dark);         /* #FFFFFF */
+}
+
+/* ─── Surface: light ────────────────────────────────────────────────────────── */
+.card--light {
+  background-color: var(--color-surface-light);      /* #FFFFFF */
+  border:           1px solid var(--color-border-light); /* #E2E5E8 */
+  color:            var(--color-text-on-light);       /* #1A2B3C */
+  box-shadow:       var(--shadow-sm);
+}
