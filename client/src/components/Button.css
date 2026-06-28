@@ -1,0 +1,156 @@
+/*
+ * Button.css — SmartBrick reusable Button component styles
+ * ─────────────────────────────────────────────────────────
+ * All values reference tokens from styles/tokens.css.
+ * Do NOT hard-code colours or spacing here — use var(--token-name).
+ *
+ * Variants
+ * ────────
+ *   .btn--primary      Gold on navy, pill shape — for dark surfaces
+ *   .btn--secondary    Ghost/outline, white text, pill shape — for dark surfaces
+ *   .btn--dark         Navy fill, white text, small radius — for light surfaces
+ *   .btn--outline-light White fill, light border, dark text — for light surfaces
+ *
+ * Sizes
+ * ─────
+ *   .btn--sm   Compact (12px text, tighter padding)
+ *   .btn--md   Default (14px text, standard padding)
+ */
+
+/* ─── Base reset & shared geometry ─────────────────────────────────────────── */
+.btn {
+  display:          inline-flex;
+  align-items:      center;
+  justify-content:  center;
+  gap:              var(--space-2);
+  border:           1px solid transparent;
+  cursor:           pointer;
+  font-family:      var(--font-body);
+  font-weight:      var(--weight-medium);
+  letter-spacing:   0.02em;
+  line-height:      1;
+  text-decoration:  none;
+  white-space:      nowrap;
+  transition:
+    background-color var(--transition-base),
+    border-color     var(--transition-base),
+    color            var(--transition-base),
+    box-shadow       var(--transition-base),
+    opacity          var(--transition-fast);
+
+  /* Prevent text selection on rapid clicks */
+  user-select: none;
+
+  /* Focus ring — accessible for all variants */
+  &:focus-visible {
+    outline:        2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
+/* ─── Size modifiers ────────────────────────────────────────────────────────── */
+.btn--sm {
+  font-size:     var(--text-sm);    /* 12px */
+  padding:       var(--space-2) var(--space-4);   /* 8px 16px */
+  min-height:    32px;
+}
+
+.btn--md {
+  font-size:     var(--text-base);  /* 14px */
+  padding:       var(--space-3) var(--space-5);   /* 12px 24px */
+  min-height:    40px;
+}
+
+/* ─── Variant: primary ──────────────────────────────────────────────────────── */
+/*   Gold fill + navy text + pill shape — sits on dark (navy) surfaces          */
+.btn--primary {
+  background-color: var(--color-accent);          /* #E8C547 */
+  color:            var(--color-surface-dark);    /* #1A2B3C — navy text */
+  border-color:     var(--color-accent);
+  border-radius:    var(--radius-pill);
+  font-weight:      var(--weight-semibold);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-accent-hover);  /* #F0D060 */
+    border-color:     var(--color-accent-hover);
+    box-shadow:       var(--shadow-sm);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--color-accent-press);  /* #C9A83A */
+    border-color:     var(--color-accent-press);
+    box-shadow:       none;
+  }
+}
+
+/* ─── Variant: secondary ────────────────────────────────────────────────────── */
+/*   Ghost / outline + white text + pill shape — sits on dark surfaces          */
+.btn--secondary {
+  background-color: transparent;
+  color:            var(--color-text-on-dark);    /* #FFFFFF */
+  border-color:     var(--color-border-dark);     /* #4A5D6E */
+  border-radius:    var(--radius-pill);
+
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.07);
+    border-color:     var(--color-text-on-dark-muted);  /* #9FB0BC */
+    box-shadow:       var(--shadow-sm);
+  }
+
+  &:active:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color:     var(--color-text-on-dark);
+    box-shadow:       none;
+  }
+}
+
+/* ─── Variant: dark ─────────────────────────────────────────────────────────── */
+/*   Navy fill + white text + small radius — sits on light (white) surfaces     */
+.btn--dark {
+  background-color: var(--color-surface-dark);    /* #1A2B3C */
+  color:            var(--color-text-on-dark);    /* #FFFFFF */
+  border-color:     var(--color-surface-dark);
+  border-radius:    var(--radius-sm);             /* 4px */
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-surface-dark-raised);  /* #2E4154 */
+    border-color:     var(--color-surface-dark-raised);
+    box-shadow:       var(--shadow-sm);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--color-surface-dark);
+    border-color:     var(--color-surface-dark);
+    box-shadow:       none;
+  }
+}
+
+/* ─── Variant: outline-light ────────────────────────────────────────────────── */
+/*   White fill + light border + dark text — secondary on light surfaces        */
+/*   e.g. "Continue with Google" / "Cancel" beside a primary CTA               */
+.btn--outline-light {
+  background-color: var(--color-surface-light);   /* #FFFFFF */
+  color:            var(--color-text-on-light);   /* #1A2B3C */
+  border-color:     var(--color-border-light);    /* #E2E5E8 */
+  border-radius:    var(--radius-sm);
+
+  &:hover:not(:disabled) {
+    background-color: #F5F6F7;
+    border-color:     #C8CDD2;
+    box-shadow:       var(--shadow-sm);
+  }
+
+  &:active:not(:disabled) {
+    background-color: #ECEEF0;
+    border-color:     var(--color-border-light);
+    box-shadow:       none;
+  }
+}
+
+/* ─── Disabled state (all variants) ────────────────────────────────────────── */
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity:        0.42;
+  cursor:         not-allowed;
+  pointer-events: none;   /* belt-and-suspenders: also blocks synthetic events */
+}
