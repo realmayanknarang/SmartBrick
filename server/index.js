@@ -3,7 +3,11 @@ dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
+import { clerkMiddleware } from '@clerk/express';
 import connectDB from './config/db.js';
+import authRouter from './routes/auth.js';
+import testAuthRouter from './routes/testAuth.js'; // PHASE 3 SCAFFOLD — delete after verification
+import { apiLimiter } from './middleware/rateLimiter.js';
 
 connectDB();
 
@@ -13,18 +17,36 @@ const PORT = process.env.PORT || 3001;
 app.use(cors({ origin: process.env.FRONTEND_URL }));
 app.use(express.json());
 
+// Populate req.auth on every request so requireAuth / getAuth() work
+// throughout the application without per-route setup.
+app.use(clerkMiddleware());
+
+// Rate-limit all /api routes (100 req / 15 min per IP).
+// Must be registered before route handlers so abusive clients are rejected
+// before reaching Clerk verification or database queries.
+app.use('/api', apiLimiter);
+
+// ── Routes ─────────────────────────────────────────────────────────────────
 app.get('/', (_req, res) => {
   res.json({ message: 'SmartBrick server is running' });
 });
 
 app.get('/api/health', (_req, res) => {
   res.json({
-    status: "ok",
-    message: "SmartBrick backend running",
-    timestamp: new Date().toISOString()
+    status: 'ok',
+    message: 'SmartBrick backend running',
+    timestamp: new Date().toISOString(),
   });
 });
+
+// Auth: session sync (links a Clerk user ID to a MongoDB User document)
+app.use('/api/auth', authRouter);
+
+// PHASE 3 SCAFFOLD — verify auth stack end-to-end; delete once confirmed working
+// Routes: /api/test-auth/public  /api/test-auth/protected  /api/test-auth/owner-only
+app.use('/api/test-auth', testAuthRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
+
