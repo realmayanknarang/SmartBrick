@@ -1,0 +1,338 @@
+/*
+ * StyleGuidePage.css — SmartBrick Design System style guide page
+ * ────────────────────────────────────────────────────────────────
+ * Layout and chrome for the /style-guide dev-reference page.
+ * All colours and spacing use tokens from styles/tokens.css.
+ *
+ * This stylesheet is ONLY for the style guide page scaffolding —
+ * it is not part of the design system itself and will not ship to
+ * production pages.
+ */
+
+/* ─── Page shell ─────────────────────────────────────────────────────────────── */
+.sg-page {
+  font-family: var(--font-body);
+  min-height:  100vh;
+  background:  var(--color-surface-dark);    /* navy base */
+  color:       var(--color-text-on-dark);
+  /* Override the root #root layout from index.css that constrains width */
+  width:       100% !important;
+  max-width:   100% !important;
+  margin:      0 !important;
+  border:      none !important;
+  text-align:  left !important;
+}
+
+/* ─── Page header ───────────────────────────────────────────────────────────── */
+.sg-header {
+  background:    linear-gradient(135deg, #0F1E2D 0%, var(--color-surface-dark) 60%, #1E3349 100%);
+  border-bottom: 1px solid var(--color-border-dark);
+  padding:       var(--space-8) 0 var(--space-7);
+}
+
+.sg-header__inner {
+  max-width: 1200px;
+  margin:    0 auto;
+  padding:   0 var(--space-6);
+}
+
+.sg-header__eyebrow {
+  font-family:    var(--font-body);
+  font-size:      var(--text-xs);
+  font-weight:    var(--weight-medium);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color:          var(--color-accent);       /* gold */
+  margin-bottom:  var(--space-3);
+}
+
+.sg-header__title {
+  font-family:    var(--font-display);
+  font-size:      clamp(40px, 6vw, 72px);
+  font-weight:    var(--weight-bold);
+  color:          var(--color-text-on-dark);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height:    var(--leading-tight);
+  margin:         0 0 var(--space-3);
+}
+
+.sg-header__sub {
+  font-family:  var(--font-body);
+  font-size:    var(--text-md);
+  color:        var(--color-text-on-dark-muted);
+  margin:       0 0 var(--space-4);
+  line-height:  var(--leading-normal);
+  max-width:    560px;
+}
+
+.sg-header__meta {
+  display: flex;
+  gap:     var(--space-3);
+}
+
+.sg-header__badge {
+  display:          inline-flex;
+  align-items:      center;
+  padding:          var(--space-1) var(--space-3);
+  background-color: rgba(232, 197, 71, 0.12);
+  border:           1px solid rgba(232, 197, 71, 0.30);
+  border-radius:    var(--radius-pill);
+  font-family:      var(--font-body);
+  font-size:        var(--text-xs);
+  color:            var(--color-accent);
+  letter-spacing:   0.06em;
+}
+
+/* ─── Sections ──────────────────────────────────────────────────────────────── */
+.sg-section {
+  padding:       var(--space-7) 0;
+  border-bottom: 1px solid var(--color-border-dark);
+}
+
+.sg-section--dark {
+  background: var(--color-surface-dark);
+}
+
+.sg-section--light {
+  background: #F2F4F6;                       /* slightly off-white page bg */
+  border-bottom-color: var(--color-border-light);
+}
+
+.sg-section__inner {
+  max-width: 1200px;
+  margin:    0 auto;
+  padding:   0 var(--space-6);
+}
+
+.sg-section__title {
+  font-family:    var(--font-display);
+  font-size:      var(--text-2xl);
+  font-weight:    var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin:         0 0 var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom:  1px solid var(--color-border-dark);
+  /* title colour adapts to section */
+}
+
+.sg-section--dark  .sg-section__title { color: var(--color-text-on-dark); border-bottom-color: var(--color-border-dark); }
+.sg-section--light .sg-section__title { color: var(--color-text-on-light); border-bottom-color: var(--color-border-light); }
+
+/* Empty title (spacer section for light-surface buttons) */
+.sg-section--light .sg-section__title:empty {
+  display: none;
+}
+
+/* ─── Label helper ──────────────────────────────────────────────────────────── */
+.sg-label {
+  font-family:    var(--font-body);
+  font-size:      var(--text-xs);
+  font-weight:    var(--weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin:         0 0 var(--space-3);
+  margin-top:     var(--space-5);
+}
+
+.sg-label:first-child { margin-top: 0; }
+
+.sg-label--dark  { color: var(--color-text-on-dark-muted); }
+.sg-label--light { color: var(--color-text-on-light-muted); }
+
+/* ─── Row helper ────────────────────────────────────────────────────────────── */
+.sg-row {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.sg-row--wrap { flex-wrap: wrap; }
+
+/* ─── Colour swatches ───────────────────────────────────────────────────────── */
+.sg-swatches {
+  display:               grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap:                   var(--space-3);
+}
+
+.sg-swatch {
+  border-radius: var(--radius-md);
+  overflow:      hidden;
+  height:        120px;
+  position:      relative;
+  box-shadow:    var(--shadow-sm);
+  border:        1px solid rgba(255,255,255,0.08);
+}
+
+.sg-swatch__info {
+  position: absolute;
+  bottom:   0;
+  left:     0;
+  right:    0;
+  padding:  var(--space-2) var(--space-3);
+  display:  flex;
+  flex-direction: column;
+  gap:      2px;
+}
+
+.sg-swatch__info--dark {
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(4px);
+}
+
+.sg-swatch__info--light {
+  background: rgba(255,255,255,0.80);
+  backdrop-filter: blur(4px);
+}
+
+.sg-swatch__label {
+  font-size:   var(--text-xs);
+  font-weight: var(--weight-semibold);
+  line-height: 1.3;
+}
+
+.sg-swatch__info--dark  .sg-swatch__label { color: #fff; }
+.sg-swatch__info--light .sg-swatch__label { color: var(--color-text-on-light); }
+
+.sg-swatch__hex {
+  font-family: var(--font-body);
+  font-size:   var(--text-xs);
+  opacity:     0.75;
+}
+
+.sg-swatch__info--dark  .sg-swatch__hex { color: #fff; }
+.sg-swatch__info--light .sg-swatch__hex { color: var(--color-text-on-light-muted); }
+
+.sg-swatch__var {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size:   10px;
+  opacity:     0.55;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sg-swatch__info--dark  .sg-swatch__var { color: #fff; }
+.sg-swatch__info--light .sg-swatch__var { color: var(--color-text-on-light-muted); }
+
+/* ─── Type stack ────────────────────────────────────────────────────────────── */
+.sg-type-stack {
+  display:       flex;
+  flex-direction: column;
+  gap:           var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.sg-type-row {
+  display:     flex;
+  align-items: baseline;
+  gap:         var(--space-5);
+}
+
+.sg-type-token {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size:   var(--text-xs);
+  color:       var(--color-text-on-dark-muted);
+  white-space: nowrap;
+  min-width:   100px;
+  flex-shrink: 0;
+}
+
+.sg-type-sample {
+  line-height: 1.2;
+}
+
+/* ─── Cards grid ─────────────────────────────────────────────────────────────── */
+.sg-cards-grid {
+  display:               grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap:                   var(--space-5);
+  align-items:           start;
+}
+
+/* Light bg wrap so the light card reads correctly on the dark section bg */
+.sg-light-bg-wrap {
+  background:    #F2F4F6;
+  border-radius: var(--radius-md);
+  padding:       var(--space-4);
+}
+
+/* ─── Stat pill row inside cards ─────────────────────────────────────────────── */
+.sg-stat-row {
+  display:     flex;
+  flex-wrap:   wrap;
+  gap:         var(--space-4);
+  align-items: center;
+}
+
+/* ─── Form inputs grid ──────────────────────────────────────────────────────── */
+.sg-form-grid {
+  display:               grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap:                   var(--space-5);
+  align-items:           start;
+}
+
+/* ─── PublicNav preview ─────────────────────────────────────────────────────── */
+.sg-nav-preview {
+  border-radius: var(--radius-md);
+  overflow:      hidden;
+  border:        1px solid var(--color-border-dark);
+  /* Nav is sticky normally — in the style guide we render it in-flow */
+}
+
+/* Force the sticky nav inside preview to be static */
+.sg-nav-preview .public-nav {
+  position: static;
+  width:    100%;
+}
+
+/* ─── Sidebar preview ───────────────────────────────────────────────────────── */
+.sg-sidebar-preview {
+  display: flex;
+  gap:     var(--space-5);
+  flex-wrap: wrap;
+}
+
+.sg-sidebar-preview .sidebar {
+  /* Override 100vh min-height for the preview — show just the nav */
+  min-height: auto;
+  border-radius: var(--radius-md);
+  overflow:     hidden;
+  border:       1px solid var(--color-border-dark);
+}
+
+/* ─── Footer ────────────────────────────────────────────────────────────────── */
+.sg-footer {
+  padding:       var(--space-6);
+  text-align:    center;
+  background:    #0F1E2D;
+  border-top:    1px solid var(--color-border-dark);
+}
+
+.sg-footer p {
+  font-family: var(--font-body);
+  font-size:   var(--text-sm);
+  color:       var(--color-text-on-dark-muted);
+  margin:      0 0 var(--space-2);
+  line-height: var(--leading-normal);
+}
+
+.sg-footer p:last-child { margin-bottom: 0; }
+
+.sg-footer__note {
+  font-size: var(--text-xs) !important;
+  opacity:   0.65;
+}
+
+.sg-footer code {
+  font-family:      ui-monospace, Consolas, monospace;
+  font-size:        0.9em;
+  color:            var(--color-accent);
+  background:       rgba(232, 197, 71, 0.1);
+  border-radius:    var(--radius-sm);
+  padding:          1px 5px;
+}

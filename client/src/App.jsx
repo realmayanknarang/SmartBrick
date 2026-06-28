@@ -5,6 +5,7 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import SelectRolePage from './pages/SelectRolePage';
+import StyleGuidePage from './pages/StyleGuidePage'; // Phase 4F — dev reference, intentionally kept
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -166,6 +167,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/*
+         * Style guide — Phase 4F dev reference.
+         * Public route (no auth guard); intentionally kept accessible post-Phase 4
+         * so Phase 5/6 developers can cross-check against the design system.
+         * Access-gate or remove before public launch.
+         */}
+        <Route path="/style-guide" element={<StyleGuidePage />} />
       </Routes>
     </BrowserRouter>
   );
