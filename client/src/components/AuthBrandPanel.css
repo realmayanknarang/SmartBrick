@@ -1,0 +1,155 @@
+/*
+ * AuthBrandPanel.css — SmartBrick shared auth left-panel
+ * ─────────────────────────────────────────────────────────
+ * Phase 5A.  The navy brand panel shared by /login and /signup.
+ * All values reference tokens from styles/tokens.css.
+ */
+
+/* ─── Root panel ─────────────────────────────────────────────────────────────── */
+.auth-brand {
+  /* Full height of its grid cell */
+  display:        flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height:     100%;
+  padding:        var(--space-7) var(--space-6);
+  background:     var(--color-surface-dark);     /* #1A2B3C navy */
+  box-sizing:     border-box;
+  position:       relative;
+  overflow:       hidden;
+}
+
+/* ─── Subtle geometric background accent ────────────────────────────────────── */
+.auth-brand::before {
+  content:    '';
+  position:   absolute;
+  inset:      0;
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 0% 100%,
+      rgba(232, 197, 71, 0.06) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 300px at 80% -10%,
+      rgba(74, 93, 110, 0.30) 0%,
+      transparent 60%
+    );
+  pointer-events: none;
+}
+
+/* ─── Top: logo / wordmark ────────────────────────────────────────────────────── */
+.auth-brand__logo {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-3);
+  position:    relative; /* above ::before */
+  z-index:     1;
+}
+
+.auth-brand__logo-icon {
+  color:       var(--color-accent);    /* gold brick mark */
+  flex-shrink: 0;
+}
+
+.auth-brand__logo-text {
+  font-family:    var(--font-display);
+  font-size:      var(--text-xl);
+  font-weight:    var(--weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--color-text-on-dark);
+}
+
+/* ─── Middle: headline block ──────────────────────────────────────────────────── */
+.auth-brand__body {
+  flex:     1;
+  display:  flex;
+  flex-direction: column;
+  justify-content: center;
+  gap:      var(--space-4);
+  position: relative;
+  z-index:  1;
+  padding:  var(--space-7) 0;
+}
+
+.auth-brand__headline {
+  font-family:    var(--font-display);
+  font-size:      clamp(28px, 3.2vw, 40px);
+  font-weight:    var(--weight-bold);
+  color:          var(--color-text-on-dark);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height:    var(--leading-tight);
+  margin:         0;
+}
+
+/* Gold accent on the last word of headline — applied via ::after on a span */
+.auth-brand__headline-accent {
+  color: var(--color-accent);
+}
+
+.auth-brand__subtext {
+  font-family: var(--font-body);
+  font-size:   var(--text-base);
+  color:       var(--color-text-on-dark-muted);
+  line-height: var(--leading-normal);
+  margin:      0;
+  max-width:   340px;
+}
+
+/* ─── Benefits list ──────────────────────────────────────────────────────────── */
+.auth-brand__benefits {
+  list-style:     none;
+  margin:         0;
+  padding:        0;
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-3);
+}
+
+.auth-brand__benefit {
+  display:     flex;
+  align-items: flex-start;
+  gap:         var(--space-3);
+  font-family: var(--font-body);
+  font-size:   var(--text-base);
+  color:       var(--color-text-on-dark-faint);
+  line-height: var(--leading-snug);
+}
+
+.auth-brand__benefit-icon {
+  flex-shrink: 0;
+  width:       20px;
+  height:      20px;
+  border-radius: var(--radius-pill);
+  background:  rgba(232, 197, 71, 0.15);
+  border:      1px solid rgba(232, 197, 71, 0.35);
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+  color:       var(--color-accent);
+  margin-top:  1px; /* optical align with first line */
+}
+
+/* ─── Bottom: progress dots ──────────────────────────────────────────────────── */
+.auth-brand__dots {
+  display:  flex;
+  gap:      var(--space-2);
+  position: relative;
+  z-index:  1;
+}
+
+.auth-brand__dot {
+  width:         8px;
+  height:        8px;
+  border-radius: var(--radius-pill);
+  background:    var(--color-border-dark);     /* muted default */
+  transition:    background var(--transition-base),
+                 width     var(--transition-base);
+}
+
+.auth-brand__dot--active {
+  background: var(--color-accent);             /* gold for current step */
+  width:      24px;                            /* elongated pill */
+}
