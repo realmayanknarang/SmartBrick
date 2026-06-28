@@ -1,0 +1,132 @@
+/*
+ * SmartBrick Design Tokens — Phase 4A
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Single source of truth for every design constant used across the app.
+ * All other stylesheets MUST reference these variables — never hard-code values.
+ *
+ * LOCKED VISUAL DIRECTION (do not deviate without a design review):
+ *   Primary dark surface   #1A2B3C  (navy)
+ *   Secondary dark surface #2E4154  (cards / panels on navy)
+ *   Accent                 #E8C547  (gold)
+ *   Border on dark         #4A5D6E
+ *   Text on dark primary   #FFFFFF
+ *   Text on dark secondary #9FB0BC / #CBD5DD
+ *   White / light surface  #FFFFFF  (form panels, light sections)
+ *   Text on light primary  #1A2B3C
+ *   Text on light secondary#6B7680
+ *   Border on light        #E2E5E8
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+:root {
+  /* ─── Colour: Dark surfaces ─────────────────────────────────────────────── */
+  --color-surface-dark:        #1A2B3C;   /* primary dark — navy */
+  --color-surface-dark-raised: #2E4154;   /* cards / panels sitting on navy */
+
+  /* ─── Colour: Accent ────────────────────────────────────────────────────── */
+  --color-accent:              #E8C547;   /* gold — CTAs, highlights, active */
+  --color-accent-hover:        #F0D060;   /* lightened gold for hover state */
+  --color-accent-press:        #C9A83A;   /* darkened gold for active/pressed */
+
+  /* ─── Colour: Borders ───────────────────────────────────────────────────── */
+  --color-border-dark:         #4A5D6E;   /* border / divider on dark surfaces */
+  --color-border-light:        #E2E5E8;   /* border / divider on light surfaces */
+
+  /* ─── Colour: Text on dark ──────────────────────────────────────────────── */
+  --color-text-on-dark:        #FFFFFF;
+  --color-text-on-dark-muted:  #9FB0BC;   /* secondary / captions on dark */
+  --color-text-on-dark-faint:  #CBD5DD;   /* tertiary / placeholders on dark */
+
+  /* ─── Colour: Text on light ─────────────────────────────────────────────── */
+  --color-text-on-light:       #1A2B3C;   /* primary body copy on white */
+  --color-text-on-light-muted: #6B7680;   /* secondary / captions on light */
+
+  /* ─── Colour: Light surface ─────────────────────────────────────────────── */
+  --color-surface-light:       #FFFFFF;
+
+  /* ─── Colour: Semantic states (accessible across both surfaces) ─────────── */
+  --color-success:             #3CB57A;
+  --color-warning:             #E8C547;   /* reuse gold for warnings */
+  --color-danger:              #E05C5C;
+  --color-info:                #4A90D9;
+
+  /* ─── Spacing scale (4 px base) ─────────────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+
+  /* ─── Border radius ──────────────────────────────────────────────────────── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-pill: 999px;   /* pill / badge / full-round buttons */
+
+  /* ─── Type scale ─────────────────────────────────────────────────────────── */
+  /* xs → 3xl follows a ~1.25 modular scale, anchored at base = 14 px */
+  --text-xs:   11px;
+  --text-sm:   12px;
+  --text-base: 14px;
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --text-3xl:  28px;
+
+  /* ─── Line heights ───────────────────────────────────────────────────────── */
+  --leading-tight:  1.2;
+  --leading-snug:   1.35;
+  --leading-normal: 1.5;
+
+  /* ─── Font weights ───────────────────────────────────────────────────────── */
+  --weight-regular:   400;
+  --weight-medium:    500;
+  --weight-semibold:  600;
+  --weight-bold:      700;
+
+  /* ─── Font families ──────────────────────────────────────────────────────── */
+  /*
+   * --font-display: "Barlow Condensed" — geometric condensed sans-serif ideal
+   *   for large headings, hero text, and labels that need impact without width.
+   *   Loaded via Google Fonts <link> in index.html.
+   *
+   * --font-body: "Inter" — clean, highly legible grotesque sans-serif.
+   *   Loaded via Google Fonts <link> in index.html.
+   */
+  --font-display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  --font-body:    'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* ─── Shadow tokens (restrained — use sparingly) ─────────────────────────── */
+  /*
+   * Shadows respect the dark-surface aesthetic: keep them subtle and cool-toned
+   * so they don't look "lifted" in a way that fights the flat navy palette.
+   */
+  --shadow-sm:
+    0 1px 2px rgba(0, 0, 0, 0.20),
+    0 1px 4px rgba(0, 0, 0, 0.12);
+
+  --shadow-md:
+    0 4px 8px  rgba(0, 0, 0, 0.22),
+    0 2px 4px  rgba(0, 0, 0, 0.14);
+
+  --shadow-lg:
+    0 8px 24px rgba(0, 0, 0, 0.28),
+    0 4px 8px  rgba(0, 0, 0, 0.16);
+
+  /* ─── Transition defaults ────────────────────────────────────────────────── */
+  --transition-fast:   100ms ease;
+  --transition-base:   180ms ease;
+  --transition-slow:   320ms ease;
+
+  /* ─── Z-index layers ─────────────────────────────────────────────────────── */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-dropdown:100;
+  --z-modal:   200;
+  --z-toast:   300;
+  --z-topbar:  400;
+}
