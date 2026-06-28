@@ -1,0 +1,96 @@
+/*
+ * TextInput.css — SmartBrick TextInput component styles
+ * ───────────────────────────────────────────────────────
+ * All values reference tokens from styles/tokens.css.
+ * Do NOT hard-code colours or spacing here.
+ *
+ * Structure
+ * ─────────
+ *   .text-input                Outer wrapper div
+ *   .text-input__label         Small ALL-CAPS label above the input
+ *   .text-input__required      Asterisk for required fields
+ *   .text-input__control       The <input> element itself
+ *   .text-input__control--error Error border state
+ *   .text-input__error         Error message below the input
+ */
+
+/* ─── Wrapper ──────────────────────────────────────────────────────────────────*/
+.text-input {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-1);     /* 4px between label and input */
+  width:          100%;
+}
+
+/* ─── Label ────────────────────────────────────────────────────────────────────*/
+.text-input__label {
+  font-family:    var(--font-body);
+  font-size:      var(--text-xs);     /* 11px */
+  font-weight:    var(--weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color:          var(--color-text-on-light-muted); /* #6B7680 */
+  user-select:    none;
+}
+
+/* ─── Required asterisk ────────────────────────────────────────────────────────*/
+.text-input__required {
+  color: var(--color-danger);         /* #E05C5C */
+}
+
+/* ─── Input control ────────────────────────────────────────────────────────────*/
+.text-input__control {
+  width:            100%;
+  box-sizing:       border-box;
+  padding:          var(--space-2) var(--space-3);   /* 8px 12px */
+  font-family:      var(--font-body);
+  font-size:        var(--text-base);                /* 14px */
+  font-weight:      var(--weight-regular);
+  color:            var(--color-text-on-light);      /* #1A2B3C */
+  background-color: var(--color-surface-light);      /* #FFFFFF */
+  border:           1px solid var(--color-border-light); /* #E2E5E8 */
+  border-radius:    var(--radius-sm);                /* 4px — sharper than pill buttons */
+  outline:          none;
+  transition:
+    border-color var(--transition-base),
+    box-shadow   var(--transition-base);
+
+  /* Smooth placeholder text */
+  &::placeholder {
+    color:   var(--color-text-on-light-muted);  /* #6B7680 */
+    opacity: 1;
+  }
+
+  /* Focus — accent gold ring */
+  &:focus {
+    border-color: var(--color-accent);           /* #E8C547 */
+    box-shadow:   0 0 0 2px rgba(232, 197, 71, 0.20);
+  }
+
+  /* Error state */
+  &.text-input__control--error {
+    border-color: var(--color-danger);           /* #E05C5C */
+
+    &:focus {
+      border-color: var(--color-danger);
+      box-shadow:   0 0 0 2px rgba(224, 92, 92, 0.20);
+    }
+  }
+
+  /* Disabled */
+  &:disabled {
+    background-color: #F5F6F7;
+    color:            var(--color-text-on-light-muted);
+    cursor:           not-allowed;
+    opacity:          0.7;
+  }
+}
+
+/* ─── Error message ────────────────────────────────────────────────────────────*/
+.text-input__error {
+  margin:      0;
+  font-family: var(--font-body);
+  font-size:   var(--text-xs);       /* 11px */
+  color:       var(--color-danger);  /* #E05C5C */
+  line-height: var(--leading-normal);
+}

@@ -1,0 +1,121 @@
+/*
+ * Select.css — SmartBrick Select component styles
+ * ─────────────────────────────────────────────────
+ * All values reference tokens from styles/tokens.css.
+ * Do NOT hard-code colours or spacing here.
+ *
+ * Structure
+ * ─────────
+ *   .select-field              Outer wrapper div
+ *   .select-field__label       Small ALL-CAPS label above
+ *   .select-field__required    Asterisk for required fields
+ *   .select-field__wrapper     Position wrapper for the select + chevron
+ *   .select-field__control     The native <select> element
+ *   .select-field__control--error  Error border state
+ *   .select-field__chevron     Custom chevron icon overlay (pointer-events: none)
+ *   .select-field__error       Error message below
+ *
+ * Note: the native <select> appearance is reset via `appearance: none` so
+ * the custom chevron is always visible across browsers.
+ */
+
+/* ─── Wrapper ──────────────────────────────────────────────────────────────────*/
+.select-field {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-1);     /* 4px between label and control */
+  width:          100%;
+}
+
+/* ─── Label ────────────────────────────────────────────────────────────────────*/
+.select-field__label {
+  font-family:    var(--font-body);
+  font-size:      var(--text-xs);     /* 11px */
+  font-weight:    var(--weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color:          var(--color-text-on-light-muted); /* #6B7680 */
+  user-select:    none;
+}
+
+/* ─── Required asterisk ────────────────────────────────────────────────────────*/
+.select-field__required {
+  color: var(--color-danger);         /* #E05C5C */
+}
+
+/* ─── Position wrapper (select + chevron overlay) ──────────────────────────────*/
+.select-field__wrapper {
+  position: relative;
+  width:    100%;
+}
+
+/* ─── Native <select> control ──────────────────────────────────────────────────*/
+.select-field__control {
+  width:            100%;
+  box-sizing:       border-box;
+  padding:          var(--space-2) var(--space-6) var(--space-2) var(--space-3);
+  /* right padding makes room for the chevron: space-6 = 32px */
+  font-family:      var(--font-body);
+  font-size:        var(--text-base);                /* 14px */
+  font-weight:      var(--weight-regular);
+  color:            var(--color-text-on-light);      /* #1A2B3C */
+  background-color: var(--color-surface-light);      /* #FFFFFF */
+  border:           1px solid var(--color-border-light); /* #E2E5E8 */
+  border-radius:    var(--radius-sm);                /* 4px */
+  outline:          none;
+  cursor:           pointer;
+
+  /* Remove browser-native arrow on all major browsers */
+  appearance:         none;
+  -webkit-appearance: none;
+  -moz-appearance:    none;
+
+  transition:
+    border-color var(--transition-base),
+    box-shadow   var(--transition-base);
+
+  /* Focus — accent gold ring */
+  &:focus {
+    border-color: var(--color-accent);            /* #E8C547 */
+    box-shadow:   0 0 0 2px rgba(232, 197, 71, 0.20);
+  }
+
+  /* Error state */
+  &.select-field__control--error {
+    border-color: var(--color-danger);            /* #E05C5C */
+
+    &:focus {
+      border-color: var(--color-danger);
+      box-shadow:   0 0 0 2px rgba(224, 92, 92, 0.20);
+    }
+  }
+
+  /* Disabled */
+  &:disabled {
+    background-color: #F5F6F7;
+    color:            var(--color-text-on-light-muted);
+    cursor:           not-allowed;
+    opacity:          0.7;
+  }
+}
+
+/* ─── Custom chevron ───────────────────────────────────────────────────────────*/
+.select-field__chevron {
+  position:       absolute;
+  right:          var(--space-3);     /* 12px from right edge */
+  top:            50%;
+  transform:      translateY(-50%);
+  pointer-events: none;               /* Let clicks fall through to <select> */
+  display:        flex;
+  align-items:    center;
+  color:          var(--color-text-on-light-muted);  /* #6B7680 */
+}
+
+/* ─── Error message ────────────────────────────────────────────────────────────*/
+.select-field__error {
+  margin:      0;
+  font-family: var(--font-body);
+  font-size:   var(--text-xs);       /* 11px */
+  color:       var(--color-danger);  /* #E05C5C */
+  line-height: var(--leading-normal);
+}
