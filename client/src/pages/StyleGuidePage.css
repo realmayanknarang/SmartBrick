@@ -15,7 +15,11 @@
   min-height:  100vh;
   background:  var(--color-surface-dark);    /* navy base */
   color:       var(--color-text-on-dark);
-  /* Override the root #root layout from index.css that constrains width */
+  /*
+   * Belt-and-suspenders: ensure the style guide always fills full width even
+   * if global resets change. (index.css was cleaned up in Phase 5E; these
+   * !important guards are harmless to keep as a safety net.)
+   */
   width:       100% !important;
   max-width:   100% !important;
   margin:      0 !important;

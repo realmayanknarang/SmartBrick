@@ -3,6 +3,8 @@
  * ─────────────────────────────────────────────────────
  * Phase 5C. Imports LoginPage.css for the shared auth-layout + auth-form
  * utilities; this file adds only signup-specific tweaks.
+ *
+ * Updated in Phase 5E: mobile centering pass.
  */
 
 /*
@@ -15,6 +17,18 @@
   padding-bottom: var(--space-7);
 }
 
+/*
+ * On mobile (single-column), re-center the form panel vertically.
+ * min-height on the brand strip is now 120px so there's room.
+ */
+@media (max-width: 768px) {
+  .signup-form-panel {
+    align-items:    center;
+    padding-top:    var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+}
+
 .signup-form {
   /* Slightly tighter vertical spacing between fields for the longer form */
 }
@@ -22,3 +36,4 @@
 .signup-form .auth-form__fields {
   gap: var(--space-3);
 }
+

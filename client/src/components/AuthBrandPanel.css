@@ -19,6 +19,14 @@
   overflow:       hidden;
 }
 
+@media (max-width: 768px) {
+  .auth-brand {
+    padding:         var(--space-5) var(--space-5);
+    justify-content: flex-start;
+    gap:             var(--space-3);
+  }
+}
+
 /* ─── Subtle geometric background accent ────────────────────────────────────── */
 .auth-brand::before {
   content:    '';
@@ -152,4 +160,23 @@
 .auth-brand__dot--active {
   background: var(--color-accent);             /* gold for current step */
   width:      24px;                            /* elongated pill */
+}
+
+/* ─── Mobile: collapse to compact header strip ───────────────────────────────── */
+@media (max-width: 768px) {
+  /* Hide benefits and dots on mobile — keep logo + headline only */
+  .auth-brand__benefits,
+  .auth-brand__subtext,
+  .auth-brand__dots {
+    display: none;
+  }
+
+  .auth-brand__body {
+    padding:  var(--space-2) 0 0;
+    flex:     0;    /* don't grow — compact height on mobile */
+  }
+
+  .auth-brand__headline {
+    font-size: clamp(18px, 5vw, 22px);
+  }
 }

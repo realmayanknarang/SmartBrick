@@ -41,6 +41,13 @@
   box-sizing:       border-box;
 }
 
+@media (max-width: 480px) {
+  .role-page__card {
+    padding:       var(--space-5) var(--space-4);
+    border-radius: var(--radius-md);
+  }
+}
+
 /* ─── Logo ───────────────────────────────────────────────────────────────────── */
 
 .role-page__logo {
