@@ -1,5 +1,11 @@
+import { SignIn } from '@clerk/react';
+
 function LoginPage() {
-  return <h1>Login Page</h1>;
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+      <SignIn />
+    </div>
+  );
 }
 
 export default LoginPage;
