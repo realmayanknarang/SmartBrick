@@ -1,0 +1,121 @@
+/*
+ * PublicNav.css — SmartBrick public navigation bar styles
+ * ─────────────────────────────────────────────────────────
+ * All values reference tokens from styles/tokens.css.
+ * Do NOT hard-code colours or spacing here.
+ *
+ * Structure
+ * ─────────
+ *   .public-nav               Outermost <nav> — full-width dark bar
+ *   .public-nav__logo         Left: brand icon + wordmark link
+ *   .public-nav__brand-icon   SVG brick icon inside the logo
+ *   .public-nav__logo-text    Wordmark text ("SmartBrick")
+ *   .public-nav__links        Centre: optional <ul> of nav links
+ *   .public-nav__link         Individual nav link <a>
+ *   .public-nav__spacer       Flex spacer that pushes auth to the right
+ *   .public-nav__auth         Right: auth actions container
+ *   .public-nav__dashboard-link  "Dashboard" text link when signed in
+ */
+
+/* ─── Root bar ──────────────────────────────────────────────────────────────── */
+.public-nav {
+  display:          flex;
+  align-items:      center;
+  gap:              var(--space-5);           /* 24px between sections */
+  padding:          0 var(--space-6);         /* 0 32px */
+  height:           64px;
+  background-color: var(--color-surface-dark); /* #1A2B3C */
+  border-bottom:    1px solid var(--color-border-dark); /* #4A5D6E */
+  position:         sticky;
+  top:              0;
+  z-index:          var(--z-topbar);          /* 400 — above everything */
+  box-sizing:       border-box;
+  width:            100%;
+}
+
+/* ─── Logo / wordmark ───────────────────────────────────────────────────────── */
+.public-nav__logo {
+  display:         flex;
+  align-items:     center;
+  gap:             var(--space-2);            /* 8px between icon and text */
+  text-decoration: none;
+  flex-shrink:     0;
+}
+
+.public-nav__brand-icon {
+  color:      var(--color-accent);            /* gold brick icon */
+  flex-shrink: 0;
+}
+
+.public-nav__logo-text {
+  font-family:    var(--font-display);        /* Barlow Condensed */
+  font-size:      var(--text-xl);             /* 20px */
+  font-weight:    var(--weight-bold);         /* 700 */
+  color:          var(--color-text-on-dark);  /* #FFFFFF */
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height:    1;
+}
+
+/* ─── Centre nav links ──────────────────────────────────────────────────────── */
+.public-nav__links {
+  display:    flex;
+  align-items: center;
+  gap:         var(--space-5);               /* 24px between links */
+  list-style:  none;
+  margin:      0;
+  padding:     0;
+}
+
+.public-nav__link {
+  font-family:     var(--font-body);
+  font-size:       var(--text-base);          /* 14px */
+  font-weight:     var(--weight-medium);
+  color:           var(--color-text-on-dark-muted); /* #9FB0BC */
+  text-decoration: none;
+  letter-spacing:  0.01em;
+  transition:      color var(--transition-base);
+
+  &:hover {
+    color: var(--color-text-on-dark);         /* white on hover */
+  }
+
+  &:focus-visible {
+    outline:        2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius:  var(--radius-sm);
+  }
+}
+
+/* ─── Spacer ────────────────────────────────────────────────────────────────── */
+.public-nav__spacer {
+  flex: 1;
+}
+
+/* ─── Auth actions ──────────────────────────────────────────────────────────── */
+.public-nav__auth {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-3);               /* 12px between buttons */
+  flex-shrink: 0;
+}
+
+/* ─── Dashboard link (signed-in state) ──────────────────────────────────────── */
+.public-nav__dashboard-link {
+  font-family:     var(--font-body);
+  font-size:       var(--text-base);
+  font-weight:     var(--weight-medium);
+  color:           var(--color-text-on-dark-muted);
+  text-decoration: none;
+  transition:      color var(--transition-base);
+
+  &:hover {
+    color: var(--color-text-on-dark);
+  }
+
+  &:focus-visible {
+    outline:        2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius:  var(--radius-sm);
+  }
+}

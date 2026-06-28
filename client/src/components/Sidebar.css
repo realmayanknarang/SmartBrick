@@ -1,0 +1,142 @@
+/*
+ * Sidebar.css — SmartBrick dashboard sidebar styles
+ * ──────────────────────────────────────────────────
+ * All values reference tokens from styles/tokens.css.
+ * Do NOT hard-code colours or spacing here.
+ *
+ * Structure
+ * ─────────
+ *   .sidebar                Root <aside>
+ *   .sidebar__brand         Top brand block
+ *   .sidebar__brand-link    Link wrapping the brand mark + wordmark
+ *   .sidebar__brand-icon    SVG brick icon
+ *   .sidebar__brand-text    Wordmark text
+ *   .sidebar__nav           <ul> of nav items
+ *   .sidebar__item          Each <li>
+ *   .sidebar__link          The <a> / Link inside each item
+ *   .sidebar__link--active  Active page state (gold left border)
+ *   .sidebar__item-icon     Icon wrapper (left)
+ *   .sidebar__item-label    Text label (right)
+ */
+
+/* ─── Root ──────────────────────────────────────────────────────────────────── */
+.sidebar {
+  display:          flex;
+  flex-direction:   column;
+  width:            220px;
+  min-height:       100vh;
+  background-color: var(--color-surface-dark-raised); /* #2E4154 */
+  border-right:     1px solid var(--color-border-dark); /* #4A5D6E */
+  flex-shrink:      0;
+  box-sizing:       border-box;
+}
+
+/* ─── Brand block ───────────────────────────────────────────────────────────── */
+.sidebar__brand {
+  padding:       var(--space-5) var(--space-4); /* 24px 16px */
+  border-bottom: 1px solid var(--color-border-dark);
+}
+
+.sidebar__brand-link {
+  display:         flex;
+  align-items:     center;
+  gap:             var(--space-2);              /* 8px */
+  text-decoration: none;
+}
+
+.sidebar__brand-icon {
+  color:       var(--color-accent);             /* gold */
+  flex-shrink: 0;
+}
+
+.sidebar__brand-text {
+  font-family:    var(--font-display);          /* Barlow Condensed */
+  font-size:      var(--text-lg);              /* 18px */
+  font-weight:    var(--weight-bold);
+  color:          var(--color-text-on-dark);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height:    1;
+}
+
+/* ─── Nav list ──────────────────────────────────────────────────────────────── */
+.sidebar__nav {
+  flex:        1;
+  overflow-y:  auto;
+  padding:     var(--space-3) 0; /* 12px top/bottom breathing room */
+}
+
+.sidebar__nav {
+  list-style: none;
+  margin:     0;
+  padding:    var(--space-3) 0;
+}
+
+.sidebar__item {
+  /* No extra styling — all handled on .sidebar__link */
+}
+
+/* ─── Nav link ──────────────────────────────────────────────────────────────── */
+.sidebar__link {
+  display:         flex;
+  align-items:     center;
+  gap:             var(--space-3);              /* 12px between icon and label */
+  padding:         var(--space-3) var(--space-4); /* 12px 16px */
+  text-decoration: none;
+  color:           var(--color-text-on-dark-muted); /* #9FB0BC default */
+  font-family:     var(--font-body);
+  font-size:       var(--text-base);            /* 14px */
+  font-weight:     var(--weight-medium);
+  letter-spacing:  0.01em;
+  border-left:     3px solid transparent;       /* reserve space for active border */
+  transition:
+    background-color var(--transition-base),
+    color            var(--transition-base),
+    border-color     var(--transition-base);
+
+  /* Hover — subtle fill */
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color:            var(--color-text-on-dark); /* brighten to white */
+  }
+
+  /* Focus ring */
+  &:focus-visible {
+    outline:        2px solid var(--color-accent);
+    outline-offset: -2px;
+  }
+}
+
+/* ─── Active state ──────────────────────────────────────────────────────────── */
+.sidebar__link--active {
+  border-left-color: var(--color-accent);            /* gold left stripe */
+  background-color:  rgba(232, 197, 71, 0.08);       /* very faint gold tint */
+  color:             var(--color-text-on-dark);       /* full white */
+
+  /* Icon in active item gets gold colour */
+  .sidebar__item-icon {
+    color: var(--color-accent);
+  }
+
+  /* Keep active style on hover too */
+  &:hover {
+    background-color: rgba(232, 197, 71, 0.12);
+  }
+}
+
+/* ─── Icon ──────────────────────────────────────────────────────────────────── */
+.sidebar__item-icon {
+  display:     inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  /* Inherits colour from parent .sidebar__link */
+  transition:  color var(--transition-base);
+}
+
+/* ─── Label ─────────────────────────────────────────────────────────────────── */
+.sidebar__item-label {
+  /* Inherits colour + font from parent */
+  white-space: nowrap;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+}
