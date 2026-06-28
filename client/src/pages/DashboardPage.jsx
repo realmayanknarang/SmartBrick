@@ -1,4 +1,4 @@
-import { useUser, SignOutButton } from '@clerk/react';
+import { useUser, SignOutButton } from '@clerk/clerk-react';
 import { Link } from 'react-router-dom';
 
 function DashboardPage() {
