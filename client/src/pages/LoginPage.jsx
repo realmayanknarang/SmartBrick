@@ -1,4 +1,4 @@
-import { SignIn } from '@clerk/react';
+import { SignIn } from '@clerk/clerk-react';
 
 function LoginPage() {
   return (
@@ -9,3 +9,4 @@ function LoginPage() {
 }
 
 export default LoginPage;
+

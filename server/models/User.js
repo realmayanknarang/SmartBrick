@@ -26,6 +26,18 @@ const userSchema = new mongoose.Schema(
         message: 'Role must be one of: owner, project_manager, site_engineer, finance',
       },
     },
+    /**
+     * The user's Clerk user ID (e.g. "user_2abc...").
+     * Populated once the user signs in through Clerk and their account is
+     * linked via the /api/auth/sync endpoint (added in this phase).
+     * Sparse index: existing seed documents without this field are unaffected.
+     */
+    clerkUserId: {
+      type: String,
+      unique: true,
+      sparse: true, // allows multiple documents with no clerkUserId set
+      trim: true,
+    },
   },
   { timestamps: true }
 );
