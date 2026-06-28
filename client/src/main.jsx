@@ -5,7 +5,6 @@ import './styles/tokens.css'; // Phase 4A: design tokens — must come before in
 import './index.css';
 import App from './App.jsx';
 
-
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
@@ -22,4 +21,3 @@ createRoot(document.getElementById('root')).render(
     </ClerkProvider>
   </StrictMode>,
 );
-
