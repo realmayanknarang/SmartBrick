@@ -1,0 +1,43 @@
+/*
+ * SSOCallbackPage.css — OAuth redirect callback loading state
+ * ─────────────────────────────────────────────────────────────
+ * Phase 5B. Minimal navy centered loader shown while Clerk
+ * completes the OAuth handshake.
+ */
+
+.sso-callback {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  min-height:      100vh;
+  background:      var(--color-surface-dark);
+  flex-direction:  column;
+  gap:             var(--space-4);
+}
+
+.sso-callback__content {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            var(--space-4);
+}
+
+.sso-callback__spinner {
+  width:         40px;
+  height:        40px;
+  border:        3px solid rgba(232, 197, 71, 0.25);
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-pill);
+  animation:     sso-spin 0.8s linear infinite;
+}
+
+@keyframes sso-spin {
+  to { transform: rotate(360deg); }
+}
+
+.sso-callback__text {
+  font-family: var(--font-body);
+  font-size:   var(--text-base);
+  color:       var(--color-text-on-dark-muted);
+  margin:      0;
+}

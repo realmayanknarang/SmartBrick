@@ -3,8 +3,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';       // Phase 5C
 import DashboardPage from './pages/DashboardPage';
 import SelectRolePage from './pages/SelectRolePage';
+import SSOCallbackPage from './pages/SSOCallbackPage'; // Phase 5B — OAuth callback
 import StyleGuidePage from './pages/StyleGuidePage'; // Phase 4F — dev reference, intentionally kept
 import apiClient from './api/client';
 
@@ -138,12 +140,28 @@ function App() {
         {/* Public — no auth check */}
         <Route path="/" element={<LandingPage />} />
 
+        {/*
+         * SSO callback — must be public (no auth guard), Clerk needs to reach
+         * this route after the OAuth provider redirects back to the app.
+         */}
+        <Route path="/sso-callback" element={<SSOCallbackPage />} />
+
         {/* Redirect to /dashboard (or /select-role) when already signed in */}
         <Route
           path="/login"
           element={
             <PublicOnlyRoute>
               <LoginPage />
+            </PublicOnlyRoute>
+          }
+        />
+
+        {/* Sign-up — Phase 5C */}
+        <Route
+          path="/signup"
+          element={
+            <PublicOnlyRoute>
+              <SignUpPage />
             </PublicOnlyRoute>
           }
         />

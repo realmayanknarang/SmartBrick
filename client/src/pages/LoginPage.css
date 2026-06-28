@@ -1,0 +1,219 @@
+/*
+ * LoginPage.css — SmartBrick custom login screen
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Phase 5B. Split-screen layout shared by /login and /signup via this file
+ * plus auth-form utility classes reused in SignUpPage.css.
+ * All values reference tokens from styles/tokens.css.
+ */
+
+/* ─── Split-screen layout ──────────────────────────────────────────────────── */
+
+.auth-layout {
+  display:    grid;
+  grid-template-columns: 42% 58%;
+  min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+  .auth-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+}
+
+/* ─── Left panel wrapper ───────────────────────────────────────────────────── */
+
+.auth-layout__brand {
+  /* AuthBrandPanel is a flex column internally; we just give it full height */
+  display:  flex;
+  min-height: 100vh;
+}
+
+.auth-layout__brand > * {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .auth-layout__brand {
+    min-height: auto;
+  }
+  .auth-layout__brand > * {
+    min-height: 280px;
+  }
+}
+
+/* ─── Right: form container ────────────────────────────────────────────────── */
+
+.auth-layout__form {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  background:      var(--color-surface-light);
+  padding:         var(--space-8) var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .auth-layout__form {
+    padding: var(--space-7) var(--space-5);
+  }
+}
+
+/* ─── Form card ────────────────────────────────────────────────────────────── */
+
+.auth-form {
+  width:      100%;
+  max-width:  400px;
+  display:    flex;
+  flex-direction: column;
+  gap:        var(--space-5);
+}
+
+/* ─── Header ───────────────────────────────────────────────────────────────── */
+
+.auth-form__header {
+  display:       flex;
+  flex-direction: column;
+  gap:           var(--space-2);
+}
+
+.auth-form__title {
+  font-family:    var(--font-display);
+  font-size:      var(--text-3xl);
+  font-weight:    var(--weight-bold);
+  color:          var(--color-text-on-light);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin:         0;
+  line-height:    var(--leading-tight);
+}
+
+.auth-form__subtitle {
+  font-family: var(--font-body);
+  font-size:   var(--text-base);
+  color:       var(--color-text-on-light-muted);
+  margin:      0;
+  line-height: var(--leading-normal);
+}
+
+/* ─── Fields group ─────────────────────────────────────────────────────────── */
+
+.auth-form__fields {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-4);
+}
+
+/* ─── Inline error ─────────────────────────────────────────────────────────── */
+
+.auth-form__error {
+  font-family:  var(--font-body);
+  font-size:    var(--text-sm);
+  color:        var(--color-danger);
+  background:   rgba(224, 92, 92, 0.07);
+  border:       1px solid rgba(224, 92, 92, 0.25);
+  border-radius: var(--radius-md);
+  padding:      var(--space-3) var(--space-4);
+  margin:       0;
+  line-height:  var(--leading-normal);
+}
+
+/* ─── Submit button full-width ─────────────────────────────────────────────── */
+
+.auth-form__submit {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ─── Spinner ──────────────────────────────────────────────────────────────── */
+
+.auth-form__spinner-wrap {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-2);
+}
+
+.auth-form__spinner {
+  display:       inline-block;
+  width:         14px;
+  height:        14px;
+  border:        2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: var(--radius-pill);
+  animation:     spin 0.7s linear infinite;
+  flex-shrink:   0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── OR divider ───────────────────────────────────────────────────────────── */
+
+.auth-form__divider {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-3);
+}
+
+.auth-form__divider-line {
+  flex:             1;
+  height:           1px;
+  background:       var(--color-border-light);
+  display:          block;
+}
+
+.auth-form__divider-text {
+  font-family:    var(--font-body);
+  font-size:      var(--text-xs);
+  font-weight:    var(--weight-medium);
+  color:          var(--color-text-on-light-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space:    nowrap;
+}
+
+/* ─── Google button ────────────────────────────────────────────────────────── */
+
+.auth-form__google {
+  width:           100%;
+  justify-content: center;
+  gap:             var(--space-3);
+  display:         flex;
+  align-items:     center;
+}
+
+/* ─── Footer link ──────────────────────────────────────────────────────────── */
+
+.auth-form__footer {
+  font-family: var(--font-body);
+  font-size:   var(--text-sm);
+  color:       var(--color-text-on-light-muted);
+  text-align:  center;
+  margin:      0;
+}
+
+.auth-form__link {
+  color:           var(--color-surface-dark);
+  font-weight:     var(--weight-semibold);
+  text-decoration: none;
+  transition:      color var(--transition-base);
+}
+
+.auth-form__link:hover {
+  color: var(--color-accent-press);
+  text-decoration: underline;
+}
+
+/* ─── Name row (signup only) ───────────────────────────────────────────────── */
+
+.auth-form__name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap:     var(--space-3);
+}
+
+@media (max-width: 480px) {
+  .auth-form__name-row {
+    grid-template-columns: 1fr;
+  }
+}

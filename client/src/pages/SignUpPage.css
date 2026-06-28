@@ -1,0 +1,24 @@
+/*
+ * SignUpPage.css — SmartBrick signup screen overrides
+ * ─────────────────────────────────────────────────────
+ * Phase 5C. Imports LoginPage.css for the shared auth-layout + auth-form
+ * utilities; this file adds only signup-specific tweaks.
+ */
+
+/*
+ * The signup form has more fields, so allow it to scroll naturally on
+ * very short viewports rather than truncating.
+ */
+.signup-form-panel {
+  align-items: flex-start;
+  padding-top: var(--space-7);
+  padding-bottom: var(--space-7);
+}
+
+.signup-form {
+  /* Slightly tighter vertical spacing between fields for the longer form */
+}
+
+.signup-form .auth-form__fields {
+  gap: var(--space-3);
+}
