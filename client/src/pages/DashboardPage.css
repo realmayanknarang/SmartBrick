@@ -163,6 +163,38 @@
   }
 }
 
+/* ─── Phase 7G mobile polish ───────────────────────────────────────────────── */
+/* On mobile, the Sidebar's fixed mobile bar sits at the top of the viewport.   */
+/* .dash-shell gains padding-top: 56px (from Sidebar.css) pushing content down. */
+/* The sticky topbar sits flush under the mobile nav bar on scroll.             */
+@media (max-width: 768px) {
+  /* Welcome heading scale-down on narrow screens */
+  .dash-welcome__name {
+    font-size: var(--text-2xl);
+  }
+
+  /* Topbar: reduce horizontal padding to prevent crowding */
+  .dash-topbar {
+    padding: var(--space-3) var(--space-4);
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .dash-topbar__title {
+    font-size: var(--text-base);
+  }
+
+  /* Shrink sign-out button text on very small screens */
+  .dash-topbar__right {
+    gap: var(--space-2);
+  }
+
+  .dash-topbar__signout {
+    font-size: var(--text-sm);
+    padding: 4px var(--space-2);
+  }
+}
+
 /* ─── Individual metric card ───────────────────────────────────────────────── */
 .dash-metric-card {
   display:        flex;
