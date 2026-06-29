@@ -7,6 +7,7 @@ import { clerkMiddleware } from '@clerk/express';
 import connectDB from './config/db.js';
 import authRouter from './routes/auth.js';
 import testAuthRouter from './routes/testAuth.js'; // PHASE 3 SCAFFOLD — delete after verification
+import dashboardRouter from './routes/dashboardRoutes.js'; // Phase 7A
 import { apiLimiter } from './middleware/rateLimiter.js';
 
 connectDB();
@@ -45,6 +46,9 @@ app.use('/api/auth', authRouter);
 // PHASE 3 SCAFFOLD — verify auth stack end-to-end; delete once confirmed working
 // Routes: /api/test-auth/public  /api/test-auth/protected  /api/test-auth/owner-only
 app.use('/api/test-auth', testAuthRouter);
+
+// Dashboard summary metrics — Phase 7A
+app.use('/api/dashboard', dashboardRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
