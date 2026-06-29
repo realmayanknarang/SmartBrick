@@ -143,6 +143,16 @@
   text-overflow: ellipsis;
 }
 
+/* ─── Group divider ─────────────────────────────────────────────────────────── */
+/* Rendered as a thin horizontal rule between nav sections. No extra margin    */
+/* is added to the li above it — the hr's own margin creates the visual gap.   */
+.sidebar__divider {
+  border:     none;
+  border-top: 1px solid var(--color-border-dark);
+  margin:     var(--space-2) var(--space-4);
+  opacity:    0.6;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════════
  * MOBILE — hamburger drawer (Phase 7G)
  * ══════════════════════════════════════════════════════════════════════════════ */

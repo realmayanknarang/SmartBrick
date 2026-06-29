@@ -111,7 +111,7 @@ const NAV_ITEMS = [
   { icon: <VendorsIcon />,   label: 'Vendors',        path: '/dashboard/vendors' },
   { icon: <ReportsIcon />,   label: 'Analytics',      path: '/dashboard/analytics' },
   { icon: <AlertsIcon />,    label: 'Alerts',         path: '/dashboard/alerts' },
-  { icon: <ScannerIcon />,   label: 'Invoice OCR',    path: '/dashboard/invoice-scanner' },
+  { icon: <ScannerIcon />, label: 'Invoice OCR', path: '/dashboard/invoice-scanner', dividerBefore: true },
   { icon: <WeatherIcon />,   label: 'Weather Alerts', path: '/dashboard/weather' },
   { icon: <MapIcon />,       label: 'Logistics',      path: '/dashboard/logistics' },
   { icon: <LeafIcon />,      label: 'Sustainability',  path: '/dashboard/carbon' },

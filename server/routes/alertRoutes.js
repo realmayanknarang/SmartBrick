@@ -93,7 +93,7 @@ router.get('/', requireAuth, async (req, res) => {
 async function fetchStockAlerts() {
   const results = await Material.aggregate([
     // Explode the currentStockBySite array so each entry becomes its own doc
-    { $unwind: { path: '$currentStockBySite', preserveNullAndEmpty: false } },
+    { $unwind: { path: '$currentStockBySite', preserveNullAndEmptyArrays: false } },
 
     // Only keep entries where stock is below the reorder threshold AND
     // the threshold itself is meaningful (> 0 prevents divide-by-zero)
@@ -115,7 +115,7 @@ async function fetchStockAlerts() {
         as:           'siteDoc',
       },
     },
-    { $unwind: { path: '$siteDoc', preserveNullAndEmpty: false } },
+    { $unwind: { path: '$siteDoc', preserveNullAndEmptyArrays: false } },
 
     // Shape the output
     {

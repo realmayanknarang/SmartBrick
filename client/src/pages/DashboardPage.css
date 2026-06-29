@@ -228,6 +228,22 @@
   transition:       opacity var(--transition-base);
 }
 
+/* Clickable alert metric card (Overview → Alerts) */
+a.dash-metric-card-link {
+  display:         block;
+  text-decoration: none;
+  color:           inherit;
+}
+
+a.dash-metric-card-link:hover .dash-metric-card {
+  box-shadow: var(--shadow-md);
+  transform:  translateY(-2px);
+}
+
+a.dash-metric-card-link:hover .dash-metric-card::before {
+  opacity: 1;
+}
+
 .dash-metric-card:hover {
   box-shadow: var(--shadow-md);
   transform:  translateY(-2px);

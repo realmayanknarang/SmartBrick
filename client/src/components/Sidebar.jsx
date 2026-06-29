@@ -140,11 +140,13 @@ function Sidebar({
   const navList = (
     <nav aria-label="Sidebar navigation">
       <ul className="sidebar__nav" role="list">
-        {items.map(({ icon, label, path }) => {
+        {items.map(({ icon, label, path, dividerBefore }) => {
           const isActive = activePath === path;
 
           return (
             <li key={path} className="sidebar__item">
+              {/* Optional group divider */}
+              {dividerBefore && <hr className="sidebar__divider" aria-hidden="true" />}
               <Link
                 to={path}
                 className={[

@@ -32,7 +32,6 @@ import { useUser, SignOutButton } from '@clerk/clerk-react';
 import Sidebar from '../components/Sidebar';
 import Card    from '../components/Card';
 import apiClient from '../api/client';
-import { Link }  from 'react-router-dom';
 import './DashboardPage.css';
 
 // ─── Nav item icon set (inline SVG — matches Phase 4 icon convention) ─────────
@@ -133,7 +132,7 @@ const NAV_ITEMS = [
   { icon: <VendorsIcon />,     label: 'Vendors',        path: '/dashboard/vendors' },
   { icon: <ReportsIcon />,     label: 'Analytics',      path: '/dashboard/analytics' },
   { icon: <AlertsIcon />,      label: 'Alerts',         path: '/dashboard/alerts' },
-  { icon: <ScannerIcon />,     label: 'Invoice OCR',    path: '/dashboard/invoice-scanner' },
+  { icon: <ScannerIcon />, label: 'Invoice OCR', path: '/dashboard/invoice-scanner', dividerBefore: true },
   { icon: <WeatherNavIcon />,  label: 'Weather Alerts', path: '/dashboard/weather' },
   { icon: <MapNavIcon />,      label: 'Logistics',      path: '/dashboard/logistics' },
   { icon: <LeafNavIcon />,     label: 'Sustainability',  path: '/dashboard/carbon' },
@@ -358,7 +357,7 @@ function DashboardPage() {
                 />
                 {/* Phase 8D — alert count badge */}
                 {alertCount != null && (
-                  <Link to="/dashboard/alerts" style={{ textDecoration: 'none', display: 'block' }}>
+                  <Link to="/dashboard/alerts" className="dash-metric-card-link">
                     <MetricCard
                       label="Active Alerts"
                       value={alertCount}

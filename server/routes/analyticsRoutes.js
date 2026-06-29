@@ -78,7 +78,7 @@ router.get('/spending-summary', requireAuth, async (req, res) => {
             as:           'materialDoc',
           },
         },
-        { $unwind: { path: '$materialDoc', preserveNullAndEmpty: false } },
+        { $unwind: { path: '$materialDoc', preserveNullAndEmptyArrays: false } },
         {
           $group: {
             _id:   '$materialDoc.category',
@@ -108,7 +108,7 @@ router.get('/spending-summary', requireAuth, async (req, res) => {
             as:           'projectDoc',
           },
         },
-        { $unwind: { path: '$projectDoc', preserveNullAndEmpty: false } },
+        { $unwind: { path: '$projectDoc', preserveNullAndEmptyArrays: false } },
         {
           $group: {
             _id:         '$project',
