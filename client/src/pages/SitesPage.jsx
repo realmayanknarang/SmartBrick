@@ -96,7 +96,7 @@ const NAV_ITEMS = [
   { icon: <OverviewIcon />,  label: 'Overview',       path: '/dashboard' },
   { icon: <SitesIcon />,     label: 'Sites',          path: '/dashboard/sites' },
   { icon: <VendorsIcon />,   label: 'Vendors',        path: '/dashboard/vendors' },
-  { icon: <ReportsIcon />,   label: 'Reports',        path: '/dashboard/reports' },
+  { icon: <ReportsIcon />,   label: 'Analytics',      path: '/dashboard/analytics' },
   { icon: <AlertsIcon />,    label: 'Alerts',         path: '/dashboard/alerts' },
   { icon: <ScannerIcon />,   label: 'Invoice OCR',    path: '/dashboard/invoice-scanner' },
   { icon: <WeatherIcon />,   label: 'Weather Alerts', path: '/dashboard/weather' },
