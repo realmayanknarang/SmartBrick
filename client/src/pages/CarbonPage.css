@@ -1,0 +1,500 @@
+/*
+ * CarbonPage.css — SmartBrick Carbon Footprint Calculator — Phase 7F
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Styles for the Sustainability / Carbon Footprint Calculator page.
+ * Reuses the dash-shell / dash-main / dash-topbar tokens from DashboardPage.css.
+ * All values reference tokens/tokens.css — no hard-coded colours.
+ */
+
+/* ─── Intro section ─────────────────────────────────────────────────────────── */
+.co2-intro {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-1);
+}
+
+.co2-intro__label {
+  font-family:    var(--font-body);
+  font-size:      var(--text-base);
+  font-weight:    var(--weight-semibold);
+  color:          var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin:         0;
+}
+
+.co2-intro__heading {
+  font-family:    var(--font-display);
+  font-size:      var(--text-3xl);
+  font-weight:    var(--weight-bold);
+  color:          var(--color-text-on-dark);
+  margin:         0;
+  letter-spacing: 0.02em;
+}
+
+.co2-intro__sub {
+  font-size:   var(--text-base);
+  color:       var(--color-text-on-dark-muted);
+  max-width:   580px;
+  line-height: var(--leading-normal);
+  margin:      var(--space-1) 0 0;
+}
+
+/* ─── Two-column layout ─────────────────────────────────────────────────────── */
+.co2-layout {
+  display:               grid;
+  grid-template-columns: 380px 1fr;
+  gap:                   var(--space-5);
+  align-items:           start;
+}
+
+@media (max-width: 900px) {
+  .co2-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Section headings ───────────────────────────────────────────────────────── */
+.co2-section-heading {
+  font-family:    var(--font-display);
+  font-size:      var(--text-xl);
+  font-weight:    var(--weight-semibold);
+  color:          var(--color-text-on-dark);
+  letter-spacing: 0.04em;
+  margin:         0 0 var(--space-4);
+}
+
+/* ─── Form card ─────────────────────────────────────────────────────────────── */
+.co2-form-card {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-5);
+}
+
+.co2-form {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-4);
+}
+
+/* ─── Field ──────────────────────────────────────────────────────────────────── */
+.co2-field {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-2);
+}
+
+.co2-label {
+  font-size:      var(--text-sm);
+  font-weight:    var(--weight-semibold);
+  color:          var(--color-text-on-dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── Select ─────────────────────────────────────────────────────────────────── */
+.co2-select {
+  width:            100%;
+  padding:          10px var(--space-3);
+  background:       var(--color-surface-dark);
+  border:           1px solid var(--color-border-dark);
+  border-radius:    var(--radius-sm);
+  color:            var(--color-text-on-dark);
+  font-family:      var(--font-body);
+  font-size:        var(--text-base);
+  font-weight:      var(--weight-medium);
+  cursor:           pointer;
+  appearance:       none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239FB0BC' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  padding-right:    var(--space-7);
+  transition:       border-color var(--transition-base);
+}
+
+.co2-select:focus {
+  outline:       none;
+  border-color:  var(--color-accent);
+}
+
+/* ─── Number input with unit suffix ─────────────────────────────────────────── */
+.co2-input-wrap {
+  position:    relative;
+  display:     flex;
+  align-items: center;
+}
+
+.co2-input {
+  width:         100%;
+  padding:       10px var(--space-3);
+  padding-right: 48px;
+  background:    var(--color-surface-dark);
+  border:        1px solid var(--color-border-dark);
+  border-radius: var(--radius-sm);
+  color:         var(--color-text-on-dark);
+  font-family:   var(--font-body);
+  font-size:     var(--text-base);
+  font-weight:   var(--weight-medium);
+  transition:    border-color var(--transition-base);
+  box-sizing:    border-box;
+}
+
+.co2-input:focus {
+  outline:      none;
+  border-color: var(--color-accent);
+}
+
+.co2-input::placeholder {
+  color: var(--color-text-on-dark-faint);
+}
+
+.co2-input-unit {
+  position:    absolute;
+  right:       var(--space-3);
+  font-size:   var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color:       var(--color-text-on-dark-muted);
+  pointer-events: none;
+}
+
+/* ─── Error banner ───────────────────────────────────────────────────────────── */
+.co2-error {
+  display:       flex;
+  align-items:   flex-start;
+  gap:           var(--space-2);
+  background:    rgba(224, 92, 92, 0.12);
+  border:        1px solid rgba(224, 92, 92, 0.3);
+  border-radius: var(--radius-sm);
+  padding:       var(--space-3) var(--space-4);
+  color:         var(--color-danger);
+  font-size:     var(--text-base);
+  line-height:   var(--leading-normal);
+}
+
+/* ─── Calculate button ───────────────────────────────────────────────────────── */
+.co2-calc-btn {
+  width:         100%;
+  padding:       12px var(--space-5);
+  background:    var(--color-accent);
+  color:         #1A2B3C;
+  border:        2px solid transparent;
+  border-radius: var(--radius-md);
+  font-family:   var(--font-body);
+  font-size:     var(--text-base);
+  font-weight:   var(--weight-bold);
+  cursor:        pointer;
+  transition:    background var(--transition-base), opacity var(--transition-base);
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+  gap:           var(--space-2);
+  margin-top:    var(--space-2);
+}
+
+.co2-calc-btn:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.co2-calc-btn:disabled {
+  opacity: 0.5;
+  cursor:  not-allowed;
+}
+
+/* ─── Spinner ────────────────────────────────────────────────────────────────── */
+.co2-spinner {
+  display:       inline-block;
+  width:         14px;
+  height:        14px;
+  border:        2px solid rgba(26, 43, 60, 0.3);
+  border-top-color: #1A2B3C;
+  border-radius: 50%;
+  animation:     co2-spin 0.7s linear infinite;
+  flex-shrink:   0;
+}
+
+@keyframes co2-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Methodology note ───────────────────────────────────────────────────────── */
+.co2-methodology {
+  border-top:  1px solid var(--color-border-dark);
+  padding-top: var(--space-4);
+}
+
+.co2-methodology__heading {
+  font-size:      var(--text-sm);
+  font-weight:    var(--weight-semibold);
+  color:          var(--color-text-on-dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin:         0 0 var(--space-2);
+}
+
+.co2-methodology__list {
+  margin:   0;
+  padding:  0 0 0 var(--space-4);
+  display:  flex;
+  flex-direction: column;
+  gap:      var(--space-1);
+}
+
+.co2-methodology__list li {
+  font-size:   var(--text-sm);
+  color:       var(--color-text-on-dark-muted);
+  line-height: var(--leading-normal);
+}
+
+/* ─── Result column ──────────────────────────────────────────────────────────── */
+.co2-result-col {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-4);
+}
+
+/* ─── Empty / loading states ─────────────────────────────────────────────────── */
+.co2-empty-state {
+  min-height: 280px;
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.co2-empty-state__inner {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            var(--space-3);
+  text-align:     center;
+  padding:        var(--space-6);
+}
+
+.co2-empty-state__icon {
+  font-size:   48px;
+  line-height: 1;
+  opacity:     0.5;
+}
+
+.co2-empty-state__heading {
+  font-family: var(--font-display);
+  font-size:   var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color:       var(--color-text-on-dark-muted);
+  margin:      0;
+}
+
+.co2-empty-state__sub {
+  font-size: var(--text-base);
+  color:     var(--color-text-on-dark-muted);
+  margin:    0;
+}
+
+.co2-loading-state {
+  min-height: 200px;
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.co2-loading-state__inner {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            var(--space-4);
+  text-align:     center;
+  padding:        var(--space-6);
+}
+
+.co2-loading-state__spinner {
+  width:         40px;
+  height:        40px;
+  border:        3px solid var(--color-border-dark);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation:     co2-spin 0.8s linear infinite;
+}
+
+.co2-loading-state__text {
+  font-size: var(--text-base);
+  color:     var(--color-text-on-dark-muted);
+  margin:    0;
+}
+
+/* ─── Total headline card ────────────────────────────────────────────────────── */
+.co2-total-card {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-3);
+  position:       relative;
+  overflow:       hidden;
+}
+
+.co2-total-card::before {
+  content:    '';
+  position:   absolute;
+  top:        0;
+  left:       0;
+  right:      0;
+  height:     3px;
+  background: linear-gradient(90deg, #3CB57A 0%, var(--color-accent) 100%);
+}
+
+.co2-total-card__header {
+  display:     flex;
+  align-items: flex-start;
+  gap:         var(--space-3);
+}
+
+.co2-total-card__emoji {
+  font-size: 32px;
+  line-height: 1;
+  margin-top: var(--space-1);
+}
+
+.co2-total-card__label {
+  font-size:      var(--text-sm);
+  font-weight:    var(--weight-semibold);
+  color:          var(--color-text-on-dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin:         0 0 var(--space-1);
+}
+
+.co2-total-card__subtitle {
+  font-size:  var(--text-base);
+  color:      var(--color-text-on-dark-muted);
+  margin:     0;
+}
+
+.co2-total-card__value {
+  font-family:    var(--font-display);
+  font-size:      clamp(2rem, 4vw, 3rem);
+  font-weight:    var(--weight-bold);
+  color:          #3CB57A;    /* green — good for CO2 awareness */
+  margin:         0;
+  letter-spacing: 0.02em;
+  line-height:    var(--leading-tight);
+}
+
+.co2-total-card__unit {
+  font-size:  var(--text-sm);
+  color:      var(--color-text-on-dark-muted);
+  margin:     0;
+}
+
+/* ─── Breakdown card ─────────────────────────────────────────────────────────── */
+.co2-breakdown-card {
+  display:        flex;
+  flex-direction: column;
+  gap:            0;
+}
+
+.co2-breakdown-rows {
+  display:        flex;
+  flex-direction: column;
+  gap:            0;
+}
+
+.co2-breakdown-row {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         var(--space-3) 0;
+  border-bottom:   1px solid var(--color-border-dark);
+}
+
+.co2-breakdown-row:last-child {
+  border-bottom: none;
+}
+
+.co2-breakdown-row--total {
+  padding-top:  var(--space-4);
+  border-top:   2px solid var(--color-accent);
+  margin-top:   var(--space-2);
+  border-bottom: none;
+}
+
+.co2-breakdown-row__left {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-3);
+}
+
+.co2-breakdown-row__icon {
+  font-size:   24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.co2-breakdown-row__title {
+  font-size:   var(--text-base);
+  font-weight: var(--weight-semibold);
+  color:       var(--color-text-on-dark);
+  margin:      0 0 2px;
+}
+
+.co2-breakdown-row__sub {
+  font-size: var(--text-sm);
+  color:     var(--color-text-on-dark-muted);
+  margin:    0;
+}
+
+.co2-breakdown-row__value {
+  font-family: var(--font-display);
+  font-size:   var(--text-lg);
+  font-weight: var(--weight-bold);
+  color:       var(--color-text-on-dark);
+  white-space: nowrap;
+}
+
+.co2-breakdown-row__value--total {
+  font-size: var(--text-2xl);
+  color:     var(--color-accent);
+}
+
+/* ─── Equivalents card ───────────────────────────────────────────────────────── */
+.co2-equiv-card {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-4);
+}
+
+.co2-equiv-grid {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+  gap:                   var(--space-4);
+}
+
+.co2-equiv-item {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  gap:             var(--space-1);
+  text-align:      center;
+  padding:         var(--space-4);
+  background:      var(--color-surface-dark);
+  border-radius:   var(--radius-md);
+  border:          1px solid var(--color-border-dark);
+}
+
+.co2-equiv-item__icon {
+  font-size:   36px;
+  line-height: 1;
+  margin:      0;
+}
+
+.co2-equiv-item__value {
+  font-family:    var(--font-display);
+  font-size:      var(--text-xl);
+  font-weight:    var(--weight-bold);
+  color:          var(--color-text-on-dark);
+  margin:         0;
+  letter-spacing: 0.02em;
+}
+
+.co2-equiv-item__label {
+  font-size:   var(--text-xs);
+  color:       var(--color-text-on-dark-muted);
+  line-height: var(--leading-normal);
+  margin:      0;
+}
