@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
-import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';       // Phase 5C
-import DashboardPage from './pages/DashboardPage';
-import SelectRolePage from './pages/SelectRolePage';
-import SSOCallbackPage from './pages/SSOCallbackPage'; // Phase 5B — OAuth callback
-import StyleGuidePage from './pages/StyleGuidePage'; // Phase 4F — dev reference, intentionally kept
+import LandingPage         from './pages/LandingPage';
+import LoginPage           from './pages/LoginPage';
+import SignUpPage          from './pages/SignUpPage';          // Phase 5C
+import DashboardPage       from './pages/DashboardPage';
+import SelectRolePage      from './pages/SelectRolePage';
+import SSOCallbackPage     from './pages/SSOCallbackPage';     // Phase 5B — OAuth callback
+import StyleGuidePage      from './pages/StyleGuidePage';      // Phase 4F — dev reference
+import InvoiceScannerPage  from './pages/InvoiceScannerPage';  // Phase 7C
+import WeatherAlertsPage   from './pages/WeatherAlertsPage';   // Phase 7D
+import LogisticsPage       from './pages/LogisticsPage';       // Phase 7E
+import CarbonPage          from './pages/CarbonPage';          // Phase 7F
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -176,12 +180,54 @@ function App() {
           }
         />
 
-        {/* Dashboard — signed-in AND role set */}
+        {/* ── Dashboard routes — signed-in AND role set ─────────────────── */}
+
+        {/* Overview */}
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Invoice OCR Scanner — Phase 7C */}
+        <Route
+          path="/dashboard/invoice-scanner"
+          element={
+            <ProtectedRoute>
+              <InvoiceScannerPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Weather Risk Alerts — Phase 7D */}
+        <Route
+          path="/dashboard/weather"
+          element={
+            <ProtectedRoute>
+              <WeatherAlertsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Route & Delivery Map — Phase 7E */}
+        <Route
+          path="/dashboard/logistics"
+          element={
+            <ProtectedRoute>
+              <LogisticsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Carbon Footprint Calculator — Phase 7F */}
+        <Route
+          path="/dashboard/carbon"
+          element={
+            <ProtectedRoute>
+              <CarbonPage />
             </ProtectedRoute>
           }
         />

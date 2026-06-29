@@ -5,10 +5,14 @@ import express from 'express';
 import cors from 'cors';
 import { clerkMiddleware } from '@clerk/express';
 import connectDB from './config/db.js';
-import authRouter from './routes/auth.js';
-import testAuthRouter from './routes/testAuth.js'; // PHASE 3 SCAFFOLD — delete after verification
+import authRouter      from './routes/auth.js';
+import testAuthRouter  from './routes/testAuth.js'; // PHASE 3 SCAFFOLD — delete after verification
 import dashboardRouter from './routes/dashboardRoutes.js'; // Phase 7A
-import { apiLimiter } from './middleware/rateLimiter.js';
+import ocrRouter       from './routes/ocrRoutes.js';       // Phase 7C
+import weatherRouter   from './routes/weatherRoutes.js';   // Phase 7D
+import routeRouter     from './routes/routeRoutes.js';     // Phase 7E
+import carbonRouter    from './routes/carbonRoutes.js';    // Phase 7F
+import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
 
@@ -49,6 +53,18 @@ app.use('/api/test-auth', testAuthRouter);
 
 // Dashboard summary metrics — Phase 7A
 app.use('/api/dashboard', dashboardRouter);
+
+// Invoice OCR scanner via Groq vision — Phase 7C
+app.use('/api/ocr', ocrRouter);
+
+// Weather risk alerts via OpenWeatherMap — Phase 7D
+app.use('/api/weather', weatherRouter);
+
+// Route & delivery map via OpenRouteService — Phase 7E
+app.use('/api/routes', routeRouter);
+
+// Carbon footprint calculator via Climatiq — Phase 7F
+app.use('/api/carbon', carbonRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);

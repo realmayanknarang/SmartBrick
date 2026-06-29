@@ -56,3 +56,16 @@ export const authLimiter = rateLimit({
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
+
+/**
+ * OCR limiter — 10 requests per 15 minutes per IP.
+ * Applied to POST /api/ocr/scan-invoice to protect against expensive
+ * Groq vision API abuse.  Each call costs real LLM tokens.
+ */
+export const ocrLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 10,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: jsonRateLimitHandler,
+});

@@ -85,14 +85,57 @@ function AlertsIcon() {
   );
 }
 
+function ScannerIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="12" y="3" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="3" y="12" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M12 12h5M14.5 12v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function WeatherNavIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="10" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M5 14c0-1.1.9-2 2-2h6a2 2 0 110 4H7a2 2 0 01-2-2z" fill="currentColor" opacity="0.5" />
+    </svg>
+  );
+}
+
+function MapNavIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 4l5 2 6-2 5 2v12l-5-2-6 2-5-2V4z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <line x1="7" y1="6" x2="7" y2="18" stroke="currentColor" strokeWidth="1.2" />
+      <line x1="13" y1="2" x2="13" y2="16" stroke="currentColor" strokeWidth="1.2" />
+    </svg>
+  );
+}
+
+function LeafNavIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 4C16 4 14 12 8 14C5 15 3 16 3 16C3 16 4 12 7 9C10 6 16 4 16 4Z" fill="currentColor" opacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+      <path d="M3 16C5 13 8 11 10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
 // ─── Sidebar nav items ─────────────────────────────────────────────────────────
 
 const NAV_ITEMS = [
-  { icon: <OverviewIcon />, label: 'Overview',  path: '/dashboard' },
-  { icon: <SitesIcon />,    label: 'Sites',     path: '/dashboard/sites' },
-  { icon: <VendorsIcon />,  label: 'Vendors',   path: '/dashboard/vendors' },
-  { icon: <ReportsIcon />,  label: 'Reports',   path: '/dashboard/reports' },
-  { icon: <AlertsIcon />,   label: 'Alerts',    path: '/dashboard/alerts' },
+  { icon: <OverviewIcon />,    label: 'Overview',       path: '/dashboard' },
+  { icon: <SitesIcon />,       label: 'Sites',          path: '/dashboard/sites' },
+  { icon: <VendorsIcon />,     label: 'Vendors',        path: '/dashboard/vendors' },
+  { icon: <ReportsIcon />,     label: 'Reports',        path: '/dashboard/reports' },
+  { icon: <AlertsIcon />,      label: 'Alerts',         path: '/dashboard/alerts' },
+  { icon: <ScannerIcon />,     label: 'Invoice OCR',    path: '/dashboard/invoice-scanner' },
+  { icon: <WeatherNavIcon />,  label: 'Weather Alerts', path: '/dashboard/weather' },
+  { icon: <MapNavIcon />,      label: 'Logistics',      path: '/dashboard/logistics' },
+  { icon: <LeafNavIcon />,     label: 'Sustainability',  path: '/dashboard/carbon' },
 ];
 
 // ─── Metric card helper ────────────────────────────────────────────────────────
