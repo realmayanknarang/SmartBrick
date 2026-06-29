@@ -529,3 +529,181 @@
   }
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PHASE 6D — FOOTER
+   ══════════════════════════════════════════════════════════════════════════
+   Surface: --color-surface-dark (navy)
+   Intentional deviation: original Realar reference used a light footer.
+   Keeping navy here preserves visual continuity of the landing page.
+   See LandingPage.jsx file header for full reasoning.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Footer wrapper ─────────────────────────────────────────────────────────── */
+.lp-footer {
+  background-color: var(--color-surface-dark);
+  border-top:       1px solid var(--color-border-dark);
+  padding-top:      var(--space-8);  /* 64px */
+  color:            var(--color-text-on-dark);
+  font-family:      var(--font-body);
+}
+
+/* ─── Main content row ───────────────────────────────────────────────────────── */
+.lp-footer__inner {
+  max-width:  960px;
+  margin:     0 auto;
+  padding:    0 var(--space-5);
+  display:    grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap:        var(--space-8);         /* 64px column gap */
+  align-items: start;
+}
+
+/* ─── Brand column ────────────────────────────────────────────────────────────── */
+.lp-footer__brand {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-4);  /* 16px */
+}
+
+/* Logo row */
+.lp-footer__logo {
+  display:     inline-flex;
+  align-items: center;
+  gap:         var(--space-3);
+  text-decoration: none;
+  color:       var(--color-accent);   /* gold — matches PublicNav logo treatment */
+}
+
+.lp-footer__brand-icon {
+  flex-shrink: 0;
+}
+
+.lp-footer__logo-text {
+  font-family:    var(--font-display);
+  font-size:      var(--text-2xl);      /* 24px */
+  font-weight:    var(--weight-bold);
+  color:          var(--color-text-on-dark);
+  letter-spacing: 0.02em;
+}
+
+.lp-footer__tagline {
+  font-size:   var(--text-base);      /* 14px */
+  line-height: var(--leading-normal);
+  color:       var(--color-text-on-dark-muted);
+  margin:      0;
+  max-width:   280px;
+}
+
+/* "Request a demo" CTA — mailto: link, functional */
+.lp-footer__demo-btn {
+  align-self: flex-start;
+  margin-top: var(--space-2);
+}
+
+/* ─── Footer link columns ────────────────────────────────────────────────────── */
+.lp-footer__columns {
+  display:  contents;   /* let the columns participate in parent grid directly */
+}
+
+.lp-footer__col {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-4);  /* 16px */
+}
+
+.lp-footer__col-heading {
+  font-family:    var(--font-body);
+  font-size:      var(--text-sm);   /* 12px */
+  font-weight:    var(--weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          var(--color-text-on-dark-muted);
+  margin:         0;
+}
+
+.lp-footer__col-list {
+  list-style: none;
+  margin:     0;
+  padding:    0;
+  display:    flex;
+  flex-direction: column;
+  gap:        var(--space-3);   /* 12px */
+}
+
+.lp-footer__col-link {
+  font-size:      var(--text-base);   /* 14px */
+  color:          var(--color-text-on-dark-faint);  /* #CBD5DD */
+  text-decoration: none;
+  transition:     color var(--transition-fast);
+}
+
+.lp-footer__col-link:hover {
+  color: var(--color-text-on-dark);   /* white on hover */
+}
+
+.lp-footer__col-link:focus-visible {
+  outline:        2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius:  var(--radius-sm);
+}
+
+/* ─── Bottom bar ─────────────────────────────────────────────────────────────── */
+.lp-footer__bottom {
+  max-width:   960px;
+  margin:      var(--space-7) auto 0;   /* 48px top margin */
+  padding:     var(--space-5) var(--space-5);
+  border-top:  1px solid var(--color-border-dark);
+  display:     flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap:   wrap;
+  gap:         var(--space-3);
+}
+
+.lp-footer__copy,
+.lp-footer__legal {
+  font-size: var(--text-xs);     /* 11px */
+  color:     var(--color-text-on-dark-muted);
+  margin:    0;
+}
+
+.lp-footer__legal {
+  font-style: italic;
+  color:      var(--color-text-on-dark-faint);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — 6D footer breakpoints
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  /* Footer: single column on mobile */
+  .lp-footer__inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .lp-footer__columns {
+    display: contents;
+  }
+
+  .lp-footer__bottom {
+    flex-direction: column;
+    align-items:    flex-start;
+    gap: var(--space-2);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Footer: 2-col on tablet (brand full row, then links side by side) */
+  .lp-footer__inner {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+
+  .lp-footer__brand {
+    grid-column: 1 / -1;   /* brand spans full width on tablet */
+  }
+}

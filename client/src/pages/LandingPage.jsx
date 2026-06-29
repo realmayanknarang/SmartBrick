@@ -24,6 +24,20 @@
  *             04 Site & Stock Tracking— Site + Material reorderThreshold alerts
  *           "Invoice OCR" and "Weather Risk" were NOT built — not mentioned here.
  *
+ * Phase 6D  Footer — navy surface (intentional deviation from the Realar light-
+ *           footer reference; see note below)
+ *
+ * ── DESIGN DEVIATION NOTE (Phase 6D) ────────────────────────────────────────
+ * The original Realar reference UI uses a light-surface footer.  SmartBrick's
+ * entire page uses navy (#1A2B3C) as the primary surface.  Switching to a light
+ * footer here would:
+ *   a) break visual continuity at page-bottom, and
+ *   b) introduce a white-surface context that has no design-token precedent on
+ *      this page (white is reserved for form panels in the auth screens).
+ * Decision: keep the footer on --color-surface-dark (navy), matching the rest
+ * of the landing page.  This is an intentional choice to prioritize consistency
+ * over reference-exact matching, flagged per spec.
+ *
  * All styled elements use Phase 4 components (PublicNav, Button, Card,
  * NumberBadge, StatPill) or LandingPage.css token-based classes.
  */
@@ -242,6 +256,40 @@ const NUMBERED_CAPS = [
   },
 ];
 
+// ─── 6D Footer link columns ──────────────────────────────────────────────────
+const FOOTER_LINKS = [
+  {
+    heading: 'Useful Links',
+    links: [
+      { label: 'About',    to: '/#for-builders' },
+      { label: 'Platform', to: '/#platform' },
+      { label: 'Contact',  href: 'mailto:hello@smartbrick.app' },
+    ],
+  },
+  {
+    heading: 'Explore',
+    links: [
+      { label: 'Dashboard', to: '/dashboard' },
+      { label: 'Sign in',   to: '/login' },
+      { label: 'Sign up',   to: '/signup' },
+    ],
+  },
+];
+
+// ─── Brand mark SVG (same mark as PublicNav — kept local to avoid coupling) ──
+function FooterBrandMark() {
+  return (
+    <svg className="lp-footer__brand-icon" width="28" height="28"
+      viewBox="0 0 24 24" fill="none" aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="10" width="10" height="5" rx="1" fill="currentColor" />
+      <rect x="13" y="10" width="10" height="5" rx="1" fill="currentColor" />
+      <rect x="6" y="4" width="12" height="5" rx="1" fill="currentColor" opacity="0.7" />
+      <rect x="6" y="16" width="12" height="5" rx="1" fill="currentColor" opacity="0.7" />
+    </svg>
+  );
+}
+
 // ─── LandingPage ─────────────────────────────────────────────────────────────
 
 function LandingPage() {
@@ -396,6 +444,82 @@ function LandingPage() {
           })}
         </div>
       </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          PHASE 6D — FOOTER
+          ══════════════════════════════════════════════════════════════════
+          Surface: --color-surface-dark (navy) — intentional deviation from
+          the Realar reference (which uses a light footer). Keeping navy here
+          preserves visual continuity across the full page. See file header
+          for full reasoning.
+          ════════════════════════════════════════════════════════════════ */}
+      <footer className="lp-footer" id="contact" aria-label="Site footer">
+        <div className="lp-footer__inner">
+
+          {/* ── Brand column ──────────────────────────────────────────────── */}
+          <div className="lp-footer__brand">
+            <Link to="/" className="lp-footer__logo" aria-label="SmartBrick home">
+              <FooterBrandMark />
+              <span className="lp-footer__logo-text">SmartBrick</span>
+            </Link>
+            <p className="lp-footer__tagline">
+              Procurement intelligence for every site you run.
+            </p>
+
+            {/*
+             * Demo CTA — mailto: so it's functional, not a dead-end form.
+             * No newsletter backend exists. Per spec guidance: either wire it to
+             * something real or omit the input. We use a mailto: CTA that opens
+             * the user's mail client — functional with zero backend required.
+             */}
+            <Button
+              as="a"
+              href="mailto:hello@smartbrick.app?subject=SmartBrick%20Demo%20Request"
+              variant="primary"
+              size="sm"
+              className="lp-footer__demo-btn"
+              id="footer-demo-cta"
+            >
+              Request a demo
+            </Button>
+          </div>
+
+          {/* ── Link columns ──────────────────────────────────────────────── */}
+          <nav className="lp-footer__columns" aria-label="Footer navigation">
+            {FOOTER_LINKS.map(({ heading, links }) => (
+              <div key={heading} className="lp-footer__col">
+                <h4 className="lp-footer__col-heading">{heading}</h4>
+                <ul className="lp-footer__col-list" role="list">
+                  {links.map(({ label, to, href }) => (
+                    <li key={label}>
+                      {to ? (
+                        <Link to={to} className="lp-footer__col-link">
+                          {label}
+                        </Link>
+                      ) : (
+                        <a href={href} className="lp-footer__col-link">
+                          {label}
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+
+        </div>
+
+        {/* ── Bottom bar ────────────────────────────────────────────────────── */}
+        <div className="lp-footer__bottom">
+          <p className="lp-footer__copy">
+            © {new Date().getFullYear()} SmartBrick. All rights reserved.
+          </p>
+          <p className="lp-footer__legal">
+            Demo data only — all vendor names and figures are fictional.
+          </p>
+        </div>
+      </footer>
 
     </div>
   );
