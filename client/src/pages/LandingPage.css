@@ -21,6 +21,7 @@
   background-color: var(--color-surface-dark);   /* #1A2B3C — navy fills page */
   color:            var(--color-text-on-dark);
   font-family:      var(--font-body);
+  scroll-behavior:  smooth;   /* Phase 6E: smooth scrolling for anchor links */
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

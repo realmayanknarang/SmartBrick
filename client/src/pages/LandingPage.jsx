@@ -51,11 +51,13 @@ import NumberBadge  from '../components/NumberBadge';
 import './LandingPage.css';
 
 // ─── Nav links ────────────────────────────────────────────────────────────────
+// All `to` values must point to an id= that actually exists on this page.
+// ─────────────────────────────────────────────────────────────────────────────
 const NAV_LINKS = [
-  { label: 'Platform',      to: '/#platform' },
-  { label: 'How it works',  to: '/#how-it-works' },
-  { label: 'For builders',  to: '/#for-builders' },
-  { label: 'Contact',       to: '/#contact' },
+  { label: 'Platform',      to: '/#platform' },       // → id="platform"  (value-prop section)
+  { label: 'How it works',  to: '/#how-it-works' },  // → id="how-it-works" (caps grid)
+  { label: 'For builders',  to: '/#how-it-works' },  // → same target — no separate page yet
+  { label: 'Contact',       to: '/#contact' },        // → id="contact" (footer)
 ];
 
 // ─── Inline SVG icons (no icon library — consistent with Phase 4) ─────────────
@@ -261,17 +263,17 @@ const FOOTER_LINKS = [
   {
     heading: 'Useful Links',
     links: [
-      { label: 'About',    to: '/#for-builders' },
-      { label: 'Platform', to: '/#platform' },
-      { label: 'Contact',  href: 'mailto:hello@smartbrick.app' },
+      { label: 'About',    to: '/#platform' },         // → id="platform" (value-prop)
+      { label: 'Platform', to: '/#platform' },         // same section
+      { label: 'Contact',  href: 'mailto:hello@smartbrick.app' },  // mailto: — functional
     ],
   },
   {
     heading: 'Explore',
     links: [
-      { label: 'Dashboard', to: '/dashboard' },
-      { label: 'Sign in',   to: '/login' },
-      { label: 'Sign up',   to: '/signup' },
+      { label: 'Dashboard', to: '/dashboard' },    // real working route
+      { label: 'Sign in',   to: '/login' },         // real working route
+      { label: 'Sign up',   to: '/signup' },        // real working route
     ],
   },
 ];
