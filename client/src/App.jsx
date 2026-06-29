@@ -12,6 +12,8 @@ import InvoiceScannerPage  from './pages/InvoiceScannerPage';  // Phase 7C
 import WeatherAlertsPage   from './pages/WeatherAlertsPage';   // Phase 7D
 import LogisticsPage       from './pages/LogisticsPage';       // Phase 7E
 import CarbonPage          from './pages/CarbonPage';          // Phase 7F
+import SitesPage           from './pages/SitesPage';
+import VendorsPage         from './pages/VendorsPage';
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -188,6 +190,26 @@ function App() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Sites */}
+        <Route
+          path="/dashboard/sites"
+          element={
+            <ProtectedRoute>
+              <SitesPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Vendors */}
+        <Route
+          path="/dashboard/vendors"
+          element={
+            <ProtectedRoute>
+              <VendorsPage />
             </ProtectedRoute>
           }
         />

@@ -36,19 +36,32 @@ const router = Router();
 
 const CLIMATIQ_BASE = 'https://api.climatiq.io/data/v1/estimate';
 
+// ── Fallback emission factors (kg CO2e per tonne) when Climatiq API is unavailable
+// These are industry-standard averages for construction materials
+const FALLBACK_EMISSION_FACTORS = {
+  cement:     810,      // ~810 kg CO2e per tonne of cement
+  steel:      1800,     // ~1800 kg CO2e per tonne of steel
+  bricks:     240,      // ~240 kg CO2e per tonne of fired clay bricks
+  sand:       0,        // Minimal production emissions
+  electrical: 0,        // Not calculated
+  plumbing:   0,        // Not calculated
+};
+
+// ── Freight transport fallback (kg CO2e per tonne-km)
+const FREIGHT_FALLBACK_FACTOR = 0.062; // ~62g CO2e per tonne-km for diesel truck
+
 // ── Material production emission factor activity IDs (from Climatiq data explorer)
 // These factors require "weight" parameter in tonnes.
 const MATERIAL_PRODUCTION_FACTORS = {
-  cement:     'building_materials-type_cement-waste_type_na-energy_source_na',
-  steel:      'steel-type_steel_bars_or_rods-fuel_source_na',
-  bricks:     'building_materials-type_fired_clay_brick-waste_type_na-energy_source_na',
+  cement:     'cement-production-type_ordinary_portland_cement',
+  steel:      'steel-production-type_steel_bars',
+  bricks:     'brick-production-type_fired_clay_brick',
   // Sand/gravel, electrical, plumbing — no widely-available production factor on Climatiq free tier
   // Transport emissions are still calculated for all categories
 };
 
 // ── Freight transport factor (road freight, diesel rigid truck)
-const FREIGHT_ACTIVITY_ID =
-  'freight_vehicle-vehicle_type_rigid_truck-fuel_source_diesel-engine_size_na-vehicle_age_na-loading_na';
+const FREIGHT_ACTIVITY_ID = 'freight-vehicle-type_lorry_3_5_ton-diesel';
 
 // ── Call Climatiq estimate endpoint ──────────────────────────────────────────
 
@@ -123,24 +136,32 @@ router.post('/calculate', requireAuth, async (req, res) => {
   try {
     // ── 1. Transport emissions (always calculated) ───────────────────────────
 
-    const transportResult = await callClimatiq(
-      FREIGHT_ACTIVITY_ID,
-      {
-        weight:        wt,
-        weight_unit:   't',
-        distance:      dk,
-        distance_unit: 'km',
-      },
-      apiKey
-    );
+    let transportCO2;
+    let usedFallbackTransport = false;
 
-    const transportCO2  = transportResult.co2e;          // kg CO2e
-    const transportUnit = transportResult.co2e_unit;     // 'kg'
+    try {
+      const transportResult = await callClimatiq(
+        FREIGHT_ACTIVITY_ID,
+        {
+          weight:        wt,
+          weight_unit:   't',
+          distance:      dk,
+          distance_unit: 'km',
+        },
+        apiKey
+      );
+      transportCO2 = transportResult.co2e; // kg CO2e
+    } catch (transportErr) {
+      // Fallback to industry-standard factor
+      console.warn(`[carbon/calculate] Transport API failed, using fallback:`, transportErr.message);
+      transportCO2 = wt * dk * FREIGHT_FALLBACK_FACTOR;
+      usedFallbackTransport = true;
+    }
 
     // ── 2. Production emissions (for materials with known factors) ───────────
 
-    let productionCO2  = null;
-    let productionUnit = 'kg';
+    let productionCO2 = null;
+    let usedFallbackProduction = false;
 
     const productionActivityId = MATERIAL_PRODUCTION_FACTORS[material];
 
@@ -151,12 +172,17 @@ router.post('/calculate', requireAuth, async (req, res) => {
           { weight: wt, weight_unit: 't' },
           apiKey
         );
-        productionCO2  = productionResult.co2e;
-        productionUnit = productionResult.co2e_unit;
+        productionCO2 = productionResult.co2e;
       } catch (prodErr) {
-        // Non-fatal: log and continue without production factor
-        console.warn(`[carbon/calculate] Production factor unavailable for ${material}:`, prodErr.message);
+        // Fallback to industry-standard factor
+        console.warn(`[carbon/calculate] Production API failed for ${material}, using fallback:`, prodErr.message);
+        productionCO2 = wt * FALLBACK_EMISSION_FACTORS[material];
+        usedFallbackProduction = true;
       }
+    } else {
+      // Use fallback for materials without Climatiq factors
+      productionCO2 = wt * FALLBACK_EMISSION_FACTORS[material];
+      usedFallbackProduction = true;
     }
 
     // ── 3. Total ─────────────────────────────────────────────────────────────
@@ -169,7 +195,9 @@ router.post('/calculate', requireAuth, async (req, res) => {
       : `${kg.toFixed(2)} kg`;
 
     console.log(`[carbon/calculate] Transport: ${transportCO2.toFixed(2)} kg CO2e` +
-      (productionCO2 != null ? `, Production: ${productionCO2.toFixed(2)} kg CO2e` : '') +
+      (usedFallbackTransport ? ' (fallback)' : '') +
+      (productionCO2 != null ? `, Production: ${productionCO2.toFixed(2)} kg CO2e` +
+      (usedFallbackProduction ? ' (fallback)' : '') : '') +
       `, Total: ${totalCO2.toFixed(2)} kg CO2e`);
 
     return res.json({
@@ -179,12 +207,14 @@ router.post('/calculate', requireAuth, async (req, res) => {
       transport: {
         co2Kg: transportCO2,
         co2Formatted: fmt(transportCO2),
-        unit: transportUnit,
+        unit: 'kg',
+        usedFallback: usedFallbackTransport,
       },
       production: productionCO2 != null ? {
         co2Kg: productionCO2,
         co2Formatted: fmt(productionCO2),
-        unit: productionUnit,
+        unit: 'kg',
+        usedFallback: usedFallbackProduction,
       } : null,
       total: {
         co2Kg: totalCO2,
