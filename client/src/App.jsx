@@ -15,6 +15,7 @@ import CarbonPage          from './pages/CarbonPage';          // Phase 7F
 import SitesPage           from './pages/SitesPage';
 import VendorsPage         from './pages/VendorsPage';
 import AnalyticsPage       from './pages/AnalyticsPage';  // Phase 8C
+import AlertsPage          from './pages/AlertsPage';      // Phase 8D
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -221,6 +222,16 @@ function App() {
           element={
             <ProtectedRoute>
               <AnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Smart Alerts — Phase 8D */}
+        <Route
+          path="/dashboard/alerts"
+          element={
+            <ProtectedRoute>
+              <AlertsPage />
             </ProtectedRoute>
           }
         />

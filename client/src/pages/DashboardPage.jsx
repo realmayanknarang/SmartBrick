@@ -32,6 +32,7 @@ import { useUser, SignOutButton } from '@clerk/clerk-react';
 import Sidebar from '../components/Sidebar';
 import Card    from '../components/Card';
 import apiClient from '../api/client';
+import { Link }  from 'react-router-dom';
 import './DashboardPage.css';
 
 // ─── Nav item icon set (inline SVG — matches Phase 4 icon convention) ─────────
@@ -191,7 +192,15 @@ function SpendIcon() {
   );
 }
 
-// ─── Formatting helpers ────────────────────────────────────────────────────────
+function AlertsCardIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 3L3 22h22L14 3z" fill="currentColor" opacity="0.12" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <line x1="14" y1="11" x2="14" y2="17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="14" cy="20" r="1.1" fill="currentColor" />
+    </svg>
+  );
+}
 
 /**
  * Formats a rupee amount using Indian locale short-form:
@@ -217,6 +226,10 @@ function DashboardPage() {
   const [metricsLoading, setMetricsLoading] = useState(true);
   const [metricsError,   setMetricsError]   = useState(null);
 
+  // Alert count state (Phase 8D) — compact badge on Overview
+  const [alertCount,     setAlertCount]     = useState(null);
+  const [criticalCount,  setCriticalCount]  = useState(0);
+
   // Fetch summary once on mount
   useEffect(() => {
     let cancelled = false;
@@ -239,6 +252,28 @@ function DashboardPage() {
     }
 
     fetchSummary();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Fetch alert counts for compact badge (Phase 8D)
+  useEffect(() => {
+    let cancelled = false;
+    apiClient.get('/alerts')
+      .then(({ data }) => {
+        if (!cancelled) {
+          const total = (data.stockAlerts?.length ?? 0) + (data.budgetAlerts?.length ?? 0);
+          const critical = [
+            ...(data.stockAlerts?.filter(a => a.severity === 'critical') ?? []),
+            ...(data.budgetAlerts?.filter(a => a.severity === 'critical') ?? []),
+          ].length;
+          setAlertCount(total);
+          setCriticalCount(critical);
+        }
+      })
+      .catch(() => {
+        // Non-critical — badge just won't render if alerts endpoint fails
+        if (!cancelled) setAlertCount(0);
+      });
     return () => { cancelled = true; };
   }, []);
 
@@ -321,6 +356,23 @@ function DashboardPage() {
                   icon={<SpendIcon />}
                   subtitle="Across all projects"
                 />
+                {/* Phase 8D — alert count badge */}
+                {alertCount != null && (
+                  <Link to="/dashboard/alerts" style={{ textDecoration: 'none', display: 'block' }}>
+                    <MetricCard
+                      label="Active Alerts"
+                      value={alertCount}
+                      icon={<AlertsCardIcon />}
+                      subtitle={
+                        alertCount === 0
+                          ? 'All clear — no issues'
+                          : criticalCount > 0
+                            ? `${criticalCount} critical, ${alertCount - criticalCount} other`
+                            : `${alertCount} need attention`
+                      }
+                    />
+                  </Link>
+                )}
               </div>
             )}
           </section>
