@@ -12,6 +12,7 @@ import ocrRouter       from './routes/ocrRoutes.js';       // Phase 7C
 import weatherRouter   from './routes/weatherRoutes.js';   // Phase 7D
 import routeRouter     from './routes/routeRoutes.js';     // Phase 7E
 import carbonRouter    from './routes/carbonRoutes.js';    // Phase 7F
+import vendorRouter    from './routes/vendorRoutes.js';    // Phase 8A
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -65,6 +66,9 @@ app.use('/api/routes', routeRouter);
 
 // Carbon footprint calculator via Climatiq — Phase 7F
 app.use('/api/carbon', carbonRouter);
+
+// Vendor scoring & listing — Phase 8A
+app.use('/api/vendors', vendorRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
