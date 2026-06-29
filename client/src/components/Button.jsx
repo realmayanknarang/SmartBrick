@@ -27,8 +27,25 @@
  *          sm — 32px min-height, 12px text, tighter padding.
  *          md — 40px min-height, 14px text, standard padding.
  *
- * All standard <button> props (onClick, type, disabled, …) are forwarded
- * to the underlying element via rest spreading.
+ * as       React element type — the underlying element/component to render.
+ *          Defaults to "button".
+ *          ── Phase 6A extension ──────────────────────────────────────────
+ *          Pass as={Link} (from react-router-dom) to render the button
+ *          as a router link, or as="a" for an external anchor.  When using
+ *          react-router Link, pass a `to` prop; when using "a", pass `href`.
+ *          This is the minimal change needed so the landing-page hero CTA
+ *          can be both styled as a Button AND navigate to /signup without
+ *          wrapping the button in an outer <Link> (which would produce
+ *          invalid HTML: <a> inside <a>).
+ *          Example:
+ *            import { Link } from 'react-router-dom';
+ *            <Button as={Link} to="/signup" variant="primary">
+ *              Request demo
+ *            </Button>
+ *          ─────────────────────────────────────────────────────────────────
+ *
+ * All other standard props (onClick, type, disabled, href, to, …) are
+ * forwarded to the underlying element via rest spreading.
  *
  * Usage examples
  * ──────────────
@@ -38,6 +55,8 @@
  *   <Button variant="outline-light" onClick={handleGoogle}>
  *     Continue with Google
  *   </Button>
+ *   <Button as={Link} to="/signup" variant="primary">Request demo</Button>
+ *   <Button as="a" href="https://example.com" variant="secondary">Docs</Button>
  */
 
 import './Button.css';
@@ -58,16 +77,18 @@ const SIZE_CLASS = {
  * @param {object}  props
  * @param {'primary'|'secondary'|'dark'|'outline-light'} [props.variant='primary']
  * @param {'sm'|'md'}                                    [props.size='md']
+ * @param {string|React.ElementType}                     [props.as='button']
  * @param {string}                                       [props.className]
  * @param {React.ReactNode}                              props.children
  * @param {boolean}                                      [props.disabled]
  */
 function Button({
-  variant  = 'primary',
-  size     = 'md',
+  variant   = 'primary',
+  size      = 'md',
+  as: Tag   = 'button',   // Phase 6A: allows <Button as={Link} to="/signup">
   className = '',
   children,
-  ...rest   // onClick, type, disabled, aria-*, data-*, etc.
+  ...rest   // onClick, type, disabled, href, to, aria-*, data-*, etc.
 }) {
   const variantCls = VARIANT_CLASS[variant] ?? VARIANT_CLASS['primary'];
   const sizeCls    = SIZE_CLASS[size]    ?? SIZE_CLASS['md'];
@@ -77,9 +98,9 @@ function Button({
     .join(' ');
 
   return (
-    <button className={classes} {...rest}>
+    <Tag className={classes} {...rest}>
       {children}
-    </button>
+    </Tag>
   );
 }
 
