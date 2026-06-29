@@ -14,6 +14,7 @@ import LogisticsPage       from './pages/LogisticsPage';       // Phase 7E
 import CarbonPage          from './pages/CarbonPage';          // Phase 7F
 import SitesPage           from './pages/SitesPage';
 import VendorsPage         from './pages/VendorsPage';
+import AnalyticsPage       from './pages/AnalyticsPage';  // Phase 8C
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -210,6 +211,16 @@ function App() {
           element={
             <ProtectedRoute>
               <VendorsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Spending Analytics — Phase 8C */}
+        <Route
+          path="/dashboard/analytics"
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
             </ProtectedRoute>
           }
         />

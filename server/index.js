@@ -13,6 +13,7 @@ import weatherRouter   from './routes/weatherRoutes.js';   // Phase 7D
 import routeRouter     from './routes/routeRoutes.js';     // Phase 7E
 import carbonRouter    from './routes/carbonRoutes.js';    // Phase 7F
 import vendorRouter    from './routes/vendorRoutes.js';    // Phase 8A
+import analyticsRouter from './routes/analyticsRoutes.js'; // Phase 8C
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -69,6 +70,9 @@ app.use('/api/carbon', carbonRouter);
 
 // Vendor scoring & listing — Phase 8A
 app.use('/api/vendors', vendorRouter);
+
+// Spending analytics — Phase 8C
+app.use('/api/analytics', analyticsRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);

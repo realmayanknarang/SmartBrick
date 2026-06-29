@@ -1,0 +1,170 @@
+/*
+ * AnalyticsPage.css — Phase 8C
+ * ─────────────────────────────────────────────────────────────────────────────
+ * All values reference tokens from styles/tokens.css.
+ *
+ * Layout
+ * ──────
+ *   .ap-kpi-row        Top KPI card row
+ *   .ap-kpi-card       Individual KPI card
+ *   .ap-charts-grid    2-column chart grid
+ *   .ap-chart-card     Individual chart panel
+ *   .ap-chart-empty    Empty state for a single chart
+ *   .ap-empty-full     Full-width empty state (no orders at all)
+ */
+
+/* ─── KPI row ───────────────────────────────────────────────────────────────── */
+.ap-kpi-row {
+  display:               grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:                   var(--space-4);
+}
+
+@media (max-width: 860px) {
+  .ap-kpi-row { grid-template-columns: 1fr; }
+}
+
+/* ─── KPI card (re-uses dash-metric-card pattern) ──────────────────────────── */
+.ap-kpi-card {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-1);
+  padding:        var(--space-5);
+  position:       relative;
+  overflow:       hidden;
+  transition:     box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.ap-kpi-card::before {
+  content:    '';
+  position:   absolute;
+  top:        0;
+  left:       0;
+  right:      0;
+  height:     2px;
+  background: linear-gradient(90deg, var(--color-accent) 0%, transparent 100%);
+  opacity:    0.65;
+}
+
+.ap-kpi-card:hover {
+  box-shadow: var(--shadow-md);
+  transform:  translateY(-2px);
+}
+
+.ap-kpi-card__label {
+  font-size:      var(--text-sm);
+  font-weight:    var(--weight-semibold);
+  color:          var(--color-text-on-dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin:         0;
+}
+
+.ap-kpi-card__value {
+  font-family:    var(--font-display);
+  font-size:      var(--text-3xl);
+  font-weight:    var(--weight-bold);
+  color:          var(--color-text-on-dark);
+  margin:         0;
+  letter-spacing: 0.02em;
+  line-height:    var(--leading-tight);
+}
+
+.ap-kpi-card__sub {
+  font-size:  var(--text-sm);
+  color:      var(--color-text-on-dark-muted);
+  margin:     0;
+}
+
+/* ─── Charts grid ───────────────────────────────────────────────────────────── */
+.ap-charts-grid {
+  display:               grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:                   var(--space-5);
+}
+
+@media (max-width: 900px) {
+  .ap-charts-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Chart card ────────────────────────────────────────────────────────────── */
+.ap-chart-card {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap:     var(--space-4);
+}
+
+.ap-chart-card__title {
+  font-family:    var(--font-display);
+  font-size:      var(--text-md);
+  font-weight:    var(--weight-semibold);
+  color:          var(--color-text-on-dark);
+  margin:         0;
+}
+
+.ap-chart-card__sub {
+  font-size:  var(--text-sm);
+  color:      var(--color-text-on-dark-muted);
+  margin:     calc(-1 * var(--space-3)) 0 0;
+}
+
+/* trend chart spans full width */
+.ap-chart-card--wide {
+  grid-column: 1 / -1;
+}
+
+/* ─── Empty state for a single chart ────────────────────────────────────────── */
+.ap-chart-empty {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             var(--space-2);
+  min-height:      200px;
+  color:           var(--color-text-on-dark-muted);
+  font-size:       var(--text-base);
+  text-align:      center;
+  padding:         var(--space-6) var(--space-4);
+}
+
+.ap-chart-empty__icon {
+  font-size: 2rem;
+  opacity:   0.45;
+}
+
+/* ─── Full-width empty / loading / error ─────────────────────────────────────── */
+.ap-empty-full {
+  padding:    var(--space-8) var(--space-6);
+  text-align: center;
+  color:      var(--color-text-on-dark-muted);
+}
+
+.ap-empty-full__icon {
+  font-size:    2.5rem;
+  display:      block;
+  margin-bottom: var(--space-3);
+  opacity:      0.45;
+}
+
+/* ─── Recharts tooltip overrides ─────────────────────────────────────────────── */
+.ap-tooltip {
+  background:    var(--color-surface-dark-raised) !important;
+  border:        1px solid var(--color-border-dark) !important;
+  border-radius: var(--radius-md) !important;
+  font-family:   var(--font-body) !important;
+  font-size:     var(--text-sm) !important;
+  color:         var(--color-text-on-dark) !important;
+}
+
+.ap-tooltip .recharts-tooltip-label {
+  color:         var(--color-text-on-dark-muted) !important;
+  margin-bottom: 4px !important;
+}
+
+/* ─── Recharts axis text ──────────────────────────────────────────────────────── */
+.recharts-cartesian-axis-tick-value,
+.recharts-legend-item-text {
+  fill:      var(--color-text-on-dark-muted) !important;
+  font-size: 11px !important;
+}
