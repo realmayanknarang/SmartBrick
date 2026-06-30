@@ -34,124 +34,12 @@ import {
 } from 'recharts';
 
 import Sidebar   from '../components/Sidebar';
+import { NAV_ITEMS } from '../config/dashboardNav.jsx';
 import Card      from '../components/Card';
 import apiClient from '../api/client';
 import './DashboardPage.css';
 import './AnalyticsPage.css';
 
-// ─── Sidebar nav (canonical set) ────────────────────────────────────────────
-function OverviewIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor" />
-      <rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.7" />
-      <rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.7" />
-      <rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" />
-    </svg>
-  );
-}
-function SitesIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 2L3 7v11h4v-5h6v5h4V7L10 2z" fill="currentColor" opacity="0.85" />
-    </svg>
-  );
-}
-function VendorsIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="6" r="3.5" fill="currentColor" />
-      <path d="M3 17c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
-}
-function ReportsIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.6" />
-      <line x1="6" y1="7"  x2="14" y2="7"  stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <line x1="6" y1="10" x2="14" y2="10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <line x1="6" y1="13" x2="11" y2="13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
-function AlertsIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 2L2 16h16L10 2z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" fill="currentColor" opacity="0.15" />
-      <line x1="10" y1="8"  x2="10" y2="12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <circle cx="10" cy="14.5" r="0.9" fill="currentColor" />
-    </svg>
-  );
-}
-function ScannerIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="3" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="12" y="3" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="3" y="12" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M12 12h5M14.5 12v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-function WeatherIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M5 14c0-1.1.9-2 2-2h6a2 2 0 110 4H7a2 2 0 01-2-2z" fill="currentColor" opacity="0.5" />
-    </svg>
-  );
-}
-function MapIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <path d="M2 4l5 2 6-2 5 2v12l-5-2-6 2-5-2V4z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-      <line x1="7" y1="6" x2="7" y2="18" stroke="currentColor" strokeWidth="1.2" />
-      <line x1="13" y1="2" x2="13" y2="16" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  );
-}
-function LeafIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 4C16 4 14 12 8 14C5 15 3 16 3 16C3 16 4 12 7 9C10 6 16 4 16 4Z" fill="currentColor" opacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
-      <path d="M3 16C5 13 8 11 10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
-function CopilotIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 2a6 6 0 00-6 6v2.5a2.5 2.5 0 002.5 2.5h1.2a1.3 1.3 0 001.3-1.3V9.5A1.3 1.3 0 007.7 8.2H6.5A4.5 4.5 0 0110 3.5 4.5 4.5 0 0113.5 8.2h-1.2a1.3 1.3 0 00-1.3 1.3v2.2a1.3 1.3 0 001.3 1.3H13.5A2.5 2.5 0 0016 10.5V8a6 6 0 00-6-6z" fill="currentColor" opacity="0.85"/>
-      <rect x="7" y="14" width="6" height="3" rx="1.2" fill="currentColor" opacity="0.6"/>
-    </svg>
-  );
-}
-
-
-function ForecastIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3 15L7 9l3 3 7-9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M14 3h3v3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-const NAV_ITEMS = [
-  { icon: <OverviewIcon />,  label: 'Overview',       path: '/dashboard' },
-  { icon: <SitesIcon />,     label: 'Sites',          path: '/dashboard/sites' },
-  { icon: <VendorsIcon />,   label: 'Vendors',        path: '/dashboard/vendors' },
-  { icon: <ReportsIcon />,   label: 'Analytics',      path: '/dashboard/analytics' },
-  { icon: <ForecastIcon />,    label: 'Forecasting',    path: '/dashboard/forecasting' },
-  { icon: <AlertsIcon />,    label: 'Alerts',         path: '/dashboard/alerts' },
-  { icon: <ScannerIcon />, label: 'Invoice OCR', path: '/dashboard/invoice-scanner', dividerBefore: true },
-  { icon: <WeatherIcon />,   label: 'Weather Alerts', path: '/dashboard/weather' },
-  { icon: <MapIcon />,       label: 'Logistics',      path: '/dashboard/logistics' },
-  { icon: <LeafIcon />,      label: 'Sustainability',  path: '/dashboard/carbon' },
-  { icon: <CopilotIcon />,     label: 'Copilot',         path: '/dashboard/copilot', dividerBefore: true },
-];
 
 // ─── Chart colour palette (consistent across all three charts) ─────────────
 const PALETTE = [
@@ -190,6 +78,19 @@ const TOOLTIP_STYLE = {
   color:           '#FFFFFF',
 };
 
+const PRICE_CATEGORIES = [
+  { value: 'cement',     label: 'Cement' },
+  { value: 'steel',      label: 'Steel' },
+  { value: 'sand',       label: 'Sand' },
+  { value: 'bricks',     label: 'Bricks' },
+  { value: 'electrical', label: 'Electrical' },
+  { value: 'plumbing',   label: 'Plumbing' },
+];
+
+function formatPriceINR(value) {
+  return `₹${Number(value).toLocaleString('en-IN')}`;
+}
+
 // ─── Empty state for a single chart ─────────────────────────────────────────
 function ChartEmpty({ message = 'No data yet for this view.' }) {
   return (
@@ -207,6 +108,11 @@ function AnalyticsPage() {
   const [data,    setData]    = useState(null);
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState(null);
+
+  const [priceCategory, setPriceCategory] = useState('cement');
+  const [priceTrend, setPriceTrend]       = useState(null);
+  const [priceLoading, setPriceLoading]   = useState(false);
+  const [priceError, setPriceError]       = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -228,6 +134,28 @@ function AnalyticsPage() {
 
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setPriceLoading(true);
+    setPriceError(null);
+
+    apiClient.get(`/price-trends/${priceCategory}`)
+      .then(({ data: d }) => {
+        if (!cancelled) {
+          setPriceTrend(d);
+          setPriceLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setPriceError(err?.response?.data?.message || 'Failed to load price trends.');
+          setPriceLoading(false);
+        }
+      });
+
+    return () => { cancelled = true; };
+  }, [priceCategory]);
 
   // ── Loading ─────────────────────────────────────────────────────────────
   if (loading) {
@@ -263,6 +191,11 @@ function AnalyticsPage() {
 
   // Prepare trend data with formatted month labels for the X axis
   const trendData = monthlyTrend.map(d => ({
+    ...d,
+    monthLabel: formatMonthLabel(d.month),
+  }));
+
+  const priceChartData = (priceTrend?.dataPoints ?? []).map(d => ({
     ...d,
     monthLabel: formatMonthLabel(d.month),
   }));
@@ -481,6 +414,83 @@ function AnalyticsPage() {
             </Card>
 
           </div>
+
+          {/* ── Price Trends (Phase 11C — illustrative synthetic data) ─── */}
+          <Card surface="navy-secondary" padding="0" className="ap-chart-card--wide ap-price-trends">
+            <div className="ap-chart-card">
+              <div className="ap-price-trends__header">
+                <div>
+                  <h3 className="ap-chart-card__title">Price Trends</h3>
+                  <p className="ap-chart-card__sub">12-month indicative price movement by material category</p>
+                </div>
+                <label className="ap-price-trends__select-wrap">
+                  <span className="ap-price-trends__select-label">Category</span>
+                  <select
+                    className="ap-price-trends__select"
+                    value={priceCategory}
+                    onChange={(e) => setPriceCategory(e.target.value)}
+                  >
+                    {PRICE_CATEGORIES.map(c => (
+                      <option key={c.value} value={c.value}>{c.label}</option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <p className="ap-synthetic-label" role="note">
+                Illustrative data — not live market pricing
+              </p>
+
+              {priceLoading ? (
+                <ChartEmpty message="Loading price trend…" />
+              ) : priceError ? (
+                <ChartEmpty message={priceError} />
+              ) : priceChartData.length === 0 ? (
+                <ChartEmpty message="No price trend data for this category." />
+              ) : (
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart
+                    data={priceChartData}
+                    margin={{ top: 8, right: 24, left: 8, bottom: 8 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="rgba(74,93,110,0.4)"
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="monthLabel"
+                      tick={{ fill: '#9FB0BC', fontSize: 11 }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fill: '#9FB0BC', fontSize: 11 }}
+                      tickFormatter={formatPriceINR}
+                      width={72}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <Tooltip
+                      contentStyle={TOOLTIP_STYLE}
+                      formatter={(value) => [formatPriceINR(value), `Price/${priceTrend?.unit ?? 'unit'}`]}
+                      labelStyle={{ color: '#9FB0BC', marginBottom: 4 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="price"
+                      name="Price"
+                      stroke="#5CC8CF"
+                      strokeWidth={2.5}
+                      dot={{ r: 4, fill: '#5CC8CF', strokeWidth: 0 }}
+                      activeDot={{ r: 6, fill: '#7ED4DA', strokeWidth: 0 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </Card>
+
         </div>
       </main>
     </div>

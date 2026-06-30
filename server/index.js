@@ -18,6 +18,10 @@ import alertRouter    from './routes/alertRoutes.js';    // Phase 8D
 import copilotRouter  from './routes/copilotRoutes.js';  // Phase 9B
 import searchRouter    from './routes/searchRoutes.js';    // Phase 9D
 import forecastRouter  from './routes/forecastRoutes.js';  // Phase 10C
+import reportRouter    from './routes/reportRoutes.js';    // Phase 11A
+import priceTrendRouter from './routes/priceTrendRoutes.js'; // Phase 11C
+import approvalRouter  from './routes/approvalRoutes.js';  // Phase 11D
+import poolingRouter   from './routes/poolingRoutes.js';   // Phase 11E
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -89,6 +93,18 @@ app.use('/api/search', searchRouter);
 
 // Demand forecasting proxy — Phase 10C
 app.use('/api/forecast', forecastRouter);
+
+// PDF/Excel report export — Phase 11A
+app.use('/api/reports', reportRouter);
+
+// Illustrative price trends — Phase 11C
+app.use('/api/price-trends', priceTrendRouter);
+
+// Purchase order approval workflow — Phase 11D
+app.use('/api/approvals', approvalRouter);
+
+// Order pooling estimator — Phase 11E
+app.use('/api/pooling', poolingRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);

@@ -18,6 +18,9 @@ import AnalyticsPage       from './pages/AnalyticsPage';  // Phase 8C
 import AlertsPage          from './pages/AlertsPage';      // Phase 8D
 import CopilotPage         from './pages/CopilotPage';     // Phase 9C
 import ForecastingPage     from './pages/ForecastingPage'; // Phase 10E
+import ReportsPage         from './pages/ReportsPage';     // Phase 11B
+import ApprovalsPage       from './pages/ApprovalsPage';   // Phase 11D
+import PoolingPage         from './pages/PoolingPage';     // Phase 11E
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -224,6 +227,36 @@ function App() {
           element={
             <ProtectedRoute>
               <AnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Report Export — Phase 11B */}
+        <Route
+          path="/dashboard/reports"
+          element={
+            <ProtectedRoute>
+              <ReportsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Purchase Approvals — Phase 11D */}
+        <Route
+          path="/dashboard/approvals"
+          element={
+            <ProtectedRoute>
+              <ApprovalsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Order Pooling Estimator — Phase 11E */}
+        <Route
+          path="/dashboard/pooling"
+          element={
+            <ProtectedRoute>
+              <PoolingPage />
             </ProtectedRoute>
           }
         />
