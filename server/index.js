@@ -18,6 +18,7 @@ import alertRouter    from './routes/alertRoutes.js';    // Phase 8D
 import copilotRouter  from './routes/copilotRoutes.js';  // Phase 9B
 import searchRouter    from './routes/searchRoutes.js';    // Phase 9D
 import forecastRouter  from './routes/forecastRoutes.js';  // Phase 10C
+import reportRouter    from './routes/reportRoutes.js';    // Phase 11A
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -89,6 +90,9 @@ app.use('/api/search', searchRouter);
 
 // Demand forecasting proxy — Phase 10C
 app.use('/api/forecast', forecastRouter);
+
+// PDF/Excel report export — Phase 11A
+app.use('/api/reports', reportRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
