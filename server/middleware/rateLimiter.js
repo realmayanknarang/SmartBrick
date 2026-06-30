@@ -69,3 +69,15 @@ export const ocrLimiter = rateLimit({
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
+
+/**
+ * Copilot limiter — 15 requests per 15 minutes per IP.
+ * Applied to POST /api/copilot/ask to protect against expensive Groq chat abuse.
+ */
+export const copilotLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 15,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: jsonRateLimitHandler,
+});

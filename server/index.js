@@ -15,6 +15,7 @@ import carbonRouter    from './routes/carbonRoutes.js';    // Phase 7F
 import vendorRouter    from './routes/vendorRoutes.js';    // Phase 8A
 import analyticsRouter from './routes/analyticsRoutes.js'; // Phase 8C
 import alertRouter    from './routes/alertRoutes.js';    // Phase 8D
+import copilotRouter  from './routes/copilotRoutes.js';  // Phase 9B
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -77,6 +78,9 @@ app.use('/api/analytics', analyticsRouter);
 
 // Smart alerts (stock + budget) — Phase 8D
 app.use('/api/alerts', alertRouter);
+
+// AI Copilot (Groq chat) — Phase 9B
+app.use('/api/copilot', copilotRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
