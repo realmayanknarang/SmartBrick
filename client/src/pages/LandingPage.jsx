@@ -276,6 +276,13 @@ const FOOTER_LINKS = [
       { label: 'Sign up',   to: '/signup' },        // real working route
     ],
   },
+  {
+    heading: 'Legal',
+    links: [
+      { label: 'Privacy Policy', to: '/privacy' },   // Phase 13E
+      { label: 'Terms of Service', to: '/terms' },   // Phase 13E
+    ],
+  },
 ];
 
 // ─── Brand mark SVG (same mark as PublicNav — kept local to avoid coupling) ──

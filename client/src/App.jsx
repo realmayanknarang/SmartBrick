@@ -21,6 +21,8 @@ import ForecastingPage     from './pages/ForecastingPage'; // Phase 10E
 import ReportsPage         from './pages/ReportsPage';     // Phase 11B
 import ApprovalsPage       from './pages/ApprovalsPage';   // Phase 11D
 import PoolingPage         from './pages/PoolingPage';     // Phase 11E
+import PrivacyPolicyPage   from './pages/PrivacyPolicyPage';   // Phase 13E
+import TermsOfServicePage  from './pages/TermsOfServicePage';  // Phase 13E
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -338,6 +340,10 @@ function App() {
          * Access-gate or remove before public launch.
          */}
         <Route path="/style-guide" element={<StyleGuidePage />} />
+
+        {/* Legal pages — Phase 13E */}
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
       </Routes>
     </BrowserRouter>
   );
