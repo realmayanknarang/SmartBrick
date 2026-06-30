@@ -5,9 +5,11 @@
   "scripts": {
     "start": "concurrently \"npm run dev --prefix client\" \"npm run start --prefix server\"",
     "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
-    "build": "npm run build --prefix client"
+    "build": "npm run build --prefix client",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "concurrently": "^9.1.0"
   }
 }

@@ -3,3 +3,6 @@ node_modules/
 .DS_Store
 __pycache__/
 *.pyc
+.playwright-browsers/
+playwright-report/
+test-results/
