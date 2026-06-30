@@ -12,5 +12,8 @@ export default defineConfig({
     setupFiles: ['./src/tests/setup.js'],
     // Make vitest globals (describe, it, expect) available without importing them
     globals: true,
+    // Phase 12A starts before client tests exist; keep the test script green
+    // until actual client specs are added.
+    passWithNoTests: true,
   },
 })
