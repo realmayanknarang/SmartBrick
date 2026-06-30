@@ -20,7 +20,7 @@ local_vars = dotenv_values(LOCAL_ENV) if LOCAL_ENV.exists() else {}
 server_vars = dotenv_values(SERVER_ENV) if SERVER_ENV.exists() else {}
 
 # Check environment: os.environ first (Render), then .env files (local dev)
-MONGODB_URI = os.environ.get("MONGODB_URI") or local_vars.get("MONGODB_URI") or server_vars.get("MONGODB_URI")
+MONGODB_URI = os.environ.get("MONGODB_URI") or local_vars.get("MONGODB_URI") or server_vars.get("MONGODB_URI") or ""
 PORT = int(os.environ.get("PORT") or local_vars.get("PORT") or "5001")
 
 app = Flask(__name__)
