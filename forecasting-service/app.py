@@ -3,6 +3,7 @@ SmartBrick Demand Forecasting Service — Phase 10A+
 Flask microservice: reads UsageHistory from MongoDB, serves Prophet forecasts.
 """
 
+import os
 from pathlib import Path
 
 from dotenv import dotenv_values
@@ -14,14 +15,13 @@ SERVICE_DIR = Path(__file__).resolve().parent
 SERVER_ENV = SERVICE_DIR.parent / "server" / ".env"
 LOCAL_ENV = SERVICE_DIR / ".env"
 
+# Load from .env files (local development only)
 local_vars = dotenv_values(LOCAL_ENV) if LOCAL_ENV.exists() else {}
 server_vars = dotenv_values(SERVER_ENV) if SERVER_ENV.exists() else {}
 
-MONGODB_URI = local_vars.get("MONGODB_URI") or server_vars.get("MONGODB_URI") or ""
-PORT = int(local_vars.get("PORT") or "5001")
-
-if not MONGODB_URI:
-    raise RuntimeError("MONGODB_URI environment variable is required")
+# Check environment: os.environ first (Render), then .env files (local dev)
+MONGODB_URI = os.environ.get("MONGODB_URI") or local_vars.get("MONGODB_URI") or server_vars.get("MONGODB_URI")
+PORT = int(os.environ.get("PORT") or local_vars.get("PORT") or "5001")
 
 app = Flask(__name__)
 
@@ -33,6 +33,10 @@ def health():
 
 @app.get("/forecast/<site_id>/<material_id>")
 def forecast(site_id, material_id):
+    # Check MONGODB_URI when actually needed
+    if not MONGODB_URI:
+        return jsonify({"error": "MONGODB_URI not configured"}), 500
+    
     weeks_ahead = request.args.get("weeks", default=8, type=int)
     if weeks_ahead < 1 or weeks_ahead > 52:
         return jsonify({"error": "weeks must be between 1 and 52"}), 400
