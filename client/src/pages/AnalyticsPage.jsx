@@ -78,6 +78,19 @@ const TOOLTIP_STYLE = {
   color:           '#FFFFFF',
 };
 
+const PRICE_CATEGORIES = [
+  { value: 'cement',     label: 'Cement' },
+  { value: 'steel',      label: 'Steel' },
+  { value: 'sand',       label: 'Sand' },
+  { value: 'bricks',     label: 'Bricks' },
+  { value: 'electrical', label: 'Electrical' },
+  { value: 'plumbing',   label: 'Plumbing' },
+];
+
+function formatPriceINR(value) {
+  return `₹${Number(value).toLocaleString('en-IN')}`;
+}
+
 // ─── Empty state for a single chart ─────────────────────────────────────────
 function ChartEmpty({ message = 'No data yet for this view.' }) {
   return (
@@ -95,6 +108,11 @@ function AnalyticsPage() {
   const [data,    setData]    = useState(null);
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState(null);
+
+  const [priceCategory, setPriceCategory] = useState('cement');
+  const [priceTrend, setPriceTrend]       = useState(null);
+  const [priceLoading, setPriceLoading]   = useState(false);
+  const [priceError, setPriceError]       = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -116,6 +134,28 @@ function AnalyticsPage() {
 
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setPriceLoading(true);
+    setPriceError(null);
+
+    apiClient.get(`/price-trends/${priceCategory}`)
+      .then(({ data: d }) => {
+        if (!cancelled) {
+          setPriceTrend(d);
+          setPriceLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setPriceError(err?.response?.data?.message || 'Failed to load price trends.');
+          setPriceLoading(false);
+        }
+      });
+
+    return () => { cancelled = true; };
+  }, [priceCategory]);
 
   // ── Loading ─────────────────────────────────────────────────────────────
   if (loading) {
@@ -151,6 +191,11 @@ function AnalyticsPage() {
 
   // Prepare trend data with formatted month labels for the X axis
   const trendData = monthlyTrend.map(d => ({
+    ...d,
+    monthLabel: formatMonthLabel(d.month),
+  }));
+
+  const priceChartData = (priceTrend?.dataPoints ?? []).map(d => ({
     ...d,
     monthLabel: formatMonthLabel(d.month),
   }));
@@ -369,6 +414,83 @@ function AnalyticsPage() {
             </Card>
 
           </div>
+
+          {/* ── Price Trends (Phase 11C — illustrative synthetic data) ─── */}
+          <Card surface="navy-secondary" padding="0" className="ap-chart-card--wide ap-price-trends">
+            <div className="ap-chart-card">
+              <div className="ap-price-trends__header">
+                <div>
+                  <h3 className="ap-chart-card__title">Price Trends</h3>
+                  <p className="ap-chart-card__sub">12-month indicative price movement by material category</p>
+                </div>
+                <label className="ap-price-trends__select-wrap">
+                  <span className="ap-price-trends__select-label">Category</span>
+                  <select
+                    className="ap-price-trends__select"
+                    value={priceCategory}
+                    onChange={(e) => setPriceCategory(e.target.value)}
+                  >
+                    {PRICE_CATEGORIES.map(c => (
+                      <option key={c.value} value={c.value}>{c.label}</option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <p className="ap-synthetic-label" role="note">
+                Illustrative data — not live market pricing
+              </p>
+
+              {priceLoading ? (
+                <ChartEmpty message="Loading price trend…" />
+              ) : priceError ? (
+                <ChartEmpty message={priceError} />
+              ) : priceChartData.length === 0 ? (
+                <ChartEmpty message="No price trend data for this category." />
+              ) : (
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart
+                    data={priceChartData}
+                    margin={{ top: 8, right: 24, left: 8, bottom: 8 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="rgba(74,93,110,0.4)"
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="monthLabel"
+                      tick={{ fill: '#9FB0BC', fontSize: 11 }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fill: '#9FB0BC', fontSize: 11 }}
+                      tickFormatter={formatPriceINR}
+                      width={72}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <Tooltip
+                      contentStyle={TOOLTIP_STYLE}
+                      formatter={(value) => [formatPriceINR(value), `Price/${priceTrend?.unit ?? 'unit'}`]}
+                      labelStyle={{ color: '#9FB0BC', marginBottom: 4 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="price"
+                      name="Price"
+                      stroke="#5CC8CF"
+                      strokeWidth={2.5}
+                      dot={{ r: 4, fill: '#5CC8CF', strokeWidth: 0 }}
+                      activeDot={{ r: 6, fill: '#7ED4DA', strokeWidth: 0 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </Card>
+
         </div>
       </main>
     </div>

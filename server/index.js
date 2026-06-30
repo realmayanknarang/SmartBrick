@@ -19,6 +19,7 @@ import copilotRouter  from './routes/copilotRoutes.js';  // Phase 9B
 import searchRouter    from './routes/searchRoutes.js';    // Phase 9D
 import forecastRouter  from './routes/forecastRoutes.js';  // Phase 10C
 import reportRouter    from './routes/reportRoutes.js';    // Phase 11A
+import priceTrendRouter from './routes/priceTrendRoutes.js'; // Phase 11C
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -93,6 +94,9 @@ app.use('/api/forecast', forecastRouter);
 
 // PDF/Excel report export — Phase 11A
 app.use('/api/reports', reportRouter);
+
+// Illustrative price trends — Phase 11C
+app.use('/api/price-trends', priceTrendRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);

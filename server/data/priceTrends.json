@@ -1,0 +1,110 @@
+{
+  "cement": {
+    "category": "cement",
+    "unit": "bag",
+    "dataPoints": [
+      { "month": "2025-07", "price": 362 },
+      { "month": "2025-08", "price": 365 },
+      { "month": "2025-09", "price": 368 },
+      { "month": "2025-10", "price": 371 },
+      { "month": "2025-11", "price": 375 },
+      { "month": "2025-12", "price": 378 },
+      { "month": "2026-01", "price": 382 },
+      { "month": "2026-02", "price": 385 },
+      { "month": "2026-03", "price": 388 },
+      { "month": "2026-04", "price": 391 },
+      { "month": "2026-05", "price": 394 },
+      { "month": "2026-06", "price": 398 }
+    ]
+  },
+  "steel": {
+    "category": "steel",
+    "unit": "ton",
+    "dataPoints": [
+      { "month": "2025-07", "price": 59800 },
+      { "month": "2025-08", "price": 60200 },
+      { "month": "2025-09", "price": 60800 },
+      { "month": "2025-10", "price": 61200 },
+      { "month": "2025-11", "price": 61500 },
+      { "month": "2025-12", "price": 61800 },
+      { "month": "2026-01", "price": 62100 },
+      { "month": "2026-02", "price": 62400 },
+      { "month": "2026-03", "price": 62700 },
+      { "month": "2026-04", "price": 62900 },
+      { "month": "2026-05", "price": 63100 },
+      { "month": "2026-06", "price": 63400 }
+    ]
+  },
+  "sand": {
+    "category": "sand",
+    "unit": "cu m",
+    "dataPoints": [
+      { "month": "2025-07", "price": 1180 },
+      { "month": "2025-08", "price": 1190 },
+      { "month": "2025-09", "price": 1200 },
+      { "month": "2025-10", "price": 1210 },
+      { "month": "2025-11", "price": 1220 },
+      { "month": "2025-12", "price": 1230 },
+      { "month": "2026-01", "price": 1240 },
+      { "month": "2026-02", "price": 1250 },
+      { "month": "2026-03", "price": 1260 },
+      { "month": "2026-04", "price": 1270 },
+      { "month": "2026-05", "price": 1280 },
+      { "month": "2026-06", "price": 1290 }
+    ]
+  },
+  "bricks": {
+    "category": "bricks",
+    "unit": "piece",
+    "dataPoints": [
+      { "month": "2025-07", "price": 7.2 },
+      { "month": "2025-08", "price": 7.3 },
+      { "month": "2025-09", "price": 7.4 },
+      { "month": "2025-10", "price": 7.5 },
+      { "month": "2025-11", "price": 7.6 },
+      { "month": "2025-12", "price": 7.7 },
+      { "month": "2026-01", "price": 7.8 },
+      { "month": "2026-02", "price": 7.9 },
+      { "month": "2026-03", "price": 8.0 },
+      { "month": "2026-04", "price": 8.1 },
+      { "month": "2026-05", "price": 8.2 },
+      { "month": "2026-06", "price": 8.3 }
+    ]
+  },
+  "electrical": {
+    "category": "electrical",
+    "unit": "unit",
+    "dataPoints": [
+      { "month": "2025-07", "price": 248 },
+      { "month": "2025-08", "price": 250 },
+      { "month": "2025-09", "price": 252 },
+      { "month": "2025-10", "price": 254 },
+      { "month": "2025-11", "price": 256 },
+      { "month": "2025-12", "price": 258 },
+      { "month": "2026-01", "price": 260 },
+      { "month": "2026-02", "price": 262 },
+      { "month": "2026-03", "price": 264 },
+      { "month": "2026-04", "price": 266 },
+      { "month": "2026-05", "price": 268 },
+      { "month": "2026-06", "price": 270 }
+    ]
+  },
+  "plumbing": {
+    "category": "plumbing",
+    "unit": "unit",
+    "dataPoints": [
+      { "month": "2025-07", "price": 178 },
+      { "month": "2025-08", "price": 180 },
+      { "month": "2025-09", "price": 182 },
+      { "month": "2025-10", "price": 184 },
+      { "month": "2025-11", "price": 186 },
+      { "month": "2025-12", "price": 188 },
+      { "month": "2026-01", "price": 190 },
+      { "month": "2026-02", "price": 192 },
+      { "month": "2026-03", "price": 194 },
+      { "month": "2026-04", "price": 196 },
+      { "month": "2026-05", "price": 198 },
+      { "month": "2026-06", "price": 200 }
+    ]
+  }
+}
