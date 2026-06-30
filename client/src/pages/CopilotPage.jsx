@@ -163,11 +163,21 @@ function CopilotPage() {
     try {
       const { data } = await apiClient.post('/copilot/ask', { question: trimmed });
       const answer = data?.answer?.trim() || 'Sorry, I did not receive a response. Please try again.';
-      setMessages(prev => [...prev, { role: 'assistant', content: answer }]);
+      setMessages(prev => [
+        ...prev,
+        {
+          role:      'assistant',
+          content:   answer,
+          isWarning: Boolean(data?.degraded),
+          isError:   Boolean(data?.degraded),
+        },
+      ]);
     } catch (err) {
       const msg =
-        err?.response?.data?.message ||
-        'Could not reach Copilot. Check your connection and try again.';
+        err?.response?.status === 429
+          ? 'Too many Copilot requests — please wait a few minutes and try again.'
+          : err?.response?.data?.message ||
+            'Could not reach Copilot. Check your connection and try again.';
       setMessages(prev => [...prev, { role: 'assistant', content: msg, isError: true }]);
     } finally {
       setLoading(false);
@@ -214,6 +224,7 @@ function CopilotPage() {
                   role={msg.role}
                   content={msg.content}
                   isError={msg.isError}
+                  isWarning={msg.isWarning}
                 />
               ))}
               {loading && (

@@ -90,6 +90,10 @@
   color: var(--color-text-on-dark-muted);
 }
 
+.vp-nl-search__status--warning {
+  color: var(--color-accent);
+}
+
 .vp-nl-search__error {
   margin: 0;
   font-size: var(--text-sm);

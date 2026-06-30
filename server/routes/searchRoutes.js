@@ -168,8 +168,13 @@ router.post('/vendors', searchLimiter, requireAuth, async (req, res) => {
     }
 
     let parsedFilters = {};
+    let groqWarning   = null;
 
-    if (process.env.GROQ_API_KEY) {
+    if (!process.env.GROQ_API_KEY) {
+      console.warn('[POST /api/search/vendors] GROQ_API_KEY missing; using broad search.');
+      groqWarning =
+        'AI parsing is unavailable (missing API key). Showing all active vendors — use structured filters for precise results.';
+    } else {
       try {
         const completion = await groq.chat.completions.create({
           model:       SEARCH_MODEL,
@@ -188,13 +193,14 @@ router.post('/vendors', searchLimiter, requireAuth, async (req, res) => {
           parsedFilters = normaliseFilters(parsed);
         } else {
           console.warn('[POST /api/search/vendors] Could not parse Groq JSON; using broad search.');
+          groqWarning =
+            'Could not parse your query. Showing all active vendors — try simpler wording or use structured filters.';
         }
       } catch (groqErr) {
         console.error('[POST /api/search/vendors] Groq parse error:', groqErr?.message ?? groqErr);
-        // Fall through with empty filters — return all active vendors rather than 500
+        groqWarning =
+          'AI parsing is temporarily unavailable. Showing all active vendors — use structured filters for precise results.';
       }
-    } else {
-      console.warn('[POST /api/search/vendors] GROQ_API_KEY missing; using broad search.');
     }
 
     const vendors = await queryVendorsWithFilters(parsedFilters);
@@ -204,6 +210,7 @@ router.post('/vendors', searchLimiter, requireAuth, async (req, res) => {
       parsedFilters,
       vendors,
       total: vendors.length,
+      groqWarning,
     });
   } catch (err) {
     console.error('[POST /api/search/vendors] Unexpected error:', err);

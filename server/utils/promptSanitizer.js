@@ -6,6 +6,14 @@
  * Strips or neutralises common phrases that attempt to override the system
  * prompt.  This is not a complete security boundary — it is a first-line filter
  * before user text is embedded in a Groq chat completion request.
+ *
+ * Limitations (Phase 9F — honest security note)
+ * ───────────────────────────────────────────────
+ * This is regex-based filtering, NOT a complete prompt-injection defense.
+ * Novel phrasing, multilingual attacks, or indirect instruction smuggling may
+ * bypass these patterns.  The primary grounding defense is the system prompt
+ * ("answer ONLY from provided data") plus keeping user text in the user role.
+ * Treat this sanitizer as a first-line filter, not a guarantee.
  */
 
 const MAX_QUESTION_LENGTH = 1000;

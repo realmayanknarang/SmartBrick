@@ -34,6 +34,15 @@ const COPILOT_MODEL = 'llama-3.3-70b-versatile';
 const FALLBACK_ANSWER =
   "Sorry, I'm having trouble right now, try again shortly.";
 
+/** Returns a user-safe fallback payload the UI can flag as degraded (Phase 9F). */
+function degradedResponse(reason) {
+  return {
+    answer:          FALLBACK_ANSWER,
+    degraded:        true,
+    degradedReason:  reason,
+  };
+}
+
 const SYSTEM_PROMPT_PREFIX = `You are SmartBrick's procurement assistant for a construction materials platform.
 Answer based ONLY on the provided data below.
 If the data does not contain enough information to answer, say so clearly — do not guess or invent vendor names, quantities, or project figures.
@@ -73,7 +82,7 @@ router.post('/ask', copilotLimiter, requireAuth, async (req, res) => {
       context = await gatherRelevantContext(question);
     } catch (ctxErr) {
       console.error('[POST /api/copilot/ask] Context retrieval failed:', ctxErr);
-      return res.json({ answer: FALLBACK_ANSWER });
+      return res.json(degradedResponse('Could not load workspace data.'));
     }
 
     const systemPrompt = SYSTEM_PROMPT_PREFIX + context.promptSummary;
@@ -81,7 +90,7 @@ router.post('/ask', copilotLimiter, requireAuth, async (req, res) => {
     // ── Groq chat completion ───────────────────────────────────────────────
     if (!process.env.GROQ_API_KEY) {
       console.error('[POST /api/copilot/ask] GROQ_API_KEY is not configured.');
-      return res.json({ answer: FALLBACK_ANSWER });
+      return res.json(degradedResponse('AI service is not configured.'));
     }
 
     try {
@@ -99,17 +108,17 @@ router.post('/ask', copilotLimiter, requireAuth, async (req, res) => {
 
       if (!answer) {
         console.error('[POST /api/copilot/ask] Groq returned empty content.');
-        return res.json({ answer: FALLBACK_ANSWER });
+        return res.json(degradedResponse('AI returned an empty response.'));
       }
 
-      return res.json({ answer });
+      return res.json({ answer, degraded: false });
     } catch (groqErr) {
       console.error('[POST /api/copilot/ask] Groq API error:', groqErr?.message ?? groqErr);
-      return res.json({ answer: FALLBACK_ANSWER });
+      return res.json(degradedResponse('AI service is temporarily unavailable.'));
     }
   } catch (err) {
     console.error('[POST /api/copilot/ask] Unexpected error:', err);
-    return res.json({ answer: FALLBACK_ANSWER });
+    return res.json(degradedResponse('An unexpected error occurred.'));
   }
 });
 

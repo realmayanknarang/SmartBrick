@@ -10,13 +10,14 @@
 import './ChatBubble.css';
 
 /**
- * @param {{ role: 'user' | 'assistant', content: string, isError?: boolean }} props
+ * @param {{ role: 'user' | 'assistant', content: string, isError?: boolean, isWarning?: boolean }} props
  */
-function ChatBubble({ role, content, isError = false }) {
+function ChatBubble({ role, content, isError = false, isWarning = false }) {
   const classes = [
     'chat-bubble',
     role === 'user' ? 'chat-bubble--user' : 'chat-bubble--assistant',
     isError ? 'chat-bubble--error' : '',
+    isWarning ? 'chat-bubble--warning' : '',
   ]
     .filter(Boolean)
     .join(' ');

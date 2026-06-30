@@ -371,6 +371,7 @@ function VendorsPage() {
   const [nlError,         setNlError]         = useState(null);
   const [nlQuery,         setNlQuery]         = useState('');
   const [nlParsedFilters, setNlParsedFilters] = useState(null);
+  const [nlGroqWarning,   setNlGroqWarning]   = useState(null);
 
   // ── Selected vendor for drawer ────────────────────────────────────────────
   const [selectedVendor, setSelectedVendor] = useState(null);
@@ -439,6 +440,7 @@ function VendorsPage() {
       setNlActive(true);
       setNlQuery(trimmed);
       setNlParsedFilters(data.parsedFilters ?? {});
+      setNlGroqWarning(data.groqWarning ?? null);
     } catch (err) {
       setNlError(
         err?.response?.status === 429
@@ -455,6 +457,7 @@ function VendorsPage() {
     setNlInput('');
     setNlQuery('');
     setNlParsedFilters(null);
+    setNlGroqWarning(null);
     setNlError(null);
     setPage(1);
   }
@@ -555,8 +558,8 @@ function VendorsPage() {
                 )}
               </div>
               {nlActive && (
-                <p id="vendor-nl-search-status" className="vp-nl-search__status">
-                  {formatParsedFilters(nlParsedFilters)}
+                <p id="vendor-nl-search-status" className={`vp-nl-search__status${nlGroqWarning ? ' vp-nl-search__status--warning' : ''}`}>
+                  {nlGroqWarning || formatParsedFilters(nlParsedFilters)}
                 </p>
               )}
               {nlError && !nlActive && (

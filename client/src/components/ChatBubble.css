@@ -39,6 +39,11 @@
   background-color: rgba(224, 92, 92, 0.12);
 }
 
+.chat-bubble--warning {
+  border-color: rgba(232, 197, 71, 0.45);
+  background-color: rgba(232, 197, 71, 0.1);
+}
+
 .chat-bubble__text {
   margin: 0;
   white-space: pre-wrap;
