@@ -20,6 +20,7 @@
 
 import { Router }      from 'express';
 import { requireAuth } from '../middleware/clerkAuth.js';
+import { reportLimiter } from '../middleware/rateLimiter.js';
 import {
   generateSpendingPdf,
   generateVendorListExcel,
@@ -31,7 +32,7 @@ const router = Router();
 // GET /api/reports/spending-pdf
 // ---------------------------------------------------------------------------
 
-router.get('/spending-pdf', requireAuth, async (_req, res) => {
+router.get('/spending-pdf', reportLimiter, requireAuth, async (_req, res) => {
   try {
     const pdfBuffer = await generateSpendingPdf();
     const filename  = `smartbrick-spending-report-${new Date().toISOString().slice(0, 10)}.pdf`;
@@ -56,7 +57,7 @@ router.get('/spending-pdf', requireAuth, async (_req, res) => {
 // GET /api/reports/vendor-list-excel
 // ---------------------------------------------------------------------------
 
-router.get('/vendor-list-excel', requireAuth, async (_req, res) => {
+router.get('/vendor-list-excel', reportLimiter, requireAuth, async (_req, res) => {
   try {
     const xlsxBuffer = await generateVendorListExcel();
     const filename   = `smartbrick-vendor-list-${new Date().toISOString().slice(0, 10)}.xlsx`;

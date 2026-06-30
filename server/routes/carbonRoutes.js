@@ -31,6 +31,7 @@
 
 import { Router } from 'express';
 import { requireAuth } from '../middleware/clerkAuth.js';
+import { carbonLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 
@@ -92,7 +93,7 @@ async function callClimatiq(activityId, parameters, apiKey) {
 
 // ── POST /api/carbon/calculate ─────────────────────────────────────────────────
 
-router.post('/calculate', requireAuth, async (req, res) => {
+router.post('/calculate', carbonLimiter, requireAuth, async (req, res) => {
   const { material, weightTonnes, distanceKm } = req.body;
 
   // ── Validation ─────────────────────────────────────────────────────────────

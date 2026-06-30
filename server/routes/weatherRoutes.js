@@ -38,8 +38,10 @@
  */
 
 import { Router } from 'express';
+import mongoose    from 'mongoose';
 import Site        from '../models/Site.js';
 import { requireAuth } from '../middleware/clerkAuth.js';
+import { weatherLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 
@@ -218,8 +220,26 @@ async function getWeatherForSite(site) {
 
 // ── GET /api/weather/site/:siteId ─────────────────────────────────────────────
 
-router.get('/site/:siteId', requireAuth, async (req, res) => {
+router.get('/site/:siteId', weatherLimiter, requireAuth, async (req, res) => {
   const { siteId } = req.params;
+
+  // ── Input validation ─────────────────────────────────────────────────────
+  if (!siteId) {
+    return res.status(400).json({
+      error: 'Bad Request',
+      message: 'siteId is required.',
+    });
+  }
+
+  try {
+    // Validate ObjectId format
+    new mongoose.Types.ObjectId(siteId);
+  } catch (err) {
+    return res.status(400).json({
+      error: 'Bad Request',
+      message: 'Invalid siteId format.',
+    });
+  }
 
   try {
     const site = await Site.findById(siteId).lean();
@@ -250,7 +270,7 @@ router.get('/site/:siteId', requireAuth, async (req, res) => {
 
 // ── GET /api/weather/sites — all sites summary ────────────────────────────────
 
-router.get('/sites', requireAuth, async (req, res) => {
+router.get('/sites', weatherLimiter, requireAuth, async (req, res) => {
   try {
     const sites = await Site.find().select('name city latitude longitude').lean();
 

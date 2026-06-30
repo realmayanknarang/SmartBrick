@@ -20,6 +20,7 @@
 
 import { Router } from 'express';
 import { requireAuth } from '../middleware/clerkAuth.js';
+import { routeLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 
@@ -27,7 +28,7 @@ const ORS_BASE = 'https://api.openrouteservice.org/v2/directions/driving-car';
 
 // ── POST /api/routes/calculate ─────────────────────────────────────────────────
 
-router.post('/calculate', requireAuth, async (req, res) => {
+router.post('/calculate', routeLimiter, requireAuth, async (req, res) => {
   const { origin, destination } = req.body;
 
   // ── Input validation ──────────────────────────────────────────────────────

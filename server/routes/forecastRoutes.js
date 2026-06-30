@@ -20,6 +20,7 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
 import { requireAuth } from '../middleware/clerkAuth.js';
+import { forecastLimiter } from '../middleware/rateLimiter.js';
 import Site from '../models/Site.js';
 import Material from '../models/Material.js';
 import UsageHistory from '../models/UsageHistory.js';
@@ -102,7 +103,7 @@ function buildMetadata(history, forecast) {
 // GET /api/forecast/options
 // ---------------------------------------------------------------------------
 
-router.get('/options', requireAuth, async (_req, res) => {
+router.get('/options', forecastLimiter, requireAuth, async (_req, res) => {
   try {
     const [sites, materials] = await Promise.all([
       Site.find().select('name city currentPhase').sort({ name: 1 }).lean(),
@@ -136,8 +137,27 @@ router.get('/options', requireAuth, async (_req, res) => {
 // GET /api/forecast/:siteId/:materialId
 // ---------------------------------------------------------------------------
 
-router.get('/:siteId/:materialId', requireAuth, async (req, res) => {
+router.get('/:siteId/:materialId', forecastLimiter, requireAuth, async (req, res) => {
   const { siteId, materialId } = req.params;
+
+  // ── Input validation ─────────────────────────────────────────────────────
+  if (!siteId || !materialId) {
+    return res.status(400).json({
+      error: 'Bad Request',
+      message: 'Both siteId and materialId are required.',
+    });
+  }
+
+  try {
+    // Validate ObjectId format
+    new mongoose.Types.ObjectId(siteId);
+    new mongoose.Types.ObjectId(materialId);
+  } catch (err) {
+    return res.status(400).json({
+      error: 'Bad Request',
+      message: 'Invalid siteId or materialId format.',
+    });
+  }
 
   try {
     const [data, history] = await Promise.all([

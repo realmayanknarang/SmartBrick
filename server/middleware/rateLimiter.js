@@ -93,3 +93,63 @@ export const searchLimiter = rateLimit({
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
+
+/**
+ * Carbon calculation limiter — 20 requests per 15 minutes per IP.
+ * Applied to POST /api/carbon/calculate (Climatiq API - metered).
+ */
+export const carbonLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 20,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: jsonRateLimitHandler,
+});
+
+/**
+ * Forecast limiter — 30 requests per 15 minutes per IP.
+ * Applied to GET /api/forecast/* (external forecasting service).
+ */
+export const forecastLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 30,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: jsonRateLimitHandler,
+});
+
+/**
+ * Report generation limiter — 10 requests per 15 minutes per IP.
+ * Applied to GET /api/reports/* (expensive PDF/Excel generation).
+ */
+export const reportLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 10,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: jsonRateLimitHandler,
+});
+
+/**
+ * Route calculation limiter — 20 requests per 15 minutes per IP.
+ * Applied to POST /api/routes/calculate (OpenRouteService API - metered).
+ */
+export const routeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 20,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: jsonRateLimitHandler,
+});
+
+/**
+ * Weather limiter — 30 requests per 15 minutes per IP.
+ * Applied to GET /api/weather/* (OpenWeatherMap API - metered).
+ */
+export const weatherLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 30,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: jsonRateLimitHandler,
+});
