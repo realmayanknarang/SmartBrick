@@ -20,6 +20,7 @@ import searchRouter    from './routes/searchRoutes.js';    // Phase 9D
 import forecastRouter  from './routes/forecastRoutes.js';  // Phase 10C
 import reportRouter    from './routes/reportRoutes.js';    // Phase 11A
 import priceTrendRouter from './routes/priceTrendRoutes.js'; // Phase 11C
+import approvalRouter  from './routes/approvalRoutes.js';  // Phase 11D
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -97,6 +98,9 @@ app.use('/api/reports', reportRouter);
 
 // Illustrative price trends — Phase 11C
 app.use('/api/price-trends', priceTrendRouter);
+
+// Purchase order approval workflow — Phase 11D
+app.use('/api/approvals', approvalRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
