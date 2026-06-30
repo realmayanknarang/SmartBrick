@@ -63,8 +63,10 @@ def generate_forecast(site_id, material_id, weeks_ahead=8, mongodb_uri=None):
     df["ds"] = pd.to_datetime(df["ds"]).dt.tz_localize(None)
     df = df.sort_values("ds").reset_index(drop=True)
 
-    # UsageHistory is one point per week — yearly/weekly Prophet seasonality
-    # targets sub-annual / day-of-week patterns in daily data, not weekly series.
+    # UsageHistory is one point per week (~26 weeks in seed data).
+    # Yearly/weekly Prophet seasonality targets sub-annual patterns in daily
+    # data, not weekly series — and we honestly lack 12+ months of history
+    # for reliable yearly seasonality on this demo dataset.
     model = Prophet(
         yearly_seasonality=False,
         weekly_seasonality=False,
