@@ -16,7 +16,8 @@ import vendorRouter    from './routes/vendorRoutes.js';    // Phase 8A
 import analyticsRouter from './routes/analyticsRoutes.js'; // Phase 8C
 import alertRouter    from './routes/alertRoutes.js';    // Phase 8D
 import copilotRouter  from './routes/copilotRoutes.js';  // Phase 9B
-import searchRouter   from './routes/searchRoutes.js';   // Phase 9D
+import searchRouter    from './routes/searchRoutes.js';    // Phase 9D
+import forecastRouter  from './routes/forecastRoutes.js';  // Phase 10C
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -85,6 +86,9 @@ app.use('/api/copilot', copilotRouter);
 
 // Natural language vendor search — Phase 9D
 app.use('/api/search', searchRouter);
+
+// Demand forecasting proxy — Phase 10C
+app.use('/api/forecast', forecastRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
