@@ -8,6 +8,7 @@ from pathlib import Path
 
 from dotenv import dotenv_values
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 from forecast import generate_forecast
 
@@ -24,6 +25,7 @@ MONGODB_URI = os.environ.get("MONGODB_URI") or local_vars.get("MONGODB_URI") or 
 PORT = int(os.environ.get("PORT") or local_vars.get("PORT") or "5001")
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 
 @app.get("/health")
