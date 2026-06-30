@@ -11,6 +11,7 @@
  *  • True server-side pagination — every filter/sort/page change fires a
  *    real network request with updated query params (not client-side filtering)
  *  • Click a row → slide-in drawer with full score breakdown bars
+ *  • Natural-language search bar (Phase 9E) — calls POST /api/search/vendors
  *
  * Component hierarchy
  * ───────────────────
@@ -335,6 +336,15 @@ const SORT_OPTIONS = [
 
 const LIMIT = 10; // vendors per page
 
+function SearchIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="9" cy="9" r="5.5" stroke="currentColor" strokeWidth="1.6" />
+      <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function VendorsPage() {
   const { pathname } = useLocation();
   const { user }     = useUser();
@@ -353,6 +363,14 @@ function VendorsPage() {
 
   // ── Distinct city options (fetched once on mount) ─────────────────────────
   const [cityOptions, setCityOptions] = useState([{ value: '', label: 'All cities' }]);
+
+  // ── Natural-language search (Phase 9E) ────────────────────────────────────
+  const [nlInput,         setNlInput]         = useState('');
+  const [nlActive,        setNlActive]        = useState(false);
+  const [nlLoading,       setNlLoading]       = useState(false);
+  const [nlError,         setNlError]         = useState(null);
+  const [nlQuery,         setNlQuery]         = useState('');
+  const [nlParsedFilters, setNlParsedFilters] = useState(null);
 
   // ── Selected vendor for drawer ────────────────────────────────────────────
   const [selectedVendor, setSelectedVendor] = useState(null);
@@ -395,17 +413,84 @@ function VendorsPage() {
   }, [category, city, sortBy, page]);
 
   useEffect(() => {
+    if (nlActive) return;
     fetchVendors();
-  }, [fetchVendors]);
+  }, [fetchVendors, nlActive]);
 
-  // Reset to page 1 whenever filters or sort change
-  const handleCategoryChange = (e) => { setCategory(e.target.value); setPage(1); };
-  const handleCityChange     = (e) => { setCity(e.target.value);     setPage(1); };
-  const handleSortChange     = (e) => { setSortBy(e.target.value);   setPage(1); };
+  async function handleNlSearch(e) {
+    e.preventDefault();
+
+    const trimmed = nlInput.trim();
+    if (!trimmed || nlLoading) return;
+
+    setNlLoading(true);
+    setNlError(null);
+    setSelectedVendor(null);
+
+    try {
+      const { data } = await apiClient.post('/search/vendors', { query: trimmed });
+      setVendors(data.vendors ?? []);
+      setPagination({
+        total:      data.total ?? data.vendors?.length ?? 0,
+        page:       1,
+        limit:      data.vendors?.length ?? 0,
+        totalPages: 1,
+      });
+      setNlActive(true);
+      setNlQuery(trimmed);
+      setNlParsedFilters(data.parsedFilters ?? {});
+    } catch (err) {
+      setNlError(
+        err?.response?.status === 429
+          ? 'Too many search requests — please wait a few minutes and try again.'
+          : err?.response?.data?.message || 'Natural language search failed. Please try again.'
+      );
+    } finally {
+      setNlLoading(false);
+    }
+  }
+
+  function clearNlSearch() {
+    setNlActive(false);
+    setNlInput('');
+    setNlQuery('');
+    setNlParsedFilters(null);
+    setNlError(null);
+    setPage(1);
+  }
+
+  // Reset to page 1 whenever filters or sort change; exit NL mode if active
+  const handleCategoryChange = (e) => {
+    if (nlActive) clearNlSearch();
+    setCategory(e.target.value);
+    setPage(1);
+  };
+  const handleCityChange = (e) => {
+    if (nlActive) clearNlSearch();
+    setCity(e.target.value);
+    setPage(1);
+  };
+  const handleSortChange = (e) => {
+    if (nlActive) clearNlSearch();
+    setSortBy(e.target.value);
+    setPage(1);
+  };
 
   // ── Pagination helpers ────────────────────────────────────────────────────
   const totalPages  = pagination.totalPages ?? 1;
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const listLoading = nlActive ? nlLoading : loading;
+  const listError   = nlActive ? nlError   : error;
+
+  function formatParsedFilters(filters) {
+    if (!filters || !Object.keys(filters).length) return 'No specific filters detected — showing broad matches.';
+    const parts = [];
+    if (filters.category) parts.push(`category: ${filters.category}`);
+    if (filters.city)     parts.push(`city: ${filters.city}`);
+    if (filters.maxPrice != null) parts.push(`max price: ₹${Number(filters.maxPrice).toLocaleString('en-IN')}`);
+    if (filters.minScore != null) parts.push(`min score: ${filters.minScore}`);
+    return `Parsed as ${parts.join(', ')}`;
+  }
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
@@ -432,12 +517,56 @@ function VendorsPage() {
           <section className="dash-welcome">
             <h2 className="dash-welcome__name">Vendor Scoring</h2>
             <p className="dash-welcome__sub">
-              {pagination.total} active vendor{pagination.total !== 1 ? 's' : ''} — ranked by composite performance score.
+              {nlActive
+                ? `${pagination.total} result${pagination.total !== 1 ? 's' : ''} for “${nlQuery}”`
+                : `${pagination.total} active vendor${pagination.total !== 1 ? 's' : ''} — ranked by composite performance score.`}
             </p>
           </section>
 
+          {/* Natural-language search — Phase 9E */}
+          <Card surface="navy-secondary" padding="var(--space-4)" className="vp-nl-search-card">
+            <form className="vp-nl-search" onSubmit={handleNlSearch}>
+              <label className="vp-nl-search__label" htmlFor="vendor-nl-search">
+                Search in plain English
+              </label>
+              <div className="vp-nl-search__row">
+                <div className="vp-nl-search__input-wrap">
+                  <span className="vp-nl-search__icon" aria-hidden="true">
+                    <SearchIcon />
+                  </span>
+                  <input
+                    id="vendor-nl-search"
+                    className="vp-nl-search__input"
+                    type="search"
+                    value={nlInput}
+                    onChange={(e) => setNlInput(e.target.value)}
+                    placeholder="Try: 'cement vendors under ₹400 per bag in Mohali'"
+                    disabled={nlLoading}
+                    aria-describedby={nlActive ? 'vendor-nl-search-status' : undefined}
+                  />
+                </div>
+                <Button type="submit" variant="primary" size="sm" disabled={nlLoading || !nlInput.trim()}>
+                  {nlLoading ? 'Searching…' : 'Search'}
+                </Button>
+                {nlActive && (
+                  <Button type="button" variant="secondary" size="sm" onClick={clearNlSearch} disabled={nlLoading}>
+                    Clear search
+                  </Button>
+                )}
+              </div>
+              {nlActive && (
+                <p id="vendor-nl-search-status" className="vp-nl-search__status">
+                  {formatParsedFilters(nlParsedFilters)}
+                </p>
+              )}
+              {nlError && !nlActive && (
+                <p className="vp-nl-search__error" role="alert">{nlError}</p>
+              )}
+            </form>
+          </Card>
+
           {/* Controls */}
-          <Card surface="navy-secondary" padding="var(--space-4)">
+          <Card surface="navy-secondary" padding="var(--space-4)" className={nlActive ? 'vp-controls-card--inactive' : ''}>
             <div className="vp-controls">
               <div className="vp-controls__selects">
                 <Select
@@ -462,7 +591,7 @@ function VendorsPage() {
                   onChange={handleSortChange}
                 />
               </div>
-              {(category || city || sortBy !== 'score') && (
+              {(category || city || sortBy !== 'score') && !nlActive && (
                 <Button
                   variant="secondary"
                   size="sm"
@@ -478,25 +607,27 @@ function VendorsPage() {
           {/* Table */}
           <Card surface="navy-secondary" padding="0">
             <div className="vp-table-wrap">
-              {loading && (
+              {listLoading && (
                 <div className="vp-empty">
                   <span className="vp-empty__icon">⏳</span>
-                  Loading vendors…
+                  {nlActive ? 'Searching vendors…' : 'Loading vendors…'}
                 </div>
               )}
-              {!loading && error && (
+              {!listLoading && listError && (
                 <div className="vp-empty">
                   <span className="vp-empty__icon">⚠️</span>
-                  {error}
+                  {listError}
                 </div>
               )}
-              {!loading && !error && vendors.length === 0 && (
+              {!listLoading && !listError && vendors.length === 0 && (
                 <div className="vp-empty">
                   <span className="vp-empty__icon">🏪</span>
-                  No active vendors match the selected filters.
+                  {nlActive
+                    ? 'No vendors match that search. Try different wording or clear search.'
+                    : 'No active vendors match the selected filters.'}
                 </div>
               )}
-              {!loading && !error && vendors.length > 0 && (
+              {!listLoading && !listError && vendors.length > 0 && (
                 <table className="vp-table" aria-label="Vendor list">
                   <thead>
                     <tr>
@@ -541,7 +672,7 @@ function VendorsPage() {
             </div>
 
             {/* Pagination */}
-            {!loading && totalPages > 1 && (
+            {!listLoading && !nlActive && totalPages > 1 && (
               <div className="vp-pagination">
                 <span className="vp-pagination__info">
                   Page {pagination.page} of {totalPages} · {pagination.total} vendors

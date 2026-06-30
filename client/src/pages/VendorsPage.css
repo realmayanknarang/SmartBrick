@@ -16,6 +16,91 @@
  */
 
 /* ─── Controls toolbar ─────────────────────────────────────────────────────── */
+.vp-nl-search-card {
+  margin-bottom: 0;
+}
+
+.vp-nl-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.vp-nl-search__label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-on-dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.vp-nl-search__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.vp-nl-search__input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: min(100%, 280px);
+}
+
+.vp-nl-search__icon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-on-dark-muted);
+  pointer-events: none;
+  display: flex;
+}
+
+.vp-nl-search__input {
+  width: 100%;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3) var(--space-2) calc(var(--space-3) + 24px);
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text-on-dark);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  transition: border-color var(--transition-base);
+}
+
+.vp-nl-search__input::placeholder {
+  color: var(--color-text-on-dark-muted);
+  opacity: 0.85;
+}
+
+.vp-nl-search__input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.vp-nl-search__input:disabled {
+  opacity: 0.6;
+}
+
+.vp-nl-search__status {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-on-dark-muted);
+}
+
+.vp-nl-search__error {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
+
+.vp-controls-card--inactive {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
 .vp-controls {
   display:   flex;
   flex-wrap: wrap;
@@ -431,6 +516,15 @@
 
 /* ─── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
+  .vp-nl-search__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .vp-nl-search__row .btn {
+    width: 100%;
+  }
+
   .vp-table th:nth-child(4),
   .vp-table td:nth-child(4) {
     display: none; /* hide price on very small screens */
