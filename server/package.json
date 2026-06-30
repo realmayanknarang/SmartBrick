@@ -12,6 +12,7 @@
   "dependencies": {
     "@clerk/express": "^2.1.32",
     "@google/generative-ai": "^0.24.1",
+    "@sentry/node": "^10.62.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
