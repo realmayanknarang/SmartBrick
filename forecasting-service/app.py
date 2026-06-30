@@ -23,9 +23,20 @@ server_vars = dotenv_values(SERVER_ENV) if SERVER_ENV.exists() else {}
 # Check environment: os.environ first (Render), then .env files (local dev)
 MONGODB_URI = os.environ.get("MONGODB_URI") or local_vars.get("MONGODB_URI") or server_vars.get("MONGODB_URI") or ""
 PORT = int(os.environ.get("PORT") or local_vars.get("PORT") or "5001")
+FORECASTING_SERVICE_SECRET = os.environ.get("FORECASTING_SERVICE_SECRET") or local_vars.get("FORECASTING_SERVICE_SECRET") or server_vars.get("FORECASTING_SERVICE_SECRET")
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+
+
+def require_shared_secret(f):
+    """Decorator to require shared-secret header for authentication."""
+    def wrapper(*args, **kwargs):
+        secret = request.headers.get("X-Forecasting-Secret")
+        if not secret or secret != FORECASTING_SERVICE_SECRET:
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(*args, **kwargs)
+    return wrapper
 
 
 @app.get("/health")
@@ -34,6 +45,7 @@ def health():
 
 
 @app.get("/forecast/<site_id>/<material_id>")
+@require_shared_secret
 def forecast(site_id, material_id):
     # Check MONGODB_URI when actually needed
     if not MONGODB_URI:

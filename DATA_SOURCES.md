@@ -18,7 +18,7 @@ This document records what SmartBrick treats as real, external, generated, or sy
 | Weather risk alerts | OpenWeatherMap forecast API | Real external forecast | The app evaluates forecast periods against construction risk thresholds. |
 | Route and delivery map | OpenRouteService + OpenStreetMap tiles | Real external routing/map data | Route distance, duration, and geometry come from OpenRouteService. Map attribution remains with OpenStreetMap contributors. |
 | Carbon calculator | Climatiq plus local fallback factors | Real external estimate when available; fallback estimates otherwise | Transport and production emissions use Climatiq when configured. If a factor call fails, local documented fallback factors are used. |
-| Demand forecasting | Python forecasting service + MongoDB usage history | Model-generated forecast from app data | Forecasts use historical usage records. The Python service is protected by a shared service secret. |
+| Demand forecasting | Python forecasting service + MongoDB usage history | Model-generated forecast from app data | Forecasts use historical usage records. The Python service is protected by a shared service secret (X-Forecasting-Secret header) added in Phase 13F to prevent direct public access. |
 | PDF and Excel reports | MongoDB plus local generators | Derived documents | Reports package existing app data; they do not introduce new source data. |
 | Legal pages | Static templates | Template content | Privacy and terms pages are generated starter templates and have not been lawyer-reviewed. |
 | Error monitoring | Sentry | Real service when DSN configured | Frontend, Node server, and Python service initialize Sentry only when a DSN is present. |

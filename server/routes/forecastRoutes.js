@@ -38,7 +38,12 @@ async function fetchForecast(siteId, materialId) {
   const timer = setTimeout(() => controller.abort(), FORECAST_TIMEOUT_MS);
 
   try {
-    const response = await fetch(url, { signal: controller.signal });
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'X-Forecasting-Secret': process.env.FORECASTING_SERVICE_SECRET || '',
+      },
+    });
 
     if (!response.ok) {
       const body = await response.text().catch(() => '');
