@@ -140,25 +140,15 @@
 
 /* Override TextInput colours for Copilot's dark panel so typed text is visible */
 .copilot-input-row__field .text-input__control {
-  color: #FFFFFF !important;
-  background-color: #2E4154 !important;
-  border-color: #4A5D6E !important;
+  color: var(--color-text-on-dark);
+  background-color: var(--color-surface-navy-secondary);
+  border-color: var(--color-border-dark);
 }
 
 .copilot-input-row__field .text-input__control::placeholder {
-  color: #9FB0BC !important;
+  color: var(--color-text-on-dark-muted);
 }
 
 .copilot-input-row__field .text-input__label {
-  color: #9FB0BC !important;
-}
-
-/* Also target the input directly */
-.copilot-input-row input {
-  color: #FFFFFF !important;
-  background-color: #2E4154 !important;
-}
-
-.copilot-input-row input::placeholder {
-  color: #9FB0BC !important;
+  color: var(--color-text-on-dark-muted);
 }
