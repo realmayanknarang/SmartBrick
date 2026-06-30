@@ -9,7 +9,7 @@
  */
 
 import { Router } from 'express';
-import groq from '../config/groq.js';
+import genAI from '../config/gemini.js';
 import { requireAuth } from '../middleware/clerkAuth.js';
 import { searchLimiter } from '../middleware/rateLimiter.js';
 import { sanitizeUserQuestion } from '../utils/promptSanitizer.js';
@@ -18,7 +18,7 @@ import { calculateVendorRank } from '../utils/vendorScoring.js';
 
 const router = Router();
 
-const SEARCH_MODEL = 'llama-3.3-70b-versatile';
+const SEARCH_MODEL = 'gemini-3.1-flash-lite';
 
 const VALID_CATEGORIES = new Set([
   'cement', 'steel', 'sand', 'bricks', 'electrical', 'plumbing',
@@ -170,34 +170,34 @@ router.post('/vendors', searchLimiter, requireAuth, async (req, res) => {
     let parsedFilters = {};
     let groqWarning   = null;
 
-    if (!process.env.GROQ_API_KEY) {
-      console.warn('[POST /api/search/vendors] GROQ_API_KEY missing; using broad search.');
+    if (!process.env.GEMINI_API_KEY) {
+      console.warn('[POST /api/search/vendors] GEMINI_API_KEY missing; using broad search.');
       groqWarning =
         'AI parsing is unavailable (missing API key). Showing all active vendors — use structured filters for precise results.';
     } else {
       try {
-        const completion = await groq.chat.completions.create({
-          model:       SEARCH_MODEL,
-          messages: [
-            { role: 'system', content: PARSE_SYSTEM_PROMPT },
-            { role: 'user',   content: query },
-          ],
-          max_tokens:  256,
-          temperature: 0.1,
+        const model = genAI.getGenerativeModel({
+          model: SEARCH_MODEL,
+          systemInstruction: PARSE_SYSTEM_PROMPT,
+          generationConfig: {
+            maxOutputTokens: 256,
+            temperature: 0.1,
+          },
         });
 
-        const rawContent = completion.choices[0]?.message?.content?.trim();
+        const result = await model.generateContent(query);
+        const rawContent = result.response.text().trim();
         const parsed     = parseGroqJson(rawContent);
 
         if (parsed && typeof parsed === 'object') {
           parsedFilters = normaliseFilters(parsed);
         } else {
-          console.warn('[POST /api/search/vendors] Could not parse Groq JSON; using broad search.');
+          console.warn('[POST /api/search/vendors] Could not parse Gemini JSON; using broad search.');
           groqWarning =
             'Could not parse your query. Showing all active vendors — try simpler wording or use structured filters.';
         }
-      } catch (groqErr) {
-        console.error('[POST /api/search/vendors] Groq parse error:', groqErr?.message ?? groqErr);
+      } catch (geminiErr) {
+        console.error('[POST /api/search/vendors] Gemini parse error:', geminiErr?.message ?? geminiErr);
         groqWarning =
           'AI parsing is temporarily unavailable. Showing all active vendors — use structured filters for precise results.';
       }

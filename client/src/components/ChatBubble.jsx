@@ -7,6 +7,7 @@
  * Copilot chat panel.  Styling follows SmartBrick navy/gold tokens.
  */
 
+import ReactMarkdown from 'react-markdown';
 import './ChatBubble.css';
 
 /**
@@ -25,7 +26,9 @@ function ChatBubble({ role, content, isError = false, isWarning = false }) {
   return (
     <div className={`chat-bubble-row chat-bubble-row--${role}`}>
       <div className={classes} role={isError ? 'alert' : undefined}>
-        <p className="chat-bubble__text">{content}</p>
+        <div className="chat-bubble__text">
+          <ReactMarkdown>{content}</ReactMarkdown>
+        </div>
       </div>
     </div>
   );

@@ -137,3 +137,18 @@
     align-self: stretch;
   }
 }
+
+/* Override TextInput colours for Copilot's dark panel so typed text is visible */
+.copilot-input-row__field .text-input__control {
+  color: var(--color-text-on-dark);
+  background-color: var(--color-surface-navy-secondary);
+  border-color: var(--color-border-dark);
+}
+
+.copilot-input-row__field .text-input__control::placeholder {
+  color: var(--color-text-on-dark-muted);
+}
+
+.copilot-input-row__field .text-input__label {
+  color: var(--color-text-on-dark-muted);
+}

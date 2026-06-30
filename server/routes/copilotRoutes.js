@@ -20,7 +20,7 @@
  */
 
 import { Router } from 'express';
-import groq from '../config/groq.js';
+import genAI from '../config/gemini.js';
 import { requireAuth } from '../middleware/clerkAuth.js';
 import { copilotLimiter } from '../middleware/rateLimiter.js';
 import { gatherRelevantContext } from '../utils/copilotContext.js';
@@ -28,8 +28,8 @@ import { sanitizeUserQuestion } from '../utils/promptSanitizer.js';
 
 const router = Router();
 
-/** Groq text model for procurement Q&A (not the vision model used by OCR). */
-const COPILOT_MODEL = 'llama-3.3-70b-versatile';
+/** Gemini text model for procurement Q&A (not the vision model used by OCR). */
+const COPILOT_MODEL = 'gemini-3.1-flash-lite';
 
 const FALLBACK_ANSWER =
   "Sorry, I'm having trouble right now, try again shortly.";
@@ -87,33 +87,33 @@ router.post('/ask', copilotLimiter, requireAuth, async (req, res) => {
 
     const systemPrompt = SYSTEM_PROMPT_PREFIX + context.promptSummary;
 
-    // ── Groq chat completion ───────────────────────────────────────────────
-    if (!process.env.GROQ_API_KEY) {
-      console.error('[POST /api/copilot/ask] GROQ_API_KEY is not configured.');
+    // ── Gemini chat completion ─────────────────────────────────────────────
+    if (!process.env.GEMINI_API_KEY) {
+      console.error('[POST /api/copilot/ask] GEMINI_API_KEY is not configured.');
       return res.json(degradedResponse('AI service is not configured.'));
     }
 
     try {
-      const completion = await groq.chat.completions.create({
-        model:       COPILOT_MODEL,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user',   content: question },
-        ],
-        max_tokens:  1024,
-        temperature: 0.3,
+      const model = genAI.getGenerativeModel({
+        model: COPILOT_MODEL,
+        systemInstruction: systemPrompt,
+        generationConfig: {
+          maxOutputTokens: 1024,
+          temperature: 0.3,
+        },
       });
 
-      const answer = completion.choices[0]?.message?.content?.trim();
+      const result = await model.generateContent(question);
+      const answer = result.response.text().trim();
 
       if (!answer) {
-        console.error('[POST /api/copilot/ask] Groq returned empty content.');
+        console.error('[POST /api/copilot/ask] Gemini returned empty content.');
         return res.json(degradedResponse('AI returned an empty response.'));
       }
 
       return res.json({ answer, degraded: false });
-    } catch (groqErr) {
-      console.error('[POST /api/copilot/ask] Groq API error:', groqErr?.message ?? groqErr);
+    } catch (geminiErr) {
+      console.error('[POST /api/copilot/ask] Gemini API error:', geminiErr?.message ?? geminiErr);
       return res.json(degradedResponse('AI service is temporarily unavailable.'));
     }
   } catch (err) {

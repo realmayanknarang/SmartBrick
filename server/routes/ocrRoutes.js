@@ -31,7 +31,7 @@
 
 import { Router }   from 'express';
 import multer        from 'multer';
-import groq          from '../config/groq.js';
+import genAI          from '../config/gemini.js';
 import { requireAuth } from '../middleware/clerkAuth.js';
 import { ocrLimiter }  from '../middleware/rateLimiter.js';
 
@@ -107,36 +107,31 @@ router.post(
 
     const { mimetype, buffer, originalname, size } = req.file;
 
-    // Convert buffer → base64 data URL (Groq vision accepts data: URLs)
+    // Convert buffer → base64 (Gemini takes raw base64, not a data: URL)
     const base64Image = buffer.toString('base64');
-    const dataUrl = `data:${mimetype};base64,${base64Image}`;
 
     console.log(`[OCR] Processing invoice: ${originalname} (${(size / 1024).toFixed(1)} KB, ${mimetype})`);
 
     try {
-      const completion = await groq.chat.completions.create({
-        model: 'qwen/qwen3.6-27b',
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'image_url',
-                image_url: { url: dataUrl },
-              },
-              {
-                type: 'text',
-                text: OCR_SYSTEM_PROMPT,
-              },
-            ],
-          },
-        ],
-        max_tokens: 2048,
-        temperature: 0.1, // Low temperature for deterministic extraction
-        // Note: response_format JSON mode is not needed when we instruct strictly
+      const model = genAI.getGenerativeModel({
+        model: 'gemini-2.5-flash',
+        generationConfig: {
+          maxOutputTokens: 2048,
+          temperature: 0.1,
+        },
       });
 
-      const rawContent = completion.choices[0]?.message?.content?.trim();
+      const result = await model.generateContent([
+        {
+          inlineData: {
+            mimeType: mimetype,
+            data: base64Image,
+          },
+        },
+        { text: OCR_SYSTEM_PROMPT },
+      ]);
+
+      const rawContent = result.response.text().trim();
 
       if (!rawContent) {
         return res.status(502).json({
@@ -196,25 +191,21 @@ router.post(
 
       return res.json({
         success: true,
-        model: 'qwen/qwen3.6-27b',
+        model: 'gemini-2.5-flash',
         data: parsed,
       });
 
     } catch (err) {
-      // Groq API errors (auth, rate limit, model unavailable, etc.)
-      const groqStatus = err?.status ?? err?.statusCode;
-      const groqMessage = err?.message ?? 'Unknown error from Groq API';
+      console.error('[OCR] Gemini API error:', err?.message ?? err);
 
-      console.error('[OCR] Groq API error:', groqStatus, groqMessage);
-
-      if (groqStatus === 401) {
+      if (err?.message?.includes('API_KEY')) {
         return res.status(502).json({
           error: 'API Authentication Error',
-          message: 'The GROQ_API_KEY is invalid or missing. Contact your administrator.',
+          message: 'The GEMINI_API_KEY is invalid or missing. Contact your administrator.',
         });
       }
 
-      if (groqStatus === 429) {
+      if (err?.status === 429 || err?.message?.includes('RATE_LIMIT')) {
         return res.status(429).json({
           error: 'Rate Limited',
           message: 'The AI service is currently rate-limited. Please wait a moment and try again.',
