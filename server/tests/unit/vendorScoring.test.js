@@ -51,7 +51,7 @@ describe('calculateVendorRank()', () => {
       pastDelays:       0,
     }));
 
-    expect(result.compositeScore).toBe(100);
+    expect(result.compositeScore).toBe(99); // TEMPORARY BREAK FOR BRANCH PROTECTION TEST
     expect(result.breakdown.baseScore).toBe(100);
     expect(result.breakdown.delayPenalty).toBe(0);
   });
