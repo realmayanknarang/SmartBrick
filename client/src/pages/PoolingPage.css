@@ -1,0 +1,152 @@
+/* PoolingPage.css — Phase 11E */
+
+.pooling-layout {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+  gap:                   var(--space-6);
+  margin-top:            var(--space-6);
+}
+
+@media (max-width: 900px) {
+  .pooling-layout { grid-template-columns: 1fr; }
+}
+
+.pooling-filters {
+  display:   flex;
+  flex-wrap: wrap;
+  gap:       var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.pooling-filters label {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-1);
+  font-size:      var(--text-xs);
+  color:          var(--color-text-on-dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.pooling-filters select {
+  padding:       var(--space-2) var(--space-3);
+  background:    var(--color-navy-primary);
+  border:        1px solid var(--color-border-on-dark);
+  border-radius: var(--radius-md);
+  color:         var(--color-text-on-dark);
+  font-size:     var(--text-sm);
+  min-width:     160px;
+}
+
+.pooling-order-list {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-2);
+  max-height:     360px;
+  overflow-y:     auto;
+  margin-bottom:  var(--space-4);
+}
+
+.pooling-order-item {
+  display:     flex;
+  align-items: flex-start;
+  gap:         var(--space-3);
+  padding:     var(--space-3);
+  background:  rgba(30, 58, 95, 0.35);
+  border:      1px solid var(--color-border-on-dark);
+  border-radius: var(--radius-md);
+  cursor:      pointer;
+}
+
+.pooling-order-item--selected {
+  border-color: var(--color-accent);
+  background:   rgba(232, 197, 71, 0.08);
+}
+
+.pooling-order-item input {
+  margin-top: 3px;
+}
+
+.pooling-order-item__body {
+  flex: 1;
+}
+
+.pooling-order-item__title {
+  margin:      0 0 2px;
+  font-size:   var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color:       var(--color-text-on-dark);
+}
+
+.pooling-order-item__meta {
+  margin:    0;
+  font-size: var(--text-xs);
+  color:     var(--color-text-on-dark-muted);
+}
+
+.pooling-warn {
+  padding:       var(--space-3);
+  margin-bottom: var(--space-4);
+  background:    rgba(232, 197, 71, 0.1);
+  border:        1px solid rgba(232, 197, 71, 0.35);
+  border-radius: var(--radius-md);
+  color:         var(--color-accent);
+  font-size:     var(--text-sm);
+}
+
+.pooling-calc-btn {
+  padding:       var(--space-3) var(--space-5);
+  background:    var(--color-accent);
+  color:         var(--color-navy-primary);
+  border:        none;
+  border-radius: var(--radius-md);
+  font-weight:   var(--weight-semibold);
+  cursor:        pointer;
+}
+
+.pooling-calc-btn:disabled {
+  opacity: 0.5;
+  cursor:  not-allowed;
+}
+
+.pooling-results {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-4);
+}
+
+.pooling-result-row {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     baseline;
+  padding-bottom:  var(--space-2);
+  border-bottom:   1px solid var(--color-border-on-dark);
+}
+
+.pooling-result-row__label {
+  font-size: var(--text-sm);
+  color:     var(--color-text-on-dark-muted);
+}
+
+.pooling-result-row__value {
+  font-size:   var(--text-base);
+  font-weight: var(--weight-semibold);
+  color:       var(--color-text-on-dark);
+}
+
+.pooling-result-row--savings .pooling-result-row__value {
+  color: var(--color-accent);
+}
+
+.pooling-error {
+  color:     #fca5a5;
+  font-size: var(--text-sm);
+  margin-top: var(--space-3);
+}
+
+.pooling-rules {
+  margin-top:  var(--space-4);
+  font-size:   var(--text-xs);
+  color:       var(--color-text-on-dark-muted);
+  line-height: 1.6;
+}

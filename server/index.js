@@ -21,6 +21,7 @@ import forecastRouter  from './routes/forecastRoutes.js';  // Phase 10C
 import reportRouter    from './routes/reportRoutes.js';    // Phase 11A
 import priceTrendRouter from './routes/priceTrendRoutes.js'; // Phase 11C
 import approvalRouter  from './routes/approvalRoutes.js';  // Phase 11D
+import poolingRouter   from './routes/poolingRoutes.js';   // Phase 11E
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -101,6 +102,9 @@ app.use('/api/price-trends', priceTrendRouter);
 
 // Purchase order approval workflow — Phase 11D
 app.use('/api/approvals', approvalRouter);
+
+// Order pooling estimator — Phase 11E
+app.use('/api/pooling', poolingRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
