@@ -109,11 +109,22 @@ function CopilotIcon() {
   );
 }
 
+
+function ForecastIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 15L7 9l3 3 7-9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M14 3h3v3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 const NAV_ITEMS = [
   { icon: <OverviewIcon />,    label: 'Overview',       path: '/dashboard' },
   { icon: <SitesIcon />,       label: 'Sites',          path: '/dashboard/sites' },
   { icon: <VendorsIcon />,     label: 'Vendors',        path: '/dashboard/vendors' },
   { icon: <ReportsIcon />,     label: 'Analytics',      path: '/dashboard/analytics' },
+  { icon: <ForecastIcon />,    label: 'Forecasting',    path: '/dashboard/forecasting' },
   { icon: <AlertsIcon />,      label: 'Alerts',         path: '/dashboard/alerts' },
   { icon: <ScannerIcon />,     label: 'Invoice OCR',    path: '/dashboard/invoice-scanner', dividerBefore: true },
   { icon: <WeatherNavIcon />,  label: 'Weather Alerts', path: '/dashboard/weather' },

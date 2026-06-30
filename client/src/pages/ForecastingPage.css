@@ -1,0 +1,144 @@
+/* ForecastingPage.css — Phase 10E */
+
+.fp-limitation-note {
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  background: rgba(232, 197, 71, 0.08);
+  border-left: 3px solid #E8C547;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.8125rem;
+  color: #9FB0BC;
+  line-height: 1.5;
+  max-width: 52rem;
+}
+
+.fp-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+}
+
+.fp-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 220px;
+  flex: 1;
+}
+
+.fp-control label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #9FB0BC;
+}
+
+.fp-control select {
+  padding: 0.625rem 0.75rem;
+  background: #1F3344;
+  border: 1px solid #4A5D6E;
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.fp-control select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fp-empty {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: #9FB0BC;
+  font-size: 0.9375rem;
+}
+
+.fp-unavailable {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.fp-unavailable__icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.fp-unavailable p {
+  color: #FFFFFF;
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.fp-unavailable__sub {
+  color: #9FB0BC !important;
+  font-size: 0.875rem !important;
+}
+
+.fp-chart-card {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.fp-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.fp-chart-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.fp-chart-sub {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: #9FB0BC;
+}
+
+.fp-reliability {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.fp-reliability--moderate {
+  background: rgba(60, 181, 122, 0.15);
+  color: #7EC8A0;
+  border: 1px solid rgba(60, 181, 122, 0.35);
+}
+
+.fp-reliability--limited {
+  background: rgba(232, 197, 71, 0.12);
+  color: #E8C547;
+  border: 1px solid rgba(232, 197, 71, 0.35);
+}
+
+.fp-reliability--insufficient {
+  background: rgba(224, 123, 92, 0.12);
+  color: #E07B5C;
+  border: 1px solid rgba(224, 123, 92, 0.35);
+}
+
+@media (max-width: 768px) {
+  .fp-controls {
+    flex-direction: column;
+  }
+
+  .fp-control {
+    min-width: 100%;
+  }
+}

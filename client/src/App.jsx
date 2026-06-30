@@ -17,6 +17,7 @@ import VendorsPage         from './pages/VendorsPage';
 import AnalyticsPage       from './pages/AnalyticsPage';  // Phase 8C
 import AlertsPage          from './pages/AlertsPage';      // Phase 8D
 import CopilotPage         from './pages/CopilotPage';     // Phase 9C
+import ForecastingPage     from './pages/ForecastingPage'; // Phase 10E
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -243,6 +244,16 @@ function App() {
           element={
             <ProtectedRoute>
               <CopilotPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Demand Forecasting — Phase 10E */}
+        <Route
+          path="/dashboard/forecasting"
+          element={
+            <ProtectedRoute>
+              <ForecastingPage />
             </ProtectedRoute>
           }
         />
