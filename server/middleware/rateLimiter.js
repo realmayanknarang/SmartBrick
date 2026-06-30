@@ -81,3 +81,15 @@ export const copilotLimiter = rateLimit({
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
+
+/**
+ * NL search limiter — 15 requests per 15 minutes per IP.
+ * Applied to POST /api/search/vendors (Groq parse + DB query).
+ */
+export const searchLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 15,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: jsonRateLimitHandler,
+});

@@ -16,6 +16,7 @@ import vendorRouter    from './routes/vendorRoutes.js';    // Phase 8A
 import analyticsRouter from './routes/analyticsRoutes.js'; // Phase 8C
 import alertRouter    from './routes/alertRoutes.js';    // Phase 8D
 import copilotRouter  from './routes/copilotRoutes.js';  // Phase 9B
+import searchRouter   from './routes/searchRoutes.js';   // Phase 9D
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -81,6 +82,9 @@ app.use('/api/alerts', alertRouter);
 
 // AI Copilot (Groq chat) — Phase 9B
 app.use('/api/copilot', copilotRouter);
+
+// Natural language vendor search — Phase 9D
+app.use('/api/search', searchRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
