@@ -118,6 +118,15 @@ function LeafIcon() {
   );
 }
 
+function CopilotIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 2a6 6 0 00-6 6v2.5a2.5 2.5 0 002.5 2.5h1.2a1.3 1.3 0 001.3-1.3V9.5A1.3 1.3 0 007.7 8.2H6.5A4.5 4.5 0 0110 3.5 4.5 4.5 0 0113.5 8.2h-1.2a1.3 1.3 0 00-1.3 1.3v2.2a1.3 1.3 0 001.3 1.3H13.5A2.5 2.5 0 0016 10.5V8a6 6 0 00-6-6z" fill="currentColor" opacity="0.85"/>
+      <rect x="7" y="14" width="6" height="3" rx="1.2" fill="currentColor" opacity="0.6"/>
+    </svg>
+  );
+}
+
 const NAV_ITEMS = [
   { icon: <OverviewIcon />,  label: 'Overview',       path: '/dashboard' },
   { icon: <SitesIcon />,     label: 'Sites',          path: '/dashboard/sites' },
@@ -128,6 +137,7 @@ const NAV_ITEMS = [
   { icon: <WeatherIcon />,   label: 'Weather Alerts', path: '/dashboard/weather' },
   { icon: <MapIcon />,       label: 'Logistics',      path: '/dashboard/logistics' },
   { icon: <LeafIcon />,      label: 'Sustainability',  path: '/dashboard/carbon' },
+  { icon: <CopilotIcon />,     label: 'Copilot',         path: '/dashboard/copilot', dividerBefore: true },
 ];
 
 // ─── Score badge helper ───────────────────────────────────────────────────────

@@ -1,0 +1,33 @@
+/**
+ * client/src/components/ChatBubble.jsx
+ *
+ * Copilot chat message bubble — Phase 9C
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Small presentational component for user vs assistant messages in the
+ * Copilot chat panel.  Styling follows SmartBrick navy/gold tokens.
+ */
+
+import './ChatBubble.css';
+
+/**
+ * @param {{ role: 'user' | 'assistant', content: string, isError?: boolean }} props
+ */
+function ChatBubble({ role, content, isError = false }) {
+  const classes = [
+    'chat-bubble',
+    role === 'user' ? 'chat-bubble--user' : 'chat-bubble--assistant',
+    isError ? 'chat-bubble--error' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <div className={`chat-bubble-row chat-bubble-row--${role}`}>
+      <div className={classes} role={isError ? 'alert' : undefined}>
+        <p className="chat-bubble__text">{content}</p>
+      </div>
+    </div>
+  );
+}
+
+export default ChatBubble;

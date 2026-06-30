@@ -16,6 +16,7 @@ import SitesPage           from './pages/SitesPage';
 import VendorsPage         from './pages/VendorsPage';
 import AnalyticsPage       from './pages/AnalyticsPage';  // Phase 8C
 import AlertsPage          from './pages/AlertsPage';      // Phase 8D
+import CopilotPage         from './pages/CopilotPage';     // Phase 9C
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -232,6 +233,16 @@ function App() {
           element={
             <ProtectedRoute>
               <AlertsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* AI Copilot — Phase 9C */}
+        <Route
+          path="/dashboard/copilot"
+          element={
+            <ProtectedRoute>
+              <CopilotPage />
             </ProtectedRoute>
           }
         />
