@@ -9,3 +9,6 @@ test-results/
 
 # Design reference — local only, do not push
 design.md
+
+# mongodb-memory-server binary cache
+server/.cache/

@@ -199,18 +199,20 @@ describe('PurchaseOrder schema — totalCost pre-save hook', () => {
   });
 
   test('totalCost is recalculated on update via doc.save() too', async () => {
-    const order = await PurchaseOrder.create(makeOrderData({
+    // Create a fresh order within this test — do not rely on shared state
+    // from other tests since afterEach wipes all collections between tests.
+    const freshOrder = await PurchaseOrder.create(makeOrderData({
       quantity:     10,
       pricePerUnit: 350,
     }));
 
-    // Modify the order and save again
-    order.quantity     = 20;
-    order.pricePerUnit = 400;
-    order.totalCost    = 999; // wrong — hook should fix it
-    await order.save();
+    // Modify and save in the same test — the document still exists in the DB
+    freshOrder.quantity     = 20;
+    freshOrder.pricePerUnit = 400;
+    freshOrder.totalCost    = 999; // wrong — hook should fix it
+    await freshOrder.save();
 
-    expect(order.totalCost).toBe(8000); // 20 × 400
+    expect(freshOrder.totalCost).toBe(8000); // 20 × 400
   });
 
   test('creating a PurchaseOrder with quantity < 1 is rejected', async () => {

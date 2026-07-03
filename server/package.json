@@ -9,6 +9,11 @@
     "seed": "node scripts/seed.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
+  "mongodbMemoryServer": {
+    "version": "7.0.14",
+    "downloadDir": "./.cache/mongodb-binaries",
+    "skipMD5": true
+  },
   "dependencies": {
     "@clerk/express": "^2.1.32",
     "@google/generative-ai": "^0.24.1",
