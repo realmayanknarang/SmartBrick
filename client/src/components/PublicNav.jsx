@@ -41,7 +41,7 @@
  *   />
  */
 
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   SignedIn,
   SignedOut,
@@ -80,6 +80,7 @@ function BrandMark() {
  * @param {string}                          [props.className]
  */
 function PublicNav({ links = [], logoText = 'SmartBrick', className = '' }) {
+  const { pathname } = useLocation();
   const navClasses = ['public-nav', className].filter(Boolean).join(' ');
 
   return (
@@ -93,13 +94,27 @@ function PublicNav({ links = [], logoText = 'SmartBrick', className = '' }) {
       {/* ── Centre nav links (optional) ─────────────────── */}
       {links.length > 0 && (
         <ul className="public-nav__links" role="list">
-          {links.map(({ label, to }) => (
-            <li key={to}>
-              <Link to={to} className="public-nav__link">
-                {label}
-              </Link>
-            </li>
-          ))}
+          {links.map(({ label, to }) => {
+            const isHash = to.startsWith('#') || to.includes('#');
+            if (isHash) {
+              const hashPart = to.substring(to.indexOf('#'));
+              const href = pathname === '/' ? hashPart : `/${hashPart}`;
+              return (
+                <li key={to}>
+                  <a href={href} className="public-nav__link">
+                    {label}
+                  </a>
+                </li>
+              );
+            }
+            return (
+              <li key={to}>
+                <Link to={to} className="public-nav__link">
+                  {label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
 

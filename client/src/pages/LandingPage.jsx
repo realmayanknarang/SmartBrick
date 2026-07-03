@@ -42,6 +42,7 @@
  * NumberBadge, StatPill) or LandingPage.css token-based classes.
  */
 
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PublicNav    from '../components/PublicNav';
 import Button       from '../components/Button';
@@ -54,10 +55,10 @@ import './LandingPage.css';
 // All `to` values must point to an id= that actually exists on this page.
 // ─────────────────────────────────────────────────────────────────────────────
 const NAV_LINKS = [
-  { label: 'Platform',      to: '/#platform' },       // → id="platform"  (value-prop section)
-  { label: 'How it works',  to: '/#how-it-works' },  // → id="how-it-works" (caps grid)
-  { label: 'For builders',  to: '/#how-it-works' },  // → same target — no separate page yet
-  { label: 'Contact',       to: '/#contact' },        // → id="contact" (footer)
+  { label: 'Platform',      to: '#platform' },       // → id="platform"  (value-prop section)
+  { label: 'How it works',  to: '#how-it-works' },  // → id="how-it-works" (caps grid)
+  { label: 'Features',      to: '#platform' },       // → points to value-prop, replaces For builders
+  { label: 'Contact',       to: '#contact' },        // → id="contact" (footer)
 ];
 
 // ─── Inline SVG icons (no icon library — consistent with Phase 4) ─────────────
@@ -302,6 +303,18 @@ function FooterBrandMark() {
 // ─── LandingPage ─────────────────────────────────────────────────────────────
 
 function LandingPage() {
+  useEffect(() => {
+    if (window.location.hash) {
+      const id = window.location.hash.substring(1);
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, []);
+
   return (
     <div className="landing-page">
 
