@@ -153,6 +153,7 @@ const NUMBERED_CAPS = [
       { icon: '🏗️', label: '8 sites tracked' },
       { icon: '📦', label: '6 material types' },
     ],
+    screenshot: '/screenshots/analytics.png',
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none"
         aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -183,6 +184,7 @@ const NUMBERED_CAPS = [
       { icon: '📊', label: 'Reliability score' },
       { icon: '🚚', label: 'Delivery tracking' },
     ],
+    screenshot: '/screenshots/vendors.png',
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none"
         aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -201,35 +203,19 @@ const NUMBERED_CAPS = [
   },
   {
     num:   '03',
-    title: 'Purchase Approval Workflow',
+    title: 'AI Copilot',
     eyebrow: 'CAPABILITY',
-    desc:  'Every purchase order moves through a gated four-stage approval chain — site engineer → project manager → finance → approved — with delivery status tracked end-to-end.',
+    desc:  'Interact with our Llama 3 powered procurement copilot to query site material inventories, retrieve vendor pricing metrics, and instantly identify supply pipeline bottlenecks in natural language.',
     pills: [
-      { icon: '✅', label: '4-stage approval' },
-      { icon: '📋', label: '5 projects' },
-      { icon: '⏱️', label: 'Status tracking' },
+      { icon: '💬', label: 'Natural Language' },
+      { icon: '🤖', label: 'Llama 3 Powered' },
+      { icon: '⚡', label: 'Real-time context' },
     ],
+    screenshot: '/screenshots/copilot.png',
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none"
         aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-        {/* Workflow nodes */}
-        <circle cx="8"  cy="24" r="5" stroke="currentColor" strokeWidth="2"
-          fill="currentColor" fillOpacity="0.2" />
-        <circle cx="22" cy="24" r="5" stroke="currentColor" strokeWidth="2"
-          fill="currentColor" fillOpacity="0.4" />
-        <circle cx="36" cy="24" r="5" stroke="currentColor" strokeWidth="2"
-          fill="currentColor" fillOpacity="0.7" />
-        <circle cx="44" cy="14" r="4" fill="currentColor" />
-        {/* Checkmark in final node */}
-        <path d="M41 14 L43.5 16.5 L47 12" stroke="var(--color-surface-dark)"
-          strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        {/* Connectors */}
-        <line x1="13" y1="24" x2="17" y2="24" stroke="currentColor"
-          strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-        <line x1="27" y1="24" x2="31" y2="24" stroke="currentColor"
-          strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-        <line x1="39.5" y1="21" x2="41.5" y2="17" stroke="currentColor"
-          strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        <circle cx="24" cy="24" r="10" stroke="currentColor" strokeWidth="2" />
       </svg>
     ),
   },
@@ -440,7 +426,7 @@ function LandingPage() {
           </header>
 
           {/* Alternating numbered capability rows */}
-          {NUMBERED_CAPS.map(({ num, title, eyebrow, desc, pills, icon }, idx) => {
+          {NUMBERED_CAPS.map(({ num, title, eyebrow, desc, pills, icon, screenshot }, idx) => {
             const isEven = idx % 2 === 1;   // 0=left-icon, 1=right-icon, alternating
 
             return (
@@ -449,12 +435,25 @@ function LandingPage() {
                 className={`lp-caps__row ${isEven ? 'lp-caps__row--reversed' : ''}`}
                 aria-label={`Capability ${num}: ${title}`}
               >
-                {/* ── Visual block (icon in Card) ───────────────────────── */}
+                {/* ── Visual block (icon in Card or screenshot) ───────────────────────── */}
                 <div className="lp-caps__visual">
-                  <Card surface="navy-secondary" className="lp-caps__icon-card">
-                    <div className="lp-caps__icon-inner" aria-hidden="true">
-                      {icon}
-                    </div>
+                  <Card surface="navy-secondary" className="lp-caps__icon-card" style={{ padding: screenshot ? 0 : undefined, overflow: 'hidden' }}>
+                    {screenshot ? (
+                      <img
+                        src={screenshot}
+                        alt={`${title} screenshot`}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: 'inherit'
+                        }}
+                      />
+                    ) : (
+                      <div className="lp-caps__icon-inner" aria-hidden="true">
+                        {icon}
+                      </div>
+                    )}
                   </Card>
                 </div>
 
