@@ -63,35 +63,67 @@
 .dash-topbar__link {
   color:           var(--color-text-on-dark-muted);
   text-decoration: none;
-  font-size:       var(--text-base);
+  font-size:       var(--text-sm); /* 12px for cleaner, compact nav links */
   font-weight:     var(--weight-medium);
   transition:      color var(--transition-base);
+  display:         inline-flex;
+  align-items:     center;
 }
 
 .dash-topbar__link:hover {
   color: var(--color-text-on-dark);
 }
 
+/* Custom vertical divider between "Home" (the last .dash-topbar__link) and "Sign out" */
+.dash-topbar__right .dash-topbar__link:last-of-type {
+  position: relative;
+}
+
+.dash-topbar__right .dash-topbar__link:last-of-type::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background-color: var(--color-border-dark);
+  margin-left: var(--space-4);
+  pointer-events: none;
+}
+
 .dash-topbar__signout {
-  background:     none;
-  border:         1px solid var(--color-border-dark);
-  border-radius:  var(--radius-sm);
-  padding:        6px var(--space-3);
-  color:          var(--color-text-on-dark-muted);
-  font-family:    var(--font-body);
-  font-size:      var(--text-base);
-  font-weight:    var(--weight-medium);
-  cursor:         pointer;
+  display:          inline-flex;
+  align-items:      center;
+  justify-content:  center;
+  background-color: transparent;
+  color:            var(--color-text-on-dark);
+  border:           1px solid var(--color-border-dark);
+  border-radius:    var(--radius-pill); /* Pill shape */
+  padding:          6px var(--space-4); /* Tight padding */
+  min-height:       32px; /* 32px height to match Button variant secondary sm */
+  font-family:      var(--font-body);
+  font-size:        var(--text-sm); /* 12px font */
+  font-weight:      var(--weight-medium);
+  letter-spacing:   0.02em;
+  line-height:      1;
+  text-decoration:  none;
+  white-space:      nowrap;
+  cursor:           pointer;
   transition:
     background-color var(--transition-base),
     color            var(--transition-base),
-    border-color     var(--transition-base);
+    border-color     var(--transition-base),
+    box-shadow       var(--transition-fast);
 }
 
 .dash-topbar__signout:hover {
-  background-color: rgba(255, 255, 255, 0.06);
-  border-color:     var(--color-text-on-dark-faint);
+  background-color: rgba(255, 255, 255, 0.07);
+  border-color:     var(--color-text-on-dark-muted);
   color:            var(--color-text-on-dark);
+  box-shadow:       var(--shadow-sm);
+}
+
+.dash-topbar__signout:active {
+  background-color: rgba(255, 255, 255, 0.12);
+  box-shadow:       none;
 }
 
 /* ─── Content wrapper ──────────────────────────────────────────────────────── */
