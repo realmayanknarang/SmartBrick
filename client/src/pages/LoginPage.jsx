@@ -18,8 +18,8 @@
  * to replicate that logic here; Clerk's session change triggers it naturally.
  */
 
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useSignIn } from '@clerk/clerk-react';
 import AuthBrandPanel from '../components/AuthBrandPanel';
 import TextInput from '../components/TextInput';
@@ -83,11 +83,19 @@ function OrDivider() {
 
 function LoginPage() {
   const { isLoaded, signIn } = useSignIn();
+  const [searchParams] = useSearchParams();
+  const isDemo = searchParams.get('demo') === 'true';
 
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState('');
+
+  useEffect(() => {
+    if (isDemo) {
+      setEmail('demo@smartbrick.com');
+    }
+  }, [isDemo]);
 
   // ── Email/password submit ──────────────────────────────────────────────────
 
@@ -168,6 +176,20 @@ function LoginPage() {
 
           {/* Form */}
           <form className="auth-form__fields" onSubmit={handleSubmit} noValidate>
+            {isDemo && (
+              <div className="auth-form__demo-notice" style={{
+                backgroundColor: 'rgba(232, 197, 71, 0.12)',
+                border: '1px solid #E8C547',
+                padding: '12px',
+                borderRadius: '10px',
+                marginBottom: '16px',
+                fontSize: '14px',
+                color: '#142127',
+                lineHeight: '1.4'
+              }}>
+                ℹ️ Demo credentials pre-filled. Enter password: <strong>smartbrick2026</strong>
+              </div>
+            )}
             <TextInput
               id="login-email"
               label="Email"

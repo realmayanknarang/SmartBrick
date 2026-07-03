@@ -361,6 +361,21 @@ function LandingPage() {
               See how it works
             </Button>
           </div>
+
+          <div className="lp-hero__demo-box" style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+            <Button
+              as={Link}
+              to="/login?demo=true"
+              variant="secondary"
+              size="sm"
+              id="hero-cta-demo"
+            >
+              Try demo
+            </Button>
+            <p className="lp-hero__demo-helper" style={{ fontSize: '12px', color: '#63696c' }}>
+              Email: demo@smartbrick.com · No signup required
+            </p>
+          </div>
         </div>
 
         <div className="lp-hero__divider" aria-hidden="true" />
