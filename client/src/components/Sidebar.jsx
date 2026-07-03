@@ -137,39 +137,58 @@ function Sidebar({
     .filter(Boolean)
     .join(' ');
 
+  // Group items by group name
+  const groupedItems = [];
+  items.forEach(item => {
+    const groupName = item.group || null;
+    let group = groupedItems.find(g => g.name === groupName);
+    if (!group) {
+      group = { name: groupName, items: [] };
+      groupedItems.push(group);
+    }
+    group.items.push(item);
+  });
+
   const navList = (
-    <nav aria-label="Sidebar navigation">
-      <ul className="sidebar__nav" role="list">
-        {items.map(({ icon, label, path, dividerBefore }) => {
-          const isActive = activePath === path;
+    <nav aria-label="Sidebar navigation" className="sidebar__menu">
+      {groupedItems.map((group, groupIdx) => (
+        <div key={group.name || `top-${groupIdx}`} className="sidebar__group">
+          {group.name && (
+            <div className="sidebar__group-label">
+              {group.name}
+            </div>
+          )}
+          <ul className="sidebar__nav" role="list">
+            {group.items.map(({ icon, label, path }) => {
+              const isActive = activePath === path;
 
-          return (
-            <li key={path} className="sidebar__item">
-              {/* Optional group divider */}
-              {dividerBefore && <hr className="sidebar__divider" aria-hidden="true" />}
-              <Link
-                to={path}
-                className={[
-                  'sidebar__link',
-                  isActive ? 'sidebar__link--active' : '',
-                ].filter(Boolean).join(' ')}
-                aria-current={isActive ? 'page' : undefined}
-                onClick={() => setMobileOpen(false)}
-              >
-                {/* Icon slot */}
-                {icon && (
-                  <span className="sidebar__item-icon" aria-hidden="true">
-                    {icon}
-                  </span>
-                )}
+              return (
+                <li key={path} className="sidebar__item">
+                  <Link
+                    to={path}
+                    className={[
+                      'sidebar__link',
+                      isActive ? 'sidebar__link--active' : '',
+                    ].filter(Boolean).join(' ')}
+                    aria-current={isActive ? 'page' : undefined}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {/* Icon slot */}
+                    {icon && (
+                      <span className="sidebar__item-icon" aria-hidden="true">
+                        {icon}
+                      </span>
+                    )}
 
-                {/* Label */}
-                <span className="sidebar__item-label">{label}</span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+                    {/* Label */}
+                    <span className="sidebar__item-label">{label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
     </nav>
   );
 

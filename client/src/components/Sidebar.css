@@ -65,13 +65,35 @@
   line-height:    1;
 }
 
-/* ─── Nav list ──────────────────────────────────────────────────────────────── */
-.sidebar__nav {
+/* ─── Nav menu and groups ───────────────────────────────────────────────────── */
+.sidebar__menu {
   flex:        1;
   overflow-y:  auto;
+  padding:     var(--space-3) 0; /* 12px top/bottom breathing room */
+}
+
+.sidebar__group {
+  margin-top:  var(--space-4); /* extra top margin between groups */
+}
+
+.sidebar__group:first-of-type {
+  margin-top:  0;
+}
+
+.sidebar__group-label {
+  font-size:      11px;
+  color:          #4A5D6E;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight:    var(--weight-bold);
+  padding:        var(--space-2) var(--space-4) var(--space-1); /* top padding for breathing room */
+  font-family:    var(--font-body);
+}
+
+.sidebar__nav {
   list-style:  none;
   margin:      0;
-  padding:     var(--space-3) 0; /* 12px top/bottom breathing room */
+  padding:     0;
 }
 
 .sidebar__item {
