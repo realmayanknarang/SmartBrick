@@ -27,11 +27,23 @@
   border-bottom-right-radius: var(--radius-sm);
 }
 
+.chat-bubble--user,
+.chat-bubble--user p,
+.chat-bubble--user * {
+  color: var(--color-text-on-light) !important;
+}
+
 .chat-bubble--assistant {
   background-color: var(--color-surface-dark-raised);
   color: var(--color-text-on-dark);
   border: 1px solid var(--color-border-dark);
   border-bottom-left-radius: var(--radius-sm);
+}
+
+.chat-bubble--assistant,
+.chat-bubble--assistant p,
+.chat-bubble--assistant * {
+  color: var(--color-text-on-dark);
 }
 
 .chat-bubble--error {
