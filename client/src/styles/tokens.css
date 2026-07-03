@@ -1,138 +1,149 @@
 /*
- * SmartBrick Design Tokens — Clyde Style System (Tailwind v4)
+ * SmartBrick Design Tokens — HoneyBook Style System (Tailwind v4)
  * ─────────────────────────────────────────────────────────────────────────────
- * All Clyde tokens are declared inside @theme so Tailwind generates utility
- * classes automatically:
- *   --color-bone      → bg-bone, text-bone, border-bone …
- *   --font-recoleta   → font-recoleta
- *   --radius-cards    → rounded-cards
- *   --spacing-64      → (use arbitrary [64px] or extend if needed)
+ * All tokens declared inside @theme generate Tailwind utility classes:
+ *   --color-inkwell       → bg-inkwell, text-inkwell, border-inkwell …
+ *   --font-bureau-serif   → font-bureau-serif
+ *   --radius-cards        → rounded-cards
  *
  * Full visual reference: /design.md at the project root.
  *
  * LOCKED VISUAL DIRECTION:
- *   Primary canvas   #000000  (obsidian)
- *   Light surface    #f6f6f4  (bone)
- *   Mid-gray         #7d7d7d  (slate)
- *   Pure white       #ffffff  (paper)
- *   Near-black edge  #1a1a1a  (char)
- *   Accent gradient  linear-gradient(90deg, #feed7a 0%, #ff8400 48.96%, #df91f7 100%)
- *   Display font     Recoleta serif — 36 px and above only
- *   UI / body font   Oldschool Grotesk — all UI and body text
+ *   Theme             light — sunlit creative studio
+ *   Page canvas       #ffffff  (paper-white)
+ *   Hero / marquee    #fffa77  (honey-yellow) — full-bleed bands only
+ *   Accent fill       #fffa56  (marigold) — cards, callouts, highlights
+ *   Primary text      #142127  (inkwell)
+ *   Body text         #131416  (carbon)
+ *   Muted text        #63696c  (pebble)
+ *   Card border       #c7d5d9  (river-mist)
+ *   Display font      STK Bureau Serif (serif) — 28 px and above
+ *   UI / body font    STK Bureau Sans (sans) — all UI and body text
+ *   Eyebrow font      STK Gerhard — 14 px all-caps labels only
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
 @theme {
 
   /* ─── Colors ──────────────────────────────────────────────────────────────
-   * Generates: bg-obsidian, text-bone, border-slate, etc.
-   * The Solstice Gradient is decorative only — do not use as a button fill,
-   * text color, or UI surface. Apply it only to 3D abstract shapes.
+   * Generates: bg-inkwell, text-bone, border-river-mist, etc.
+   * Yellow is a COLOR BLOCK — hero/marquee bands only, never small accents.
    */
-  --color-obsidian:           #000000;
-  --color-bone:               #f6f6f4;
-  --color-slate:              #7d7d7d;
-  --color-paper:              #ffffff;
-  --color-char:               #1a1a1a;
-  --color-solstice:           #ff8400;   /* solid fallback for the gradient */
+  --color-honey-yellow:   #fffa77;   /* hero / marquee full-bleed bands */
+  --color-marigold:       #fffa56;   /* accent fills, callouts, highlights */
+  --color-inkwell:        #142127;   /* primary text, CTA fill, headings */
+  --color-carbon:         #131416;   /* body text, high-contrast borders */
+  --color-slate-gray:     #343c40;   /* dark borders, separators */
+  --color-pebble:         #63696c;   /* muted helper text, captions */
+  --color-river-mist:     #c7d5d9;   /* card borders, hairline dividers */
+  --color-fog:            #e0e5e7;   /* subtle borders, disabled outlines */
+  --color-paper-white:    #ffffff;   /* page canvas, card surfaces */
 
-  /* Semantic state colors — intentionally neutral so no new chroma enters UI */
-  --color-success:            #3CB57A;
-  --color-warning:            #E8C547;
-  --color-danger:             #E05C5C;
-  --color-info:               #4A90D9;
-
-  /* ─── Gradient ────────────────────────────────────────────────────────────
-   * Use bg-gradient-solstice on decorative elements only.
-   */
-  --background-image-gradient-solstice:
-    linear-gradient(90deg, #feed7a 0%, #ff8400 48.96%, #df91f7 100%);
+  /* Semantic state colors */
+  --color-success:        #3CB57A;
+  --color-warning:        #fffa56;   /* reuse marigold — on-brand warning */
+  --color-danger:         #E05C5C;
+  --color-info:           #4A90D9;
 
   /* ─── Font Families ───────────────────────────────────────────────────────
-   * Generates: font-recoleta, font-grotesk, font-times
-   * Recoleta must only be used at 36 px and above.
+   * Generates: font-bureau-serif, font-bureau-sans, font-gerhard
+   * Bureau Serif: display face — 28 px and above only.
+   * Bureau Sans:  all UI, body, buttons, nav.
+   * Gerhard:      eyebrow labels only — 14 px all-caps, one per section.
    */
-  --font-recoleta:            'Recoleta', 'DM Serif Display', 'GT Super', Georgia, serif;
-  --font-grotesk:             'Oldschool Grotesk', 'Söhne', 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --font-times:               'Times New Roman', Times, Georgia, serif;
+  --font-bureau-serif:    'STK Bureau Serif', 'Playfair Display', 'DM Serif Display', Georgia, serif;
+  --font-bureau-sans:     'STK Bureau Sans', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-gerhard:         'STK Gerhard', 'Inter', 'Helvetica Neue', Arial, sans-serif;
 
   /* ─── Font Weights ────────────────────────────────────────────────────────
-   * Generates: font-light (300), font-regular (400)
+   * Generates: font-weight-regular, font-weight-medium, etc.
    */
-  --font-weight-light:        300;
-  --font-weight-regular:      400;
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
 
   /* ─── Type Scale ──────────────────────────────────────────────────────────
-   * Generates: text-body-sm, text-body-lg, text-subheading … text-display
-   * Use Recoleta only for text-subheading and above.
+   * Generates: text-caption, text-body-sm … text-display-lg
+   * Use Bureau Serif only at text-heading-sm (24px) and above.
    */
-  --font-size-body-sm:        15px;
-  --font-size-body-base:      16px;
-  --font-size-body-lg:        21px;
-  --font-size-subheading:     36px;
-  --font-size-heading-sm:     47px;
-  --font-size-heading:        61px;
-  --font-size-heading-lg:     80px;
-  --font-size-display:        125px;
+  --font-size-caption:    12px;
+  --font-size-body-sm:    14px;
+  --font-size-body:       16px;
+  --font-size-subheading: 20px;
+  --font-size-heading-sm: 24px;
+  --font-size-heading:    32px;
+  --font-size-heading-lg: 48px;
+  --font-size-display:    56px;
+  --font-size-display-lg: 64px;
 
   /* ─── Line Heights ────────────────────────────────────────────────────────
-   * Generates: leading-body-sm, leading-snug, leading-tight, etc.
+   * Generates: leading-caption, leading-body … leading-display-lg
    */
-  --line-height-body-sm:      1.6;
-  --line-height-body-base:    1.5;
-  --line-height-body-lg:      1.3;
-  --line-height-subheading:   1.1;
-  --line-height-heading-sm:   1.1;
-  --line-height-heading:      1.1;
-  --line-height-heading-lg:   1;
-  --line-height-display:      1;
-  --line-height-tight:        1;
-  --line-height-snug:         1.1;
-  --line-height-normal:       1.5;
+  --line-height-caption:    1.5;
+  --line-height-body-sm:    1.5;
+  --line-height-body:       1.5;
+  --line-height-subheading: 1.4;
+  --line-height-heading-sm: 1.3;
+  --line-height-heading:    1.2;
+  --line-height-heading-lg: 1.1;
+  --line-height-display:    1.05;
+  --line-height-display-lg: 1;
+  --line-height-tight:      1;
+  --line-height-snug:       1.2;
+  --line-height-normal:     1.5;
 
   /* ─── Letter Spacing ──────────────────────────────────────────────────────
    * Generates: tracking-body-sm, tracking-display, etc.
-   * RULE: Large type must always be tightened — no 0 or positive values above 36px.
+   * Large type must always be tightened — increase negative tracking with size.
    */
-  --letter-spacing-body-sm:   0.15px;
-  --letter-spacing-body-base: -0.16px;
-  --letter-spacing-body-lg:   -0.42px;
-  --letter-spacing-subheading:-0.36px;
-  --letter-spacing-heading-sm:-0.94px;
-  --letter-spacing-heading:   -1.22px;
-  --letter-spacing-heading-lg:-2.4px;
-  --letter-spacing-display:   -3.75px;
+  --letter-spacing-caption:    0;
+  --letter-spacing-body-sm:    -0.7px;
+  --letter-spacing-body:       -0.8px;
+  --letter-spacing-subheading: -0.6px;
+  --letter-spacing-heading-sm: -0.72px;
+  --letter-spacing-heading:    -0.96px;
+  --letter-spacing-heading-lg: -2.4px;
+  --letter-spacing-display:    -2.8px;
+  --letter-spacing-display-lg: -1.98px;
 
   /* ─── Spacing ─────────────────────────────────────────────────────────────
-   * Base unit: 4px. These extend the default Tailwind spacing scale.
-   * Use p-20, gap-24, mt-64, etc.
+   * Base unit: 4 px. Extends the default Tailwind spacing scale.
+   * Use p-4, gap-8, mt-16, py-80, etc.
    */
-  --spacing-20:               20px;
-  --spacing-24:               24px;
-  --spacing-44:               44px;
-  --spacing-64:               64px;
-  --spacing-92:               92px;
-  --spacing-100:              100px;
-  --spacing-144:              144px;
+  --spacing-4:    4px;
+  --spacing-8:    8px;
+  --spacing-12:   12px;
+  --spacing-16:   16px;
+  --spacing-20:   20px;
+  --spacing-24:   24px;
+  --spacing-32:   32px;
+  --spacing-40:   40px;
+  --spacing-60:   60px;
+  --spacing-64:   64px;
+  --spacing-80:   80px;
+  --spacing-112:  112px;
+  --spacing-216:  216px;
 
   /* ─── Border Radius ───────────────────────────────────────────────────────
-   * Generates: rounded-inputs, rounded-links, rounded-cards,
-   *            rounded-large-panels, rounded-full (100px)
-   * These five values are the COMPLETE radius scale — no others permitted.
+   * Generates: rounded-inputs, rounded-cards, rounded-full
+   * Complete radius scale — only these values are permitted.
+   * Buttons and tags: always rounded-full (9999px).
+   * Cards and images: always rounded-cards (20px).
+   * Inputs: always rounded-inputs (10px).
    */
-  --radius-inputs:            4px;
-  --radius-links:             12px;
-  --radius-cards:             16px;
-  --radius-large-panels:      38px;
-  --radius-full:              100px;   /* buttons, tags, pills */
+  --radius-inputs:      10px;
+  --radius-cards:       20px;
+  --radius-images:      20px;
+  --radius-full:        9999px;  /* buttons, tags, pills */
 
   /* ─── Layout ──────────────────────────────────────────────────────────────
-   * Use max-w-page, gap-section, p-card, gap-element as utility shorthands.
+   * max-w-page, gap-section, p-card, gap-element
    */
-  --max-width-page:           1200px;
-  --spacing-section:          80px;
-  --spacing-card:             24px;
-  --spacing-element:          20px;
+  --max-width-page:     1200px;
+  --spacing-section:    80px;
+  --spacing-card:       24px;
+  --spacing-element:    16px;
 
   /* ─── Transition ──────────────────────────────────────────────────────────
    * Generates: transition-fast, transition-base, transition-slow
@@ -144,79 +155,119 @@
   /* ─── Z-index Layers ──────────────────────────────────────────────────────
    * Generates: z-base, z-raised, z-dropdown, z-modal, z-toast, z-topbar
    */
-  --z-index-base:             0;
-  --z-index-raised:           10;
-  --z-index-dropdown:         100;
-  --z-index-modal:            200;
-  --z-index-toast:            300;
-  --z-index-topbar:           400;
+  --z-index-base:       0;
+  --z-index-raised:     10;
+  --z-index-dropdown:   100;
+  --z-index-modal:      200;
+  --z-index-toast:      300;
+  --z-index-topbar:     400;
 }
 
 /*
- * ─── CSS Custom Properties passthrough ────────────────────────────────────────
- * Items that don't map into @theme utilities are kept as raw CSS vars so legacy
- * components that reference them with var() continue to work without changes.
+ * ─── CSS Custom Properties — legacy aliases ───────────────────────────────────
+ * Every var(--old-token) used across existing components is remapped here so
+ * no component CSS breaks. Do not remove these until all components are
+ * migrated to the new token names.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 :root {
-  /* Gradient — full declaration for direct var() usage */
-  --gradient-solstice: linear-gradient(90deg, #feed7a 0%, #ff8400 48.96%, #df91f7 100%);
 
-  /* Hairline border helpers */
-  --border-hairline-light: 1px solid #f6f6f4;  /* on dark surfaces */
-  --border-hairline-dark:  1px solid #1a1a1a;   /* on light surfaces */
+  /* ── Font aliases ─────────────────────────────────────────────────────── */
+  /* Old: var(--font-display) → Bureau Serif (was Barlow Condensed)          */
+  /* Old: var(--font-body)    → Bureau Sans  (was Inter)                     */
+  --font-display: 'STK Bureau Serif', 'Playfair Display', 'DM Serif Display', Georgia, serif;
+  --font-body:    'STK Bureau Sans', 'Inter', 'Helvetica Neue', Arial, sans-serif;
 
-  /* Shadow tokens set to none — Clyde uses flat, border-based elevation only */
-  --shadow-sm: none;
-  --shadow-md: none;
-  --shadow-lg: none;
+  /* ── Color surface aliases ────────────────────────────────────────────── */
+  /* Components use --color-surface-dark for the "dark canvas" surface.
+     In the HoneyBook light theme the "primary dark" is inkwell (#142127).  */
+  --color-surface-dark:        #142127;   /* inkwell — primary dark surface */
+  --color-surface-dark-raised: #343c40;   /* slate-gray — raised dark panels */
+  --color-surface-light:       #ffffff;   /* paper-white — primary canvas    */
 
-  /* Legacy aliases — keeps any existing components using the old tokens intact */
-  --font-display:              'Recoleta', 'DM Serif Display', Georgia, serif;
-  --font-body:                 'Oldschool Grotesk', 'Inter', Arial, sans-serif;
-  --color-accent:              #ff8400;
-  --color-accent-hover:        #ffd94a;
-  --color-accent-press:        #e07600;
-  --color-surface-dark:        #000000;
-  --color-surface-dark-raised: #1a1a1a;
-  --color-surface-light:       #f6f6f4;
-  --color-text-on-dark:        #f6f6f4;
-  --color-text-on-dark-muted:  rgba(246, 246, 244, 0.70);
-  --color-text-on-dark-faint:  rgba(246, 246, 244, 0.45);
-  --color-text-on-light:       #000000;
-  --color-text-on-light-muted: #7d7d7d;
-  --color-border-dark:         #1a1a1a;
-  --color-border-light:        #f6f6f4;
-  --color-success:             #3CB57A;
-  --color-warning:             #E8C547;
-  --color-danger:              #E05C5C;
-  --color-info:                #4A90D9;
+  /* ── Color text aliases ───────────────────────────────────────────────── */
+  --color-text-on-dark:        #ffffff;            /* white on inkwell/dark  */
+  --color-text-on-dark-muted:  #c7d5d9;            /* river-mist on dark     */
+  --color-text-on-dark-faint:  rgba(199,213,217,0.55);
+  --color-text-on-light:       #142127;            /* inkwell on white       */
+  --color-text-on-light-muted: #63696c;            /* pebble on white        */
 
-  /* Legacy spacing */
-  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
-  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  /* ── Color accent aliases (old gold → marigold) ───────────────────────── */
+  /* Components reference --color-accent for the brand highlight colour.     */
+  --color-accent:       #fffa56;           /* marigold — primary accent      */
+  --color-accent-hover: #fffa77;           /* honey-yellow — lighter hover   */
+  --color-accent-press: #f0e800;           /* slightly deeper pressed state  */
 
-  /* Legacy radius */
-  --radius-sm:   4px;
-  --radius-md:   4px;
-  --radius-lg:   12px;
-  --radius-xl:   12px;
-  --radius-2xl:  16px;
-  --radius-3xl:  38px;
-  --radius-pill: 100px;
+  /* ChatBubble used non-standard names — alias them too */
+  --color-accent-gold:           #fffa56;  /* was --color-accent-gold        */
+  --color-surface-navy-secondary:#343c40;  /* was --color-surface-navy-secondary */
 
-  /* Legacy type */
-  --text-xs: 11px; --text-sm: 12px; --text-base: 15px;
-  --text-md: 16px; --text-lg: 21px;
-  --leading-tight: 1; --leading-snug: 1.1; --leading-normal: 1.5;
-  --weight-regular: 400; --weight-medium: 500;
-  --weight-semibold: 600; --weight-bold: 700;
+  /* ── Border aliases ───────────────────────────────────────────────────── */
+  --color-border-dark:  #343c40;           /* slate-gray — border on dark    */
+  --color-border-light: #c7d5d9;           /* river-mist — border on light   */
 
-  /* Legacy z-index */
-  --z-base: 0; --z-raised: 10; --z-dropdown: 100;
-  --z-modal: 200; --z-toast: 300; --z-topbar: 400;
+  /* ── Semantic state aliases ───────────────────────────────────────────── */
+  --color-success: #3CB57A;
+  --color-warning: #fffa56;
+  --color-danger:  #E05C5C;
+  --color-info:    #4A90D9;
 
-  /* Legacy transitions */
+  /* ── Legacy type scale aliases ────────────────────────────────────────── */
+  /* Maps old --text-* names to HoneyBook sizes                             */
+  --text-xs:   12px;   /* caption  */
+  --text-sm:   12px;   /* caption  */
+  --text-base: 14px;   /* body-sm  */
+  --text-md:   16px;   /* body     */
+  --text-lg:   20px;   /* subheading */
+  --text-xl:   20px;   /* subheading */
+  --text-2xl:  24px;   /* heading-sm */
+  --text-3xl:  32px;   /* heading    */
+
+  /* ── Leading aliases ──────────────────────────────────────────────────── */
+  --leading-tight:   1;
+  --leading-snug:    1.2;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.6;
+
+  /* ── Weight aliases ───────────────────────────────────────────────────── */
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* ── Spacing aliases (old --space-N → HoneyBook scale) ───────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ── Border radius aliases ────────────────────────────────────────────── */
+  --radius-sm:   6px;    /* small — close to old 4px, now 6px */
+  --radius-md:   6px;    /* medium inputs context */
+  --radius-lg:   10px;   /* inputs */
+  --radius-pill: 9999px; /* buttons, tags */
+
+  /* ── Shadow tokens ────────────────────────────────────────────────────── */
+  /* HoneyBook uses shadows sparingly — only on floating stat badges and     */
+  /* product screenshots. Cards use 1px river-mist borders, not shadows.    */
+  --shadow-sm: 0 2px 6px  rgba(20, 33, 39, 0.06);
+  --shadow-md: 0 4px 12px rgba(20, 33, 39, 0.08);   /* stats badge */
+  --shadow-lg: 0 8px 24px rgba(20, 33, 39, 0.06);   /* screenshots */
+
+  /* ── Transition aliases ───────────────────────────────────────────────── */
   --transition-fast: 100ms ease;
   --transition-base: 180ms ease;
   --transition-slow: 320ms ease;
+
+  /* ── Z-index aliases ──────────────────────────────────────────────────── */
+  --z-base:     0;
+  --z-raised:   10;
+  --z-dropdown: 100;
+  --z-modal:    200;
+  --z-toast:    300;
+  --z-topbar:   400;
 }

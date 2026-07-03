@@ -29,22 +29,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <!--
-      Recoleta (--font-recoleta): editorial serif — display and headings 36px+.
-      DM Serif Display is the closest Google Fonts substitute for Recoleta.
-      Oldschool Grotesk (--font-oldschool-grotesk): self-hosted if available;
-      Inter is used as the Google Fonts fallback at matching weights (300, 400).
-      Full font guidance in /design.md.
+      STK Bureau Serif  (--font-bureau-serif): editorial serif — display & headings 28px+.
+      STK Bureau Sans   (--font-bureau-sans):  UI grotesque — all body text and UI.
+      STK Gerhard       (--font-gerhard):       eyebrow labels — 14px all-caps only.
+      These are licensed fonts. Google Fonts substitutes loaded below:
+        DM Serif Display → closest optical match for STK Bureau Serif
+        Inter            → closest match for STK Bureau Sans (300, 400, 500, 600, 700)
+      Replace these links with self-hosted @font-face rules once you have the
+      licensed STK font files. Full guidance in /design.md.
     -->
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-
-    <!--
-      NOTE: If you have licensed Recoleta and Oldschool Grotesk, add @font-face
-      declarations in tokens.css or a dedicated fonts.css and remove the
-      DM Serif Display / Inter fallback links above.
-    -->
   </head>
   <body>
     <div id="root"></div>

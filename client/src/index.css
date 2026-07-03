@@ -38,12 +38,12 @@ html {
 
 body {
   margin:      0;
-  font-family: var(--font-grotesk);          /* Oldschool Grotesk / Inter */
-  font-size:   var(--font-size-body-sm);     /* 15px */
-  font-weight: var(--font-weight-regular);   /* 400 */
-  color:       var(--color-bone);            /* warm cream on dark canvas */
-  background:  var(--color-obsidian);        /* near-black canvas */
-  line-height: var(--line-height-body-sm);   /* 1.6 */
+  font-family: var(--font-body);                /* STK Bureau Sans / Inter */
+  font-size:   var(--font-size-body-sm);        /* 14px */
+  font-weight: var(--font-weight-regular);      /* 400 */
+  color:       var(--color-carbon);             /* #131416 — dark body text */
+  background:  var(--color-paper-white);        /* #ffffff — light canvas   */
+  line-height: var(--line-height-body-sm);      /* 1.5 */
 }
 
 /* ─── Root container ────────────────────────────────────────────────────────── */
@@ -78,6 +78,6 @@ img, svg, video {
 
 /* ─── Focus ring ────────────────────────────────────────────────────────────── */
 :focus-visible {
-  outline:        2px solid var(--color-solstice);
+  outline:        2px solid var(--color-inkwell);
   outline-offset: 3px;
 }

@@ -22,13 +22,13 @@
 }
 
 .chat-bubble--user {
-  background-color: var(--color-accent-gold);
+  background-color: var(--color-marigold);
   color: var(--color-text-on-light);
   border-bottom-right-radius: var(--radius-sm);
 }
 
 .chat-bubble--assistant {
-  background-color: var(--color-surface-navy-secondary);
+  background-color: var(--color-surface-dark-raised);
   color: var(--color-text-on-dark);
   border: 1px solid var(--color-border-dark);
   border-bottom-left-radius: var(--radius-sm);
