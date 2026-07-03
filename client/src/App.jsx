@@ -23,6 +23,9 @@ import ApprovalsPage       from './pages/ApprovalsPage';   // Phase 11D
 import PoolingPage         from './pages/PoolingPage';     // Phase 11E
 import PrivacyPolicyPage   from './pages/PrivacyPolicyPage';   // Phase 13E
 import TermsOfServicePage  from './pages/TermsOfServicePage';  // Phase 13E
+import SitesVendorsPage    from './pages/SitesVendorsPage';    // Grouped wrapper Fix 1
+import AnalyticsReportsPage from './pages/AnalyticsReportsPage'; // Grouped wrapper Fix 1
+import OperationsPage      from './pages/OperationsPage';      // Grouped wrapper Fix 1
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -203,75 +206,47 @@ function App() {
           }
         />
 
-        {/* Sites */}
+        {/* Sites & Vendors Group */}
         <Route
-          path="/dashboard/sites"
+          path="/dashboard/sites-vendors"
           element={
             <ProtectedRoute>
-              <SitesPage />
+              <SitesVendorsPage />
             </ProtectedRoute>
           }
         />
+        <Route path="/dashboard/sites" element={<Navigate to="/dashboard/sites-vendors" replace />} />
+        <Route path="/dashboard/vendors" element={<Navigate to="/dashboard/sites-vendors" replace />} />
+        <Route path="/dashboard/approvals" element={<Navigate to="/dashboard/sites-vendors" replace />} />
+        <Route path="/dashboard/pooling" element={<Navigate to="/dashboard/sites-vendors" replace />} />
 
-        {/* Vendors */}
+        {/* Analytics & Reports Group */}
         <Route
-          path="/dashboard/vendors"
+          path="/dashboard/analytics-reports"
           element={
             <ProtectedRoute>
-              <VendorsPage />
+              <AnalyticsReportsPage />
             </ProtectedRoute>
           }
         />
+        <Route path="/dashboard/analytics" element={<Navigate to="/dashboard/analytics-reports" replace />} />
+        <Route path="/dashboard/reports" element={<Navigate to="/dashboard/analytics-reports" replace />} />
+        <Route path="/dashboard/forecasting" element={<Navigate to="/dashboard/analytics-reports" replace />} />
+        <Route path="/dashboard/alerts" element={<Navigate to="/dashboard/analytics-reports" replace />} />
 
-        {/* Spending Analytics — Phase 8C */}
+        {/* Operations Group */}
         <Route
-          path="/dashboard/analytics"
+          path="/dashboard/operations"
           element={
             <ProtectedRoute>
-              <AnalyticsPage />
+              <OperationsPage />
             </ProtectedRoute>
           }
         />
-
-        {/* Report Export — Phase 11B */}
-        <Route
-          path="/dashboard/reports"
-          element={
-            <ProtectedRoute>
-              <ReportsPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Purchase Approvals — Phase 11D */}
-        <Route
-          path="/dashboard/approvals"
-          element={
-            <ProtectedRoute>
-              <ApprovalsPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Order Pooling Estimator — Phase 11E */}
-        <Route
-          path="/dashboard/pooling"
-          element={
-            <ProtectedRoute>
-              <PoolingPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Smart Alerts — Phase 8D */}
-        <Route
-          path="/dashboard/alerts"
-          element={
-            <ProtectedRoute>
-              <AlertsPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/dashboard/invoice-scanner" element={<Navigate to="/dashboard/operations" replace />} />
+        <Route path="/dashboard/weather" element={<Navigate to="/dashboard/operations" replace />} />
+        <Route path="/dashboard/logistics" element={<Navigate to="/dashboard/operations" replace />} />
+        <Route path="/dashboard/carbon" element={<Navigate to="/dashboard/operations" replace />} />
 
         {/* AI Copilot — Phase 9C */}
         <Route
@@ -279,56 +254,6 @@ function App() {
           element={
             <ProtectedRoute>
               <CopilotPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Demand Forecasting — Phase 10E */}
-        <Route
-          path="/dashboard/forecasting"
-          element={
-            <ProtectedRoute>
-              <ForecastingPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Invoice OCR Scanner — Phase 7C */}
-        <Route
-          path="/dashboard/invoice-scanner"
-          element={
-            <ProtectedRoute>
-              <InvoiceScannerPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Weather Risk Alerts — Phase 7D */}
-        <Route
-          path="/dashboard/weather"
-          element={
-            <ProtectedRoute>
-              <WeatherAlertsPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Route & Delivery Map — Phase 7E */}
-        <Route
-          path="/dashboard/logistics"
-          element={
-            <ProtectedRoute>
-              <LogisticsPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Carbon Footprint Calculator — Phase 7F */}
-        <Route
-          path="/dashboard/carbon"
-          element={
-            <ProtectedRoute>
-              <CarbonPage />
             </ProtectedRoute>
           }
         />

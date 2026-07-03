@@ -1,0 +1,68 @@
+/* client/src/components/TabBar.css */
+
+.tab-bar-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.tab-bar__row {
+  display: flex;
+  gap: var(--space-5);
+  border-bottom: 1px solid var(--color-border-dark);
+  width: 100%;
+  margin-bottom: var(--space-5);
+}
+
+.tab-bar__tab {
+  background: none;
+  border: none;
+  padding: var(--space-2) 0 var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-on-dark-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color var(--transition-base), border-color var(--transition-base);
+}
+
+.tab-bar__tab:hover {
+  color: var(--color-text-on-dark);
+}
+
+.tab-bar__tab--active {
+  color: var(--color-text-on-dark);
+  font-weight: 500;
+  border-bottom-color: #E8C547; /* gold underline requested explicitly */
+}
+
+.tab-bar__content {
+  width: 100%;
+}
+
+/* ─── CSS overrides for nested page shells ────────────────────────────────────── */
+.tab-bar__content .dash-shell {
+  display: block;
+  min-height: unset;
+  background-color: transparent;
+  padding-top: 0 !important;
+}
+
+.tab-bar__content .dash-shell .sidebar,
+.tab-bar__content .dash-shell .sidebar__mobile-bar,
+.tab-bar__content .dash-shell .sidebar__overlay {
+  display: none !important;
+}
+
+.tab-bar__content .dash-shell .dash-main {
+  display: block;
+}
+
+.tab-bar__content .dash-shell .dash-topbar {
+  display: none !important;
+}
+
+.tab-bar__content .dash-shell .dash-content {
+  padding: 0 !important;
+}
