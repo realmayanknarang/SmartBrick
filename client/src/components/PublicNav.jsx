@@ -125,30 +125,25 @@ function PublicNav({ links = [], logoText = 'SmartBrick', className = '' }) {
       <div className="public-nav__auth">
         {/* Signed-out: Sign in (ghost) + Get started (primary CTA) */}
         <SignedOut>
-          {/*
-           * Clerk's <SignInButton> / <SignUpButton> render plain <button>
-           * elements by default.  Wrapping them in asChild mode lets us
-           * use our own Button for full style control.
-           */}
-          <SignInButton mode="modal">
-            <Button
-              variant="secondary"
-              size="sm"
-              id="public-nav-signin-btn"
-            >
-              Sign in
-            </Button>
-          </SignInButton>
+          <Button
+            as={Link}
+            to="/login"
+            variant="secondary"
+            size="sm"
+            id="public-nav-signin-btn"
+          >
+            Sign in
+          </Button>
 
-          <SignUpButton mode="modal">
-            <Button
-              variant="primary"
-              size="sm"
-              id="public-nav-signup-btn"
-            >
-              Get started
-            </Button>
-          </SignUpButton>
+          <Button
+            as={Link}
+            to="/signup"
+            variant="primary"
+            size="sm"
+            id="public-nav-signup-btn"
+          >
+            Get started
+          </Button>
         </SignedOut>
 
         {/* Signed-in: avatar + dashboard link */}

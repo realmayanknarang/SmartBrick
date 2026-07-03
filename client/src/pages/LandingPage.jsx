@@ -353,8 +353,8 @@ function LandingPage() {
               Request demo
             </Button>
             <Button
-              as={Link}
-              to="/#how-it-works"
+              as="a"
+              href="#how-it-works"
               variant="secondary"
               id="hero-cta-secondary"
             >
