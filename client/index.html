@@ -29,14 +29,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <!--
-      Barlow Condensed (--font-display): geometric condensed sans for headlines.
-      Inter (--font-body): clean grotesque sans for body copy and UI text.
-      Weights loaded: 400 (regular), 500 (medium), 600 (semibold), 700 (bold).
+      Recoleta (--font-recoleta): editorial serif — display and headings 36px+.
+      DM Serif Display is the closest Google Fonts substitute for Recoleta.
+      Oldschool Grotesk (--font-oldschool-grotesk): self-hosted if available;
+      Inter is used as the Google Fonts fallback at matching weights (300, 400).
+      Full font guidance in /design.md.
     -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,600&family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400&display=swap"
       rel="stylesheet"
     />
+
+    <!--
+      NOTE: If you have licensed Recoleta and Oldschool Grotesk, add @font-face
+      declarations in tokens.css or a dedicated fonts.css and remove the
+      DM Serif Display / Inter fallback links above.
+    -->
   </head>
   <body>
     <div id="root"></div>

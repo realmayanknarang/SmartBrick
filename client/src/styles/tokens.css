@@ -1,132 +1,222 @@
 /*
- * SmartBrick Design Tokens — Phase 4A
+ * SmartBrick Design Tokens — Clyde Style System (Tailwind v4)
  * ─────────────────────────────────────────────────────────────────────────────
- * Single source of truth for every design constant used across the app.
- * All other stylesheets MUST reference these variables — never hard-code values.
+ * All Clyde tokens are declared inside @theme so Tailwind generates utility
+ * classes automatically:
+ *   --color-bone      → bg-bone, text-bone, border-bone …
+ *   --font-recoleta   → font-recoleta
+ *   --radius-cards    → rounded-cards
+ *   --spacing-64      → (use arbitrary [64px] or extend if needed)
  *
- * LOCKED VISUAL DIRECTION (do not deviate without a design review):
- *   Primary dark surface   #1A2B3C  (navy)
- *   Secondary dark surface #2E4154  (cards / panels on navy)
- *   Accent                 #E8C547  (gold)
- *   Border on dark         #4A5D6E
- *   Text on dark primary   #FFFFFF
- *   Text on dark secondary #9FB0BC / #CBD5DD
- *   White / light surface  #FFFFFF  (form panels, light sections)
- *   Text on light primary  #1A2B3C
- *   Text on light secondary#6B7680
- *   Border on light        #E2E5E8
+ * Full visual reference: /design.md at the project root.
+ *
+ * LOCKED VISUAL DIRECTION:
+ *   Primary canvas   #000000  (obsidian)
+ *   Light surface    #f6f6f4  (bone)
+ *   Mid-gray         #7d7d7d  (slate)
+ *   Pure white       #ffffff  (paper)
+ *   Near-black edge  #1a1a1a  (char)
+ *   Accent gradient  linear-gradient(90deg, #feed7a 0%, #ff8400 48.96%, #df91f7 100%)
+ *   Display font     Recoleta serif — 36 px and above only
+ *   UI / body font   Oldschool Grotesk — all UI and body text
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+@theme {
+
+  /* ─── Colors ──────────────────────────────────────────────────────────────
+   * Generates: bg-obsidian, text-bone, border-slate, etc.
+   * The Solstice Gradient is decorative only — do not use as a button fill,
+   * text color, or UI surface. Apply it only to 3D abstract shapes.
+   */
+  --color-obsidian:           #000000;
+  --color-bone:               #f6f6f4;
+  --color-slate:              #7d7d7d;
+  --color-paper:              #ffffff;
+  --color-char:               #1a1a1a;
+  --color-solstice:           #ff8400;   /* solid fallback for the gradient */
+
+  /* Semantic state colors — intentionally neutral so no new chroma enters UI */
+  --color-success:            #3CB57A;
+  --color-warning:            #E8C547;
+  --color-danger:             #E05C5C;
+  --color-info:               #4A90D9;
+
+  /* ─── Gradient ────────────────────────────────────────────────────────────
+   * Use bg-gradient-solstice on decorative elements only.
+   */
+  --background-image-gradient-solstice:
+    linear-gradient(90deg, #feed7a 0%, #ff8400 48.96%, #df91f7 100%);
+
+  /* ─── Font Families ───────────────────────────────────────────────────────
+   * Generates: font-recoleta, font-grotesk, font-times
+   * Recoleta must only be used at 36 px and above.
+   */
+  --font-recoleta:            'Recoleta', 'DM Serif Display', 'GT Super', Georgia, serif;
+  --font-grotesk:             'Oldschool Grotesk', 'Söhne', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-times:               'Times New Roman', Times, Georgia, serif;
+
+  /* ─── Font Weights ────────────────────────────────────────────────────────
+   * Generates: font-light (300), font-regular (400)
+   */
+  --font-weight-light:        300;
+  --font-weight-regular:      400;
+
+  /* ─── Type Scale ──────────────────────────────────────────────────────────
+   * Generates: text-body-sm, text-body-lg, text-subheading … text-display
+   * Use Recoleta only for text-subheading and above.
+   */
+  --font-size-body-sm:        15px;
+  --font-size-body-base:      16px;
+  --font-size-body-lg:        21px;
+  --font-size-subheading:     36px;
+  --font-size-heading-sm:     47px;
+  --font-size-heading:        61px;
+  --font-size-heading-lg:     80px;
+  --font-size-display:        125px;
+
+  /* ─── Line Heights ────────────────────────────────────────────────────────
+   * Generates: leading-body-sm, leading-snug, leading-tight, etc.
+   */
+  --line-height-body-sm:      1.6;
+  --line-height-body-base:    1.5;
+  --line-height-body-lg:      1.3;
+  --line-height-subheading:   1.1;
+  --line-height-heading-sm:   1.1;
+  --line-height-heading:      1.1;
+  --line-height-heading-lg:   1;
+  --line-height-display:      1;
+  --line-height-tight:        1;
+  --line-height-snug:         1.1;
+  --line-height-normal:       1.5;
+
+  /* ─── Letter Spacing ──────────────────────────────────────────────────────
+   * Generates: tracking-body-sm, tracking-display, etc.
+   * RULE: Large type must always be tightened — no 0 or positive values above 36px.
+   */
+  --letter-spacing-body-sm:   0.15px;
+  --letter-spacing-body-base: -0.16px;
+  --letter-spacing-body-lg:   -0.42px;
+  --letter-spacing-subheading:-0.36px;
+  --letter-spacing-heading-sm:-0.94px;
+  --letter-spacing-heading:   -1.22px;
+  --letter-spacing-heading-lg:-2.4px;
+  --letter-spacing-display:   -3.75px;
+
+  /* ─── Spacing ─────────────────────────────────────────────────────────────
+   * Base unit: 4px. These extend the default Tailwind spacing scale.
+   * Use p-20, gap-24, mt-64, etc.
+   */
+  --spacing-20:               20px;
+  --spacing-24:               24px;
+  --spacing-44:               44px;
+  --spacing-64:               64px;
+  --spacing-92:               92px;
+  --spacing-100:              100px;
+  --spacing-144:              144px;
+
+  /* ─── Border Radius ───────────────────────────────────────────────────────
+   * Generates: rounded-inputs, rounded-links, rounded-cards,
+   *            rounded-large-panels, rounded-full (100px)
+   * These five values are the COMPLETE radius scale — no others permitted.
+   */
+  --radius-inputs:            4px;
+  --radius-links:             12px;
+  --radius-cards:             16px;
+  --radius-large-panels:      38px;
+  --radius-full:              100px;   /* buttons, tags, pills */
+
+  /* ─── Layout ──────────────────────────────────────────────────────────────
+   * Use max-w-page, gap-section, p-card, gap-element as utility shorthands.
+   */
+  --max-width-page:           1200px;
+  --spacing-section:          80px;
+  --spacing-card:             24px;
+  --spacing-element:          20px;
+
+  /* ─── Transition ──────────────────────────────────────────────────────────
+   * Generates: transition-fast, transition-base, transition-slow
+   */
+  --transition-duration-fast: 100ms;
+  --transition-duration-base: 180ms;
+  --transition-duration-slow: 320ms;
+
+  /* ─── Z-index Layers ──────────────────────────────────────────────────────
+   * Generates: z-base, z-raised, z-dropdown, z-modal, z-toast, z-topbar
+   */
+  --z-index-base:             0;
+  --z-index-raised:           10;
+  --z-index-dropdown:         100;
+  --z-index-modal:            200;
+  --z-index-toast:            300;
+  --z-index-topbar:           400;
+}
+
+/*
+ * ─── CSS Custom Properties passthrough ────────────────────────────────────────
+ * Items that don't map into @theme utilities are kept as raw CSS vars so legacy
+ * components that reference them with var() continue to work without changes.
+ */
 :root {
-  /* ─── Colour: Dark surfaces ─────────────────────────────────────────────── */
-  --color-surface-dark:        #1A2B3C;   /* primary dark — navy */
-  --color-surface-dark-raised: #2E4154;   /* cards / panels sitting on navy */
+  /* Gradient — full declaration for direct var() usage */
+  --gradient-solstice: linear-gradient(90deg, #feed7a 0%, #ff8400 48.96%, #df91f7 100%);
 
-  /* ─── Colour: Accent ────────────────────────────────────────────────────── */
-  --color-accent:              #E8C547;   /* gold — CTAs, highlights, active */
-  --color-accent-hover:        #F0D060;   /* lightened gold for hover state */
-  --color-accent-press:        #C9A83A;   /* darkened gold for active/pressed */
+  /* Hairline border helpers */
+  --border-hairline-light: 1px solid #f6f6f4;  /* on dark surfaces */
+  --border-hairline-dark:  1px solid #1a1a1a;   /* on light surfaces */
 
-  /* ─── Colour: Borders ───────────────────────────────────────────────────── */
-  --color-border-dark:         #4A5D6E;   /* border / divider on dark surfaces */
-  --color-border-light:        #E2E5E8;   /* border / divider on light surfaces */
+  /* Shadow tokens set to none — Clyde uses flat, border-based elevation only */
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
 
-  /* ─── Colour: Text on dark ──────────────────────────────────────────────── */
-  --color-text-on-dark:        #FFFFFF;
-  --color-text-on-dark-muted:  #9FB0BC;   /* secondary / captions on dark */
-  --color-text-on-dark-faint:  #CBD5DD;   /* tertiary / placeholders on dark */
-
-  /* ─── Colour: Text on light ─────────────────────────────────────────────── */
-  --color-text-on-light:       #1A2B3C;   /* primary body copy on white */
-  --color-text-on-light-muted: #6B7680;   /* secondary / captions on light */
-
-  /* ─── Colour: Light surface ─────────────────────────────────────────────── */
-  --color-surface-light:       #FFFFFF;
-
-  /* ─── Colour: Semantic states (accessible across both surfaces) ─────────── */
+  /* Legacy aliases — keeps any existing components using the old tokens intact */
+  --font-display:              'Recoleta', 'DM Serif Display', Georgia, serif;
+  --font-body:                 'Oldschool Grotesk', 'Inter', Arial, sans-serif;
+  --color-accent:              #ff8400;
+  --color-accent-hover:        #ffd94a;
+  --color-accent-press:        #e07600;
+  --color-surface-dark:        #000000;
+  --color-surface-dark-raised: #1a1a1a;
+  --color-surface-light:       #f6f6f4;
+  --color-text-on-dark:        #f6f6f4;
+  --color-text-on-dark-muted:  rgba(246, 246, 244, 0.70);
+  --color-text-on-dark-faint:  rgba(246, 246, 244, 0.45);
+  --color-text-on-light:       #000000;
+  --color-text-on-light-muted: #7d7d7d;
+  --color-border-dark:         #1a1a1a;
+  --color-border-light:        #f6f6f4;
   --color-success:             #3CB57A;
-  --color-warning:             #E8C547;   /* reuse gold for warnings */
+  --color-warning:             #E8C547;
   --color-danger:              #E05C5C;
   --color-info:                #4A90D9;
 
-  /* ─── Spacing scale (4 px base) ─────────────────────────────────────────── */
-  --space-1:  4px;
-  --space-2:  8px;
-  --space-3:  12px;
-  --space-4:  16px;
-  --space-5:  24px;
-  --space-6:  32px;
-  --space-7:  48px;
-  --space-8:  64px;
+  /* Legacy spacing */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
 
-  /* ─── Border radius ──────────────────────────────────────────────────────── */
+  /* Legacy radius */
   --radius-sm:   4px;
-  --radius-md:   8px;
+  --radius-md:   4px;
   --radius-lg:   12px;
-  --radius-pill: 999px;   /* pill / badge / full-round buttons */
+  --radius-xl:   12px;
+  --radius-2xl:  16px;
+  --radius-3xl:  38px;
+  --radius-pill: 100px;
 
-  /* ─── Type scale ─────────────────────────────────────────────────────────── */
-  /* xs → 3xl follows a ~1.25 modular scale, anchored at base = 14 px */
-  --text-xs:   11px;
-  --text-sm:   12px;
-  --text-base: 14px;
-  --text-md:   16px;
-  --text-lg:   18px;
-  --text-xl:   20px;
-  --text-2xl:  24px;
-  --text-3xl:  28px;
+  /* Legacy type */
+  --text-xs: 11px; --text-sm: 12px; --text-base: 15px;
+  --text-md: 16px; --text-lg: 21px;
+  --leading-tight: 1; --leading-snug: 1.1; --leading-normal: 1.5;
+  --weight-regular: 400; --weight-medium: 500;
+  --weight-semibold: 600; --weight-bold: 700;
 
-  /* ─── Line heights ───────────────────────────────────────────────────────── */
-  --leading-tight:  1.2;
-  --leading-snug:   1.35;
-  --leading-normal: 1.5;
+  /* Legacy z-index */
+  --z-base: 0; --z-raised: 10; --z-dropdown: 100;
+  --z-modal: 200; --z-toast: 300; --z-topbar: 400;
 
-  /* ─── Font weights ───────────────────────────────────────────────────────── */
-  --weight-regular:   400;
-  --weight-medium:    500;
-  --weight-semibold:  600;
-  --weight-bold:      700;
-
-  /* ─── Font families ──────────────────────────────────────────────────────── */
-  /*
-   * --font-display: "Barlow Condensed" — geometric condensed sans-serif ideal
-   *   for large headings, hero text, and labels that need impact without width.
-   *   Loaded via Google Fonts <link> in index.html.
-   *
-   * --font-body: "Inter" — clean, highly legible grotesque sans-serif.
-   *   Loaded via Google Fonts <link> in index.html.
-   */
-  --font-display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
-  --font-body:    'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-
-  /* ─── Shadow tokens (restrained — use sparingly) ─────────────────────────── */
-  /*
-   * Shadows respect the dark-surface aesthetic: keep them subtle and cool-toned
-   * so they don't look "lifted" in a way that fights the flat navy palette.
-   */
-  --shadow-sm:
-    0 1px 2px rgba(0, 0, 0, 0.20),
-    0 1px 4px rgba(0, 0, 0, 0.12);
-
-  --shadow-md:
-    0 4px 8px  rgba(0, 0, 0, 0.22),
-    0 2px 4px  rgba(0, 0, 0, 0.14);
-
-  --shadow-lg:
-    0 8px 24px rgba(0, 0, 0, 0.28),
-    0 4px 8px  rgba(0, 0, 0, 0.16);
-
-  /* ─── Transition defaults ────────────────────────────────────────────────── */
-  --transition-fast:   100ms ease;
-  --transition-base:   180ms ease;
-  --transition-slow:   320ms ease;
-
-  /* ─── Z-index layers ─────────────────────────────────────────────────────── */
-  --z-base:    0;
-  --z-raised:  10;
-  --z-dropdown:100;
-  --z-modal:   200;
-  --z-toast:   300;
-  --z-topbar:  400;
+  /* Legacy transitions */
+  --transition-fast: 100ms ease;
+  --transition-base: 180ms ease;
+  --transition-slow: 320ms ease;
 }

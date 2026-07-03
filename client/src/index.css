@@ -1,95 +1,83 @@
 /*
- * SmartBrick global reset — Phase 5E
+ * SmartBrick global reset — Clyde Style System (Tailwind v4)
  * ─────────────────────────────────────────────────────────────────────────────
- * Minimal base reset.  Design tokens live in styles/tokens.css (loaded before
- * this file in main.jsx).  Each page/component owns its own layout — this file
- * only covers the document baseline.
+ * Tailwind v4 is imported here. All design tokens live in styles/tokens.css
+ * (loaded before this file in main.jsx via @theme). Each page/component owns
+ * its own layout — this file only covers the document baseline.
  *
- * Original Vite scaffold styles have been removed:
- *   • #root { width: 1126px } — was capping the full-viewport auth layouts
- *   • #root { text-align: center } — was fighting left-aligned form text
- *   • #root { border-inline } — was showing scaffold borders on auth pages
- *   • h1/h2/p global overrides — auth pages use tokens; these caused conflicts
- *   • Vite scaffold dark mode vars — not used; replaced by token system
+ * Visual direction: near-black obsidian canvas, warm bone cream text.
+ * Full style reference: /design.md at the project root.
+ *
+ * Token → utility class examples:
+ *   bg-obsidian       bg-bone       bg-slate      bg-paper     bg-char
+ *   text-bone         text-obsidian text-slate
+ *   border-bone       border-char
+ *   font-recoleta     font-grotesk
+ *   rounded-cards     rounded-full  rounded-inputs
+ *   text-display      text-heading  text-body-sm
+ *   leading-tight     tracking-display
+ *   bg-gradient-solstice   (decorative shapes only)
  */
+@import "tailwindcss";
+@import "./styles/tokens.css";
 
-/* ─── Box model ──────────────────────────────────────────────────────────────── */
+/* ─── Box model ────────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* ─── Document baseline ──────────────────────────────────────────────────────── */
+/* ─── Document baseline ─────────────────────────────────────────────────────── */
 html {
-  /* Match the token base font so rem units resolve predictably */
-  font-size:              14px;           /* matches --text-base */
-  -webkit-font-smoothing: antialiased;
+  font-size:               16px;
+  -webkit-font-smoothing:  antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering:         optimizeLegibility;
+  text-rendering:          optimizeLegibility;
 }
 
 body {
   margin:      0;
-  font-family: var(--font-body);
-  font-size:   var(--text-base);
-  color:       var(--color-text-on-light);
-  background:  var(--color-surface-light);
-  line-height: var(--leading-normal);
+  font-family: var(--font-grotesk);          /* Oldschool Grotesk / Inter */
+  font-size:   var(--font-size-body-sm);     /* 15px */
+  font-weight: var(--font-weight-regular);   /* 400 */
+  color:       var(--color-bone);            /* warm cream on dark canvas */
+  background:  var(--color-obsidian);        /* near-black canvas */
+  line-height: var(--line-height-body-sm);   /* 1.6 */
 }
 
-/* ─── Root container ─────────────────────────────────────────────────────────── */
+/* ─── Root container ────────────────────────────────────────────────────────── */
 /*
  * Full viewport — no max-width, no centering, no borders.
- * Auth pages (/login, /signup, /select-role) need to fill 100vw.
- * Dashboard and landing pages apply their own layout constraints internally.
+ * Auth pages need to fill 100vw; dashboards apply layout constraints internally.
  */
 #root {
-  min-height: 100svh;
-  display:    flex;
+  min-height:     100svh;
+  display:        flex;
   flex-direction: column;
 }
 
-/* ─── Heading resets ─────────────────────────────────────────────────────────── */
-/*
- * Remove browser margin defaults.  Each page/component applies its own
- * font-family, font-size, and color via the token system.
- */
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-}
+/* ─── Heading resets ────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 { margin: 0; }
+p { margin: 0; }
 
-p {
-  margin: 0;
-}
+/* ─── List resets ───────────────────────────────────────────────────────────── */
+ul, ol { margin: 0; padding: 0; }
 
-/* ─── List resets ────────────────────────────────────────────────────────────── */
-ul, ol {
-  margin:  0;
-  padding: 0;
-}
-
-/* ─── Link baseline ──────────────────────────────────────────────────────────── */
+/* ─── Link baseline ─────────────────────────────────────────────────────────── */
 a {
   color:           inherit;
   text-decoration: none;
 }
 
-/* ─── Image / media ──────────────────────────────────────────────────────────── */
-img,
-svg,
-video {
+/* ─── Image / media ─────────────────────────────────────────────────────────── */
+img, svg, video {
   display:   block;
   max-width: 100%;
 }
 
-/* ─── Focus ring ─────────────────────────────────────────────────────────────── */
-/*
- * Provide a consistent, brand-colour focus ring for keyboard nav.
- * Individual components override this where needed (e.g. Button.css).
- */
+/* ─── Focus ring ────────────────────────────────────────────────────────────── */
 :focus-visible {
-  outline:        2px solid var(--color-accent);
+  outline:        2px solid var(--color-solstice);
   outline-offset: 3px;
 }
-
