@@ -708,3 +708,58 @@
     grid-column: 1 / -1;   /* brand spans full width on tablet */
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FIX 5 — DASHBOARD PREVIEW SECTION
+   ══════════════════════════════════════════════════════════════════════════ */
+.lp-preview {
+  background-color: #15212E; /* slightly darker navy used for visual separation */
+  padding: calc(var(--space-8) + var(--space-5)) var(--space-5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.lp-preview__inner {
+  max-width: 900px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.lp-preview__heading {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-on-dark);
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+
+.lp-preview__subtext {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  color: var(--color-text-on-dark-muted);
+  max-width: 600px;
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+
+.lp-preview__img-container {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--color-border-dark);
+  overflow: hidden;
+  line-height: 0; /* remove image line-height bleed */
+}
+
+.lp-preview__img {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  display: block;
+}

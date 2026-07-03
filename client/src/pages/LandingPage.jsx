@@ -482,6 +482,36 @@ function LandingPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
+          FIX 5 — DASHBOARD PREVIEW SECTION
+          ════════════════════════════════════════════════════════════════ */}
+      <section className="lp-preview" id="dashboard-preview" aria-labelledby="preview-heading">
+        <div className="lp-preview__inner">
+          <h2 className="lp-preview__heading" id="preview-heading">
+            Your entire procurement operation, in one view
+          </h2>
+          <p className="lp-preview__subtext">
+            Monitor real-time active sites, analyze material pricing breakdowns, and keep track of live delivery status indicators directly in your dashboard.
+          </p>
+          <div className="lp-preview__img-container">
+            <img
+              src="/screenshots/dashboard-overview.png"
+              alt="SmartBrick Dashboard Overview screenshot"
+              className="lp-preview__img"
+            />
+          </div>
+          <Button
+            as={Link}
+            to="/login"
+            variant="secondary"
+            style={{ marginTop: 'var(--space-2)' }}
+            id="preview-cta-signin"
+          >
+            Sign in to explore →
+          </Button>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
           PHASE 6D — FOOTER
           ══════════════════════════════════════════════════════════════════
           Surface: --color-surface-dark (navy) — intentional deviation from
