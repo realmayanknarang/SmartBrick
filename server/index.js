@@ -23,6 +23,7 @@ import reportRouter    from './routes/reportRoutes.js';    // Phase 11A
 import priceTrendRouter from './routes/priceTrendRoutes.js'; // Phase 11C
 import approvalRouter  from './routes/approvalRoutes.js';  // Phase 11D
 import poolingRouter   from './routes/poolingRoutes.js';   // Phase 11E
+import siteRouter      from './routes/siteRoutes.js';      // Sites fix
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -106,6 +107,9 @@ app.use('/api/approvals', approvalRouter);
 
 // Order pooling estimator — Phase 11E
 app.use('/api/pooling', poolingRouter);
+
+// Sites listing
+app.use('/api/sites', siteRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
