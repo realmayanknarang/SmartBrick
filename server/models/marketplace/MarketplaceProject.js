@@ -107,6 +107,13 @@ const marketplaceProjectSchema = new Schema(
       ref:     'Proposal',
       default: null,
     },
+
+    // Soft-delete flag. Set to false via DELETE /api/marketplace/projects/:id
+    // instead of using deleteOne(), preserving audit trail and related documents.
+    isActive: {
+      type:    Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );
