@@ -26,6 +26,7 @@ import poolingRouter   from './routes/poolingRoutes.js';   // Phase 11E
 import siteRouter      from './routes/siteRoutes.js';      // Sites fix
 import projectRouter   from './routes/marketplace/projectRoutes.js';  // Phase M2A
 import proposalRouter  from './routes/marketplace/proposalRoutes.js'; // Phase M2A
+import progressRouter  from './routes/marketplace/progressRoutes.js'; // Phase M2B
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -116,6 +117,9 @@ app.use('/api/sites', siteRouter);
 // Marketplace — project & proposal APIs — Phase M2A
 app.use('/api/marketplace', projectRouter);
 app.use('/api/marketplace', proposalRouter);
+
+// Marketplace — progress & milestone APIs — Phase M2B
+app.use('/api/marketplace', progressRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);

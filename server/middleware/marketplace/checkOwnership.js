@@ -19,11 +19,17 @@
  *    Returns 403 if the check fails.
  *    Must run AFTER resolveMarketplaceUser.
  *
- * Phase M2A — marketplace REST API.
+ *  isApprovedBuilder
+ *    Async utility (not Express middleware) that returns true when
+ *    userId is the builder on the approved Proposal for projectId.
+ *    Used by progress and milestone route handlers.
+ *
+ * Phase M2A/M2B — marketplace REST API.
  */
 
 import User               from '../../models/User.js';
 import MarketplaceProject from '../../models/marketplace/MarketplaceProject.js';
+import Proposal           from '../../models/marketplace/Proposal.js';
 
 // ---------------------------------------------------------------------------
 // resolveMarketplaceUser
@@ -120,4 +126,51 @@ export function checkProjectOwnership(paramName = 'id') {
       });
     }
   };
+}
+
+// ---------------------------------------------------------------------------
+// isApprovedBuilder
+// ---------------------------------------------------------------------------
+
+/**
+ * Async utility — NOT Express middleware.
+ *
+ * Returns true when userId is the builder associated with the approved
+ * Proposal for the given project.  Returns false in all other cases
+ * (project missing, not active, no approved proposal, or wrong builder).
+ *
+ * Implementation detail:
+ *   MarketplaceProject.approvedProposal stores the ObjectId of the winning
+ *   Proposal.  We then do a targeted Proposal lookup by { _id, builder }
+ *   rather than a full populate — two lean queries, each index-covered.
+ *
+ * @param {string|import('mongoose').Types.ObjectId} projectId
+ * @param {string|import('mongoose').Types.ObjectId} userId
+ * @returns {Promise<boolean>}
+ *
+ * @example
+ * if (!(await isApprovedBuilder(projectId, req.user._id))) {
+ *   return res.status(403).json({
+ *     error: 'Forbidden',
+ *     message: 'Only the approved builder for this project can perform this action.',
+ *   });
+ * }
+ */
+export async function isApprovedBuilder(projectId, userId) {
+  // Step 1 — get the approved proposal reference from the project.
+  const project = await MarketplaceProject.findById(projectId)
+    .select('approvedProposal isActive')
+    .lean();
+
+  if (!project || !project.isActive || !project.approvedProposal) return false;
+
+  // Step 2 — confirm the Proposal belongs to this builder.
+  const proposal = await Proposal.findOne({
+    _id:     project.approvedProposal,
+    builder: userId,
+  })
+    .select('_id')
+    .lean();
+
+  return proposal !== null;
 }
