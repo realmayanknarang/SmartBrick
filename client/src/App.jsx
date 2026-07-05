@@ -26,7 +26,42 @@ import TermsOfServicePage  from './pages/TermsOfServicePage';  // Phase 13E
 import SitesVendorsPage    from './pages/SitesVendorsPage';    // Grouped wrapper Fix 1
 import AnalyticsReportsPage from './pages/AnalyticsReportsPage'; // Grouped wrapper Fix 1
 import OperationsPage      from './pages/OperationsPage';      // Grouped wrapper Fix 1
+// Marketplace placeholder dashboards — Phase M1C (real UI comes in M4/M5/M6)
+import OwnerDashboard   from './pages/marketplace/OwnerDashboard';
+import BuilderDashboard from './pages/marketplace/BuilderDashboard';
+import VendorDashboard  from './pages/marketplace/VendorDashboard';
 import apiClient from './api/client';
+
+// ---------------------------------------------------------------------------
+// Marketplace role helpers — Phase M1C
+// ---------------------------------------------------------------------------
+
+/**
+ * The three marketplace roles introduced in Phase M1A.
+ * Stored as a Set for O(1) lookup in route guards.
+ */
+const MARKETPLACE_ROLES = new Set(['marketplace_owner', 'builder', 'vendor_supplier']);
+
+/**
+ * Returns the canonical post-sign-in path for a given role.
+ *
+ *   marketplace_owner → /marketplace/owner
+ *   builder           → /marketplace/builder
+ *   vendor_supplier   → /marketplace/vendor
+ *   (all internal roles, null, undefined) → /dashboard
+ *
+ * Used by PublicOnlyRoute, ProtectedRoute, and MarketplaceRoute so that
+ * the mapping is defined exactly once.
+ *
+ * @param {string|null|undefined} role
+ * @returns {string}
+ */
+function getDefaultPath(role) {
+  if (role === 'marketplace_owner') return '/marketplace/owner';
+  if (role === 'builder')           return '/marketplace/builder';
+  if (role === 'vendor_supplier')   return '/marketplace/vendor';
+  return '/dashboard'; // internal roles + null + undefined
+}
 
 // ---------------------------------------------------------------------------
 // useRole — resolves the signed-in user's MongoDB role after every sign-in
@@ -97,14 +132,16 @@ function useRole(isSignedIn) {
 
 /**
  * Requires the user to be signed in AND to have a role set in MongoDB.
+ * Used for /dashboard/* (internal team routes).
  *
  * States:
- *   • Clerk not loaded yet          → render nothing (avoid flash)
- *   • Not signed in                 → /login
- *   • Signed in, role check loading → render nothing (brief, one API call)
- *   • Signed in, role check error   → render nothing + log (avoids loop)
- *   • Signed in, role === null      → /select-role (Google OAuth new user)
- *   • Signed in, role is set        → render children ✓
+ *   • Clerk not loaded yet             → render nothing (avoid flash)
+ *   • Not signed in                    → /login
+ *   • Signed in, role check loading    → render nothing (brief, one API call)
+ *   • Signed in, role check error      → render nothing + log (avoids loop)
+ *   • Signed in, role === null         → /select-role (Google OAuth new user)
+ *   • Signed in, marketplace role      → /marketplace/<role> (M1C: wrong door)
+ *   • Signed in, internal role is set  → render children ✓
  */
 function ProtectedRoute({ children }) {
   const { isLoaded, isSignedIn } = useAuth();
@@ -114,25 +151,29 @@ function ProtectedRoute({ children }) {
   if (!isSignedIn) return <Navigate to="/login" replace />;
   if (loading || role === undefined) return null;
   if (role === null) return <Navigate to="/select-role" replace />;
+  // Marketplace users who land on /dashboard get sent to their correct portal.
+  if (MARKETPLACE_ROLES.has(role)) return <Navigate to={getDefaultPath(role)} replace />;
   return children;
 }
 
 /**
- * Redirects already-signed-in users away from public-only pages (e.g. /login).
+ * Redirects already-signed-in users away from public-only pages (e.g. /login,
+ * /signup).
  *
- * A signed-in user with NO role yet goes to /select-role, not /dashboard —
- * otherwise they'd hit ProtectedRoute on /dashboard and be sent straight
- * back to /select-role anyway, burning an extra render cycle.
+ * Phase M1C: Marketplace roles are redirected to their own portal paths
+ * instead of /dashboard.  Internal roles continue to go to /dashboard.
+ * A signed-in user with NO role yet goes to /select-role.
  */
 function PublicOnlyRoute({ children }) {
   const { isLoaded, isSignedIn } = useAuth();
   const { role, loading } = useRole(isLoaded && isSignedIn);
 
   if (!isLoaded) return null;
-  if (!isSignedIn) return children;          // signed out — show the page
-  if (loading || role === undefined) return null; // waiting for role check
+  if (!isSignedIn) return children;               // signed out — show the page
+  if (loading || role === undefined) return null;  // waiting for role check
   if (role === null) return <Navigate to="/select-role" replace />;
-  return <Navigate to="/dashboard" replace />;
+  // Route to the correct home for this role (internal → /dashboard, marketplace → their path).
+  return <Navigate to={getDefaultPath(role)} replace />;
 }
 
 /**
@@ -144,6 +185,27 @@ function RoleGateRoute({ children }) {
   const { isLoaded, isSignedIn } = useAuth();
   if (!isLoaded) return null;
   if (!isSignedIn) return <Navigate to="/login" replace />;
+  return children;
+}
+
+/**
+ * Auth-only guard for /marketplace/* routes — Phase M1C.
+ * Requires a valid Clerk session; does NOT restrict by role beyond that
+ * (role-specific guards can be layered inside each marketplace page later).
+ *
+ * Signed-out visitors → /login
+ * Signed-in, role loading → render nothing
+ * Signed-in, no role yet → /select-role
+ * Signed-in, role set → render children ✓
+ */
+function MarketplaceRoute({ children }) {
+  const { isLoaded, isSignedIn } = useAuth();
+  const { role, loading } = useRole(isLoaded && isSignedIn);
+
+  if (!isLoaded) return null;
+  if (!isSignedIn) return <Navigate to="/login" replace />;
+  if (loading || role === undefined) return null;
+  if (role === null) return <Navigate to="/select-role" replace />;
   return children;
 }
 
@@ -269,6 +331,43 @@ function App() {
         {/* Legal pages — Phase 13E */}
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsOfServicePage />} />
+
+        {/* ── Marketplace routes — Phase M1C ───────────────────────────── */}
+        {/*
+         * Auth-only guard (MarketplaceRoute): requires a Clerk session but
+         * does not restrict by specific role — each page can add fine-grained
+         * access control in later phases.
+         *
+         * /marketplace/owner   → marketplace_owner role
+         * /marketplace/builder → builder role
+         * /marketplace/vendor  → vendor_supplier role
+         *
+         * Placeholder pages will be replaced in Phases M4/M5/M6.
+         */}
+        <Route
+          path="/marketplace/owner"
+          element={
+            <MarketplaceRoute>
+              <OwnerDashboard />
+            </MarketplaceRoute>
+          }
+        />
+        <Route
+          path="/marketplace/builder"
+          element={
+            <MarketplaceRoute>
+              <BuilderDashboard />
+            </MarketplaceRoute>
+          }
+        />
+        <Route
+          path="/marketplace/vendor"
+          element={
+            <MarketplaceRoute>
+              <VendorDashboard />
+            </MarketplaceRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
