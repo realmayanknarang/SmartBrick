@@ -24,7 +24,7 @@
  * OAuth provider) and therefore have no role in MongoDB yet.
  *
  * - requireAuth only (caller has no role yet — requireRole would always 403).
- * - Validates role is one of the 4 allowed enum values.
+ * - Validates role is one of the 7 allowed enum values (4 internal + 3 marketplace).
  * - Finds-or-creates the MongoDB User document (creating for genuine first-time
  *   Google sign-ups, updating for pre-seeded / pre-invited accounts).
  * - Returns 403 if the user already has a role (abuse/replay prevention).
@@ -113,7 +113,17 @@ router.post('/sync', requireAuth, async (req, res) => {
 // endpoint returns 403.  Changing an existing role requires an admin action
 // outside this endpoint, preventing privilege escalation via a replayed request.
 
-const ALLOWED_ROLES = ['owner', 'project_manager', 'site_engineer', 'finance'];
+const ALLOWED_ROLES = [
+  // ── Internal team roles (Phases 1-13) ─────────────────────────────────────
+  'owner',
+  'project_manager',
+  'site_engineer',
+  'finance',
+  // ── Marketplace roles (Phase M1A+) ─────────────────────────────────────────
+  'marketplace_owner', // someone who wants to build a property
+  'builder',           // contractor / construction company
+  'vendor_supplier',   // material supplier
+];
 
 router.post('/set-role', requireAuth, async (req, res) => {
   try {
