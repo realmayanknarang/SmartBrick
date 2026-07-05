@@ -27,6 +27,7 @@ import siteRouter      from './routes/siteRoutes.js';      // Sites fix
 import projectRouter   from './routes/marketplace/projectRoutes.js';  // Phase M2A
 import proposalRouter  from './routes/marketplace/proposalRoutes.js'; // Phase M2A
 import progressRouter  from './routes/marketplace/progressRoutes.js'; // Phase M2B
+import materialRouter  from './routes/marketplace/materialRoutes.js';  // Phase M2C
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -120,6 +121,9 @@ app.use('/api/marketplace', proposalRouter);
 
 // Marketplace — progress & milestone APIs — Phase M2B
 app.use('/api/marketplace', progressRouter);
+
+// Marketplace — materials API — Phase M2C
+app.use('/api/marketplace', materialRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
