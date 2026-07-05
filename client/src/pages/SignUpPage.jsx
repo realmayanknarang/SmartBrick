@@ -15,7 +15,8 @@
  *                              → new Google users land on /select-role (Phase 3)
  *
  * Role values must match the MongoDB User schema enum exactly:
- *   'owner' | 'project_manager' | 'site_engineer' | 'finance'
+ *   Internal team: 'owner' | 'project_manager' | 'site_engineer' | 'finance'
+ *   Marketplace:   'marketplace_owner' | 'builder' | 'vendor_supplier'
  */
 
 import { useState } from 'react';
@@ -23,7 +24,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSignUp } from '@clerk/clerk-react';
 import AuthBrandPanel from '../components/AuthBrandPanel';
 import TextInput from '../components/TextInput';
-import Select from '../components/Select';
 import Button from '../components/Button';
 import apiClient from '../api/client';
 import './LoginPage.css';    // shared auth-layout + auth-form utilities
@@ -37,11 +37,21 @@ const SIGNUP_BENEFITS = [
   'One shared vendor list, synced in real time',
 ];
 
-const ROLE_OPTIONS = [
+// ─── Role groups ─────────────────────────────────────────────────────────────
+// Organised into two <optgroup>s on the native <select> (Approach A).
+// Display labels are human-readable — NOT the raw enum strings.
+
+const INTERNAL_ROLES = [
   { value: 'owner',           label: 'Owner' },
   { value: 'project_manager', label: 'Project Manager' },
   { value: 'site_engineer',   label: 'Site Engineer' },
   { value: 'finance',         label: 'Finance' },
+];
+
+const MARKETPLACE_ROLES = [
+  { value: 'marketplace_owner', label: 'I want to build a property (Owner)' },
+  { value: 'builder',           label: 'Builder / Contractor' },
+  { value: 'vendor_supplier',   label: 'Material Supplier' },
 ];
 
 // ─── Google icon (same as LoginPage) ─────────────────────────────────────────
@@ -334,15 +344,51 @@ function SignUpPage() {
               autoComplete="new-password"
             />
 
-            <Select
-              id="signup-role"
-              label="Your role"
-              placeholder="Select a role"
-              options={ROLE_OPTIONS}
-              value={role}
-              onChange={e => setRole(e.target.value)}
-              required
-            />
+            {/*
+              * Role selector — Approach A: native <select> with <optgroup>
+              * Uses the same CSS class names as Select.jsx (.select-field,
+              * .select-field__control, etc.) for visual consistency.
+              * Two groups: INTERNAL TEAM (original 4) and MARKETPLACE (3 new).
+              */}
+            <div className="select-field">
+              <label className="select-field__label" htmlFor="signup-role">
+                Your role
+                <span className="select-field__required" aria-hidden="true"> *</span>
+              </label>
+              <div className="select-field__wrapper">
+                <select
+                  id="signup-role"
+                  className="select-field__control"
+                  value={role}
+                  onChange={e => setRole(e.target.value)}
+                  required
+                  aria-required="true"
+                >
+                  <option value="" disabled>
+                    Select your role…
+                  </option>
+
+                  <optgroup label="INTERNAL TEAM">
+                    {INTERNAL_ROLES.map(({ value: v, label: l }) => (
+                      <option key={v} value={v}>{l}</option>
+                    ))}
+                  </optgroup>
+
+                  <optgroup label="MARKETPLACE">
+                    {MARKETPLACE_ROLES.map(({ value: v, label: l }) => (
+                      <option key={v} value={v}>{l}</option>
+                    ))}
+                  </optgroup>
+                </select>
+
+                {/* Custom chevron — same as Select.jsx */}
+                <span className="select-field__chevron" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              </div>
+            </div>
 
             {error && (
               <p className="auth-form__error" role="alert">{error}</p>
