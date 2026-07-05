@@ -28,6 +28,8 @@ import projectRouter   from './routes/marketplace/projectRoutes.js';  // Phase M
 import proposalRouter  from './routes/marketplace/proposalRoutes.js'; // Phase M2A
 import progressRouter  from './routes/marketplace/progressRoutes.js'; // Phase M2B
 import materialRouter  from './routes/marketplace/materialRoutes.js';  // Phase M2C
+import chatRouter      from './routes/marketplace/chatRoutes.js';       // Phase M2D
+import notificationRouter from './routes/marketplace/notificationRoutes.js'; // Phase M2D
 import { apiLimiter }  from './middleware/rateLimiter.js';
 
 connectDB();
@@ -124,6 +126,10 @@ app.use('/api/marketplace', progressRouter);
 
 // Marketplace — materials API — Phase M2C
 app.use('/api/marketplace', materialRouter);
+
+// Marketplace — chat & notification APIs — Phase M2D
+app.use('/api/marketplace', chatRouter);
+app.use('/api/marketplace', notificationRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
