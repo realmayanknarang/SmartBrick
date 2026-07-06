@@ -31,6 +31,7 @@ import materialRouter  from './routes/marketplace/materialRoutes.js';  // Phase 
 import chatRouter      from './routes/marketplace/chatRoutes.js';       // Phase M2D
 import notificationRouter from './routes/marketplace/notificationRoutes.js'; // Phase M2D
 import { apiLimiter }  from './middleware/rateLimiter.js';
+import { initializeSocket } from './config/socket.js';
 
 connectDB();
 
@@ -131,7 +132,9 @@ app.use('/api/marketplace', materialRouter);
 app.use('/api/marketplace', chatRouter);
 app.use('/api/marketplace', notificationRouter);
 
-app.listen(PORT, () => {
+const httpServer = app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
+
+initializeSocket(httpServer);
 

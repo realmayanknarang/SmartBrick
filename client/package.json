@@ -22,7 +22,8 @@
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.0",
     "recharts": "^3.9.0",
-    "smartbrick": "file:.."
+    "smartbrick": "file:..",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.2",
