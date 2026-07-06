@@ -38,7 +38,22 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:5174'
+].filter(Boolean); // Remove any undefined values
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (like curl or Postman)
+      return callback(null, true);
+    }
+    callback(null, true);
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 // Populate req.auth on every request so requireAuth / getAuth() work
