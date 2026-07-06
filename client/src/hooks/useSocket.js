@@ -82,7 +82,7 @@ export function useSocket() {
           else resolve(response.message)
         }
       )
-    }
+    })
   }
 
   const joinConversation = (conversationId) => {
