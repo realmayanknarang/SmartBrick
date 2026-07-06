@@ -1,0 +1,158 @@
+/*
+ * client/src/pages/marketplace/CreateProjectPage.css
+ *
+ * Styles for Create Project form page using design system tokens.
+ */
+
+.create-project-page {
+  padding: var(--space-5);
+}
+
+.create-project-page__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.create-project-page__back-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: var(--space-2) 0;
+  transition: color var(--transition-base);
+}
+
+.create-project-page__back-btn:hover {
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.create-project-page__title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-2xl, 24px);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.create-project-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.create-project-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .create-project-form__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}
+
+.create-project-form__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.budget-range-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+/* ─── Textarea Field styles ─── */
+.textarea-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.textarea-field__label {
+  font-family: var(--font-body, inherit);
+  font-size: 11px;
+  font-weight: var(--weight-bold, 700);
+  text-transform: uppercase;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  letter-spacing: 0.5px;
+}
+
+.textarea-field__required {
+  color: var(--color-danger, #E05C5C);
+}
+
+.textarea-field__control {
+  background-color: var(--color-surface-dark, #1A2B3C);
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-sm, 4px);
+  color: var(--color-text-on-dark, #FFFFFF);
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  min-height: 120px;
+  padding: var(--space-3);
+  resize: vertical;
+  transition: border-color var(--transition-base);
+}
+
+.textarea-field__control:focus {
+  outline: none;
+  border-color: var(--color-accent, #E8C547);
+}
+
+.textarea-field__control--error {
+  border-color: var(--color-danger, #E05C5C);
+}
+
+.textarea-field__error {
+  font-size: 12px;
+  color: var(--color-danger, #E05C5C);
+  margin: 4px 0 0 0;
+}
+
+/* ─── Attachments Note ─── */
+.attachments-note {
+  background-color: rgba(232, 197, 71, 0.04);
+  border: 1px dashed var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-sm, 4px);
+  padding: var(--space-4);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  font-size: var(--text-base, 14px);
+  line-height: 1.5;
+}
+
+/* ─── Feedback banners ─── */
+.form-error-banner {
+  background-color: rgba(224, 92, 92, 0.1);
+  border: 1px solid var(--color-danger, #E05C5C);
+  border-radius: var(--radius-sm, 4px);
+  color: var(--color-text-on-dark, #FFFFFF);
+  padding: var(--space-4);
+  font-size: var(--text-base, 14px);
+}
+
+.form-success-banner {
+  background-color: rgba(60, 181, 122, 0.1);
+  border: 1px solid var(--color-success, #3CB57A);
+  border-radius: var(--radius-sm, 4px);
+  color: var(--color-text-on-dark, #FFFFFF);
+  padding: var(--space-4);
+  font-size: var(--text-base, 14px);
+}
+
+.create-project-submit {
+  align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+  .create-project-submit {
+    width: 100%;
+    text-align: center;
+  }
+}
