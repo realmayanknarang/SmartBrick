@@ -47,13 +47,24 @@ import Select from '../components/Select';
 import Button from '../components/Button';
 import './SelectRolePage.css';
 
-// The four roles defined by the MongoDB User schema enum (exact strings).
+// All roles defined by the MongoDB User schema enum (exact strings).
 const ROLE_OPTIONS = [
   { value: 'owner',           label: 'Owner' },
   { value: 'project_manager', label: 'Project Manager' },
   { value: 'site_engineer',   label: 'Site Engineer' },
   { value: 'finance',         label: 'Finance' },
+  { value: 'marketplace_owner', label: 'Marketplace Owner' },
+  { value: 'builder',           label: 'Builder' },
+  { value: 'vendor_supplier',   label: 'Vendor Supplier' },
 ];
+
+// ─── Helper to get correct default path for each role (copied from App.jsx)
+function getDefaultPath(role) {
+  if (role === 'marketplace_owner') return '/marketplace/owner';
+  if (role === 'builder')           return '/marketplace/builder';
+  if (role === 'vendor_supplier')   return '/marketplace/vendor';
+  return '/dashboard'; // internal roles
+}
 
 // ─── Brand mark (minimal, reuses the same SVG path as AuthBrandPanel) ─────────
 
@@ -96,7 +107,7 @@ function SelectRolePage() {
 
     try {
       await apiClient.post('/auth/set-role', { role: selectedRole });
-      navigate('/dashboard', { replace: true });
+      navigate(getDefaultPath(selectedRole), { replace: true });
     } catch (err) {
       const msg =
         err?.response?.data?.message ||
