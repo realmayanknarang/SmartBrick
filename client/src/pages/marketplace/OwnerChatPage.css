@@ -1,0 +1,162 @@
+/*
+ * client/src/pages/marketplace/OwnerChatPage.css
+ *
+ * Styles for the Owner Chat page using design system tokens.
+ */
+
+.owner-chat-page {
+  padding: var(--space-5);
+}
+
+.chat-page-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.chat-page-back {
+  background: none;
+  border: none;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color var(--transition-base);
+}
+
+.chat-page-back:hover {
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.chat-page-title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-2xl, 24px);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+/* Chat placeholder box styling */
+.chat-box-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  background-color: var(--color-surface-dark-raised, #2E4154);
+}
+
+.chat-placeholder-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 450px;
+  text-align: center;
+  gap: var(--space-4);
+}
+
+.chat-placeholder-icon {
+  margin-bottom: var(--space-2);
+}
+
+.chat-placeholder-title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-xl, 20px);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.chat-placeholder-desc {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.5;
+}
+
+.conversation-code {
+  font-family: monospace;
+  background-color: var(--color-surface-dark, #1A2B3C);
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm, 4px);
+  color: var(--color-accent, #E8C547);
+  word-break: break-all;
+}
+
+.chat-meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  font-size: var(--text-xs, 12px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  background-color: rgba(26, 43, 60, 0.4);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm, 4px);
+  width: 100%;
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+/* Locked chat box styling */
+.chat-locked-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 350px;
+  background-color: var(--color-surface-dark-raised, #2E4154);
+}
+
+.chat-locked-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  text-align: center;
+  gap: var(--space-4);
+}
+
+.chat-locked-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-2);
+}
+
+.chat-locked-title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-xl, 20px);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.chat-locked-desc {
+  margin: 0 0 var(--space-4) 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.5;
+}
+
+/* Loading skeletons */
+.owner-chat-page--loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.skeleton-chat {
+  height: 400px;
+}
+
+.chat-error-card {
+  text-align: center;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+.pulse {
+  animation: pulse-anim 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-anim {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}

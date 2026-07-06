@@ -1,0 +1,179 @@
+/*
+ * client/src/pages/marketplace/OwnerNotificationsPage.css
+ *
+ * Styles for the Owner Notifications page using design system tokens.
+ */
+
+.owner-notifications-page {
+  padding: var(--space-5);
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+
+.notifications-header__title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-2xl, 24px);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+/* Notifications list layout */
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-base);
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+.notification-item:hover {
+  border-color: var(--color-accent, #E8C547);
+  transform: translateX(4px);
+}
+
+/* Gold Dot indicator on left */
+.notification-item__unread-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-accent, #E8C547);
+  border-radius: 50%;
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 8px var(--color-accent, #E8C547);
+}
+
+/* Icon Container offset if unread dot is shown */
+.notification-item__icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-surface-dark, #1A2B3C);
+  border-radius: 50%;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+  margin-left: var(--space-3); /* Push right slightly to avoid dot overlay */
+}
+
+.notification-item--unread .notification-item__icon-container {
+  background-color: var(--color-surface-dark-raised, #2E4154);
+  color: var(--color-text-on-dark, #FFFFFF);
+  border-color: var(--color-accent, #E8C547);
+}
+
+/* Details and typography */
+.notification-item__details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notification-item__message {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.4;
+  padding-right: var(--space-4);
+}
+
+.notification-item--unread .notification-item__message {
+  color: var(--color-text-on-dark, #FFFFFF);
+  font-weight: var(--weight-medium, 500);
+}
+
+.notification-item__time {
+  font-size: var(--text-xs, 12px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  opacity: 0.7;
+}
+
+/* Hover arrow indicator */
+.notification-item__arrow {
+  font-size: var(--text-lg, 18px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  opacity: 0;
+  transition: all var(--transition-base);
+  margin-right: var(--space-2);
+}
+
+.notification-item:hover .notification-item__arrow {
+  opacity: 1;
+  color: var(--color-accent, #E8C547);
+}
+
+/* Empty State Card */
+.notifications-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.notifications-empty-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  gap: var(--space-4);
+}
+
+.notifications-empty-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-2);
+}
+
+.notifications-empty-title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-xl, 20px);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.notifications-empty-desc {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.5;
+}
+
+/* Loading skeletons */
+.notifications-list-loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.skeleton-notification {
+  height: 68px;
+}
+
+.pulse {
+  animation: pulse-anim 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-anim {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}

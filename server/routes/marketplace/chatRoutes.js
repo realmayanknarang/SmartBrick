@@ -35,6 +35,7 @@ import {
 import Conversation                from '../../models/marketplace/Conversation.js';
 import Message                     from '../../models/marketplace/Message.js';
 import MarketplaceNotification     from '../../models/marketplace/MarketplaceNotification.js';
+import { getIO, emitNotificationUpdate } from '../../config/socket.js';
 
 const router = Router();
 
@@ -278,10 +279,9 @@ router.post(
       // ── Populate sender for the response ──────────────────────────────────
       await message.populate('sender', 'name');
 
-      // TODO(M3): emit "new_message" to conversation room via socket when
-      //           Phase M3 sets up Socket.io.
-      // Example:
-      //   io.to(conversationId).emit('new_message', { message });
+      // Emit new_message event to conversation room
+      const io = getIO();
+      io.to(`conversation:${conversationId}`).emit('new_message', { message });
 
       // ── Determine the other participant ───────────────────────────────────
       const senderId    = req.user._id.toString();
@@ -296,6 +296,7 @@ router.post(
         message:        'You have a new message.',
         relatedProject: conversation.project,
       });
+      emitNotificationUpdate(recipientId);
 
       return res.status(201).json({ message });
     } catch (err) {

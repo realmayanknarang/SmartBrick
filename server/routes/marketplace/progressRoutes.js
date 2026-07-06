@@ -40,6 +40,7 @@ import MarketplaceProject          from '../../models/marketplace/MarketplacePro
 import ProgressUpdate              from '../../models/marketplace/ProgressUpdate.js';
 import Milestone                   from '../../models/marketplace/Milestone.js';
 import MarketplaceNotification     from '../../models/marketplace/MarketplaceNotification.js';
+import { emitNotificationUpdate }  from '../../config/socket.js';
 
 const router = Router();
 
@@ -150,6 +151,7 @@ router.post(
         message:        `Builder updated progress to ${pct}% on "${project.title}".`,
         relatedProject: project._id,
       });
+      emitNotificationUpdate(project.owner);
 
       return res.status(201).json({ update });
     } catch (err) {
@@ -380,6 +382,7 @@ router.patch(
           message:        `Milestone "${milestone.title}" completed on "${project.title}".`,
           relatedProject: milestone.project,
         });
+        emitNotificationUpdate(project.owner);
       }
 
       return res.json({ milestone });
