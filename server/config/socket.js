@@ -9,6 +9,8 @@ import { Server } from 'socket.io';
 import { getAuth } from '@clerk/express';
 import User from '../models/User.js';
 import Conversation from '../models/marketplace/Conversation.js';
+import Message from '../models/marketplace/Message.js';
+import MarketplaceNotification from '../models/marketplace/MarketplaceNotification.js';
 
 let io = null;
 
@@ -25,17 +27,29 @@ export function initializeSocket(httpServer) {
     console.log('Socket connected:', socket.id);
 
     try {
-      // Use Clerk's getAuth with the socket handshake request
-      const { userId } = getAuth(socket.request);
-      if (!userId) {
+      // First try auth token from handshake, then try getAuth from request
+      let clerkUserId = null;
+
+      if (socket.handshake.auth?.token) {
+        // For future use if we switch to explicit token sending
+        clerkUserId = null; // TODO: Add token verification here if needed
+      }
+      
+      if (!clerkUserId) {
+        // Fall back to using getAuth from the request (current method)
+        const authResult = getAuth(socket.request);
+        clerkUserId = authResult.userId;
+      }
+
+      if (!clerkUserId) {
         throw new Error('Unauthorized: No Clerk session found');
       }
 
       // Look up user in MongoDB
-      const user = await User.findOne({ clerkUserId: userId })
+      const user = await User.findOne({ clerkUserId })
         .select('_id role')
         .lean();
-      
+
       if (!user) {
         throw new Error('Unauthorized: No user found');
       }
@@ -46,28 +60,40 @@ export function initializeSocket(httpServer) {
       // Join a user-specific room for notifications
       socket.join(`user:${user._id}`);
 
-      console.log(`Socket ${socket.id} authenticated as user ${user._id}`);
+      // Fetch all conversations where this user is owner or builder
+      const conversations = await Conversation.find({
+        $or: [
+          { owner: user._id },
+          { builder: user._id }
+        ]
+      }).select('_id');
+
+      // Join a room for each conversation
+      const roomIds = conversations.map(c => `conversation:${c._id.toString()}`);
+      socket.join(roomIds);
+      console.log(`User ${user._id} joined ${roomIds.length} conversation rooms`);
+
     } catch (err) {
       console.error('Socket authentication failed:', err.message);
       socket.disconnect();
       return;
     }
 
-    // Handle joining a conversation room
+    // Handle joining a NEW conversation room after a proposal is approved
     socket.on('join_conversation', async (conversationId) => {
       try {
         const conversation = await Conversation.findById(conversationId)
           .select('owner builder')
           .lean();
-        
+
         if (!conversation) return;
 
         // Verify user is a participant
         const userId = socket.user._id.toString();
-        const isParticipant = 
-          conversation.owner.toString() === userId || 
+        const isParticipant =
+          conversation.owner.toString() === userId ||
           conversation.builder.toString() === userId;
-        
+
         if (!isParticipant) return;
 
         socket.join(`conversation:${conversationId}`);
@@ -77,17 +103,104 @@ export function initializeSocket(httpServer) {
       }
     });
 
-    // Handle typing events
-    socket.on('typing_start', (conversationId) => {
-      socket.to(`conversation:${conversationId}`).emit('typing_start', {
-        userId: socket.user._id
+    // EVENT: send_message
+    socket.on('send_message', async (data, callback) => {
+      try {
+        const { conversationId, content, messageType, fileUrl } = data;
+
+        // 1. Verify the sender is a participant in this conversation
+        const conversation = await Conversation.findById(conversationId);
+        if (!conversation) {
+          return callback({ error: 'Conversation not found' });
+        }
+
+        const isParticipant =
+          conversation.owner.toString() === socket.user._id.toString() ||
+          conversation.builder.toString() === socket.user._id.toString();
+
+        if (!isParticipant) {
+          return callback({ error: 'Not a participant' });
+        }
+
+        // 2. Validate content
+        if (!content && messageType === 'text') {
+          return callback({ error: 'Message content required' });
+        }
+
+        // 3. Save to MongoDB
+        const message = await Message.create({
+          conversation: conversationId,
+          sender: socket.user._id,
+          content,
+          messageType: messageType || 'text',
+          fileUrl: fileUrl || null,
+          readBy: [socket.user._id]
+        });
+
+        // 4. Populate sender for the emit
+        await message.populate('sender', 'name');
+
+        // 5. Emit to the conversation room (all participants including sender)
+        io.to(`conversation:${conversationId}`).emit('new_message', message);
+
+        // 6. Create notification for the OTHER participant
+        const recipientId =
+          conversation.owner.toString() === socket.user._id.toString()
+            ? conversation.builder
+            : conversation.owner;
+
+        await MarketplaceNotification.create({
+          recipient: recipientId,
+          type: 'new_message',
+          message: 'You have a new message',
+          relatedProject: conversation.project
+        });
+
+        // 7. Emit notification to the recipient's socket
+        emitNotificationUpdate(recipientId);
+
+        // 8. Acknowledge success to the sender
+        callback({ success: true, message });
+      } catch (err) {
+        console.error('send_message error:', err);
+        callback({ error: 'Failed to send message' });
+      }
+    });
+
+    // EVENT: typing_start and typing_stop
+    socket.on('typing_start', ({ conversationId }) => {
+      // Emit to OTHER participants in the room only
+      socket.to(`conversation:${conversationId}`).emit('user_typing', {
+        userId: socket.user._id,
+        isTyping: true
       });
     });
 
-    socket.on('typing_stop', (conversationId) => {
-      socket.to(`conversation:${conversationId}`).emit('typing_stop', {
-        userId: socket.user._id
+    socket.on('typing_stop', ({ conversationId }) => {
+      socket.to(`conversation:${conversationId}`).emit('user_typing', {
+        userId: socket.user._id,
+        isTyping: false
       });
+    });
+
+    // EVENT: mark_read
+    socket.on('mark_read', async ({ conversationId }) => {
+      try {
+        await Message.updateMany(
+          {
+            conversation: conversationId,
+            readBy: { $ne: socket.user._id }
+          },
+          { $addToSet: { readBy: socket.user._id } }
+        );
+        // Notify other participant that messages were read
+        socket.to(`conversation:${conversationId}`).emit('messages_read', {
+          conversationId,
+          readBy: socket.user._id
+        });
+      } catch (err) {
+        console.error('mark_read error:', err);
+      }
     });
 
     socket.on('disconnect', () => {

@@ -5,155 +5,134 @@
  * Uses a singleton connection instance to avoid opening redundant connections.
  */
 
-import { useRef, useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
-
-let socketInstance = null;
-
-const getSocket = () => {
-  if (!socketInstance) {
-    // Determine the socket server URL by stripping /api from the VITE_API_URL
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-    const socketUrl = apiUrl.replace(/\/api$/, '');
-    socketInstance = io(socketUrl, {
-      transports: ['websocket'],
-      withCredentials: true,
-    });
-  }
-  return socketInstance;
-};
+import { useEffect, useRef, useState } from 'react'
+import { io } from 'socket.io-client'
+import { useAuth } from '@clerk/clerk-react'
 
 export function useSocket() {
-  const socketRef = useRef(null);
-  const [connected, setConnected] = useState(false);
+  const { getToken } = useAuth()
+  const socketRef = useRef(null)
+  const [connected, setConnected] = useState(false)
+  const [error, setError] = useState(null)
 
-  if (!socketRef.current) {
-    socketRef.current = getSocket();
-  }
-
-  const socket = socketRef.current;
-
-  // Track connection status
   useEffect(() => {
-    const handleConnect = () => {
-      console.log('Socket connected');
-      setConnected(true);
-    };
+    let socket
 
-    const handleDisconnect = () => {
-      console.log('Socket disconnected');
-      setConnected(false);
-    };
+    async function connect() {
+      try {
+        // Get the current Clerk session token
+        const token = await getToken()
+        if (!token) return
 
-    socket.on('connect', handleConnect);
-    socket.on('disconnect', handleDisconnect);
+        socket = io(
+          import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001',
+          {
+            auth: { token },
+            transports: ['websocket', 'polling'],
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000
+          }
+        )
 
-    // Set initial connection status
-    if (socket.connected) {
-      setConnected(true);
+        socket.on('connect', () => {
+          setConnected(true)
+          setError(null)
+          console.log('Socket connected:', socket.id)
+        })
+
+        socket.on('disconnect', (reason) => {
+          setConnected(false)
+          console.log('Socket disconnected:', reason)
+        })
+
+        socket.on('connect_error', (err) => {
+          setError(err.message)
+          setConnected(false)
+          console.error('Socket connection error:', err.message)
+        })
+
+        socketRef.current = socket
+      } catch (err) {
+        setError(err.message)
+      }
     }
 
-    return () => {
-      socket.off('connect', handleConnect);
-      socket.off('disconnect', handleDisconnect);
-    };
-  }, [socket]);
+    connect()
 
-  /**
-   * Listen for "notification_update" events.
-   * Returns a cleanup function to unsubscribe.
-   *
-   * @param {function} callback - Called with ({ recipientId })
-   * @returns {function} cleanup function
-   */
-  const onNotificationUpdate = (callback) => {
-    socket.on('notification_update', callback);
     return () => {
-      socket.off('notification_update', callback);
-    };
-  };
+      if (socket) {
+        socket.disconnect()
+      }
+    }
+  }, [getToken])
 
-  /**
-   * Join a conversation room.
-   * @param {string} conversationId
-   */
+  // Expose methods for chat UI to use
+  const sendMessage = (conversationId, content, messageType = 'text', fileUrl = null) => {
+    return new Promise((resolve, reject) => {
+      if (!socketRef.current?.connected) {
+        reject(new Error('Not connected'))
+        return
+      }
+      socketRef.current.emit(
+        'send_message',
+        { conversationId, content, messageType, fileUrl },
+        (response) => {
+          if (response.error) reject(new Error(response.error))
+          else resolve(response.message)
+        }
+      )
+    }
+  }
+
   const joinConversation = (conversationId) => {
-    socket.emit('join_conversation', conversationId);
-  };
+    socketRef.current?.emit('join_conversation', conversationId)
+  }
 
-  /**
-   * Send a message to the server (for chat).
-   * Note: We use the REST API for sending messages, not socket directly.
-   * This is just a placeholder for future use if needed.
-   * @param {string} conversationId
-   * @param {string} content
-   */
-  const sendMessage = (conversationId, content) => {
-    socket.emit('send_message', { conversationId, content });
-  };
-
-  /**
-   * Listen for new messages in a conversation.
-   * @param {function} callback - Called with ({ message })
-   * @returns {function} cleanup function
-   */
-  const onNewMessage = (callback) => {
-    socket.on('new_message', callback);
-    return () => {
-      socket.off('new_message', callback);
-    };
-  };
-
-  /**
-   * Send typing start event.
-   * @param {string} conversationId
-   */
   const startTyping = (conversationId) => {
-    socket.emit('typing_start', conversationId);
-  };
+    socketRef.current?.emit('typing_start', { conversationId })
+  }
 
-  /**
-   * Send typing stop event.
-   * @param {string} conversationId
-   */
   const stopTyping = (conversationId) => {
-    socket.emit('typing_stop', conversationId);
-  };
+    socketRef.current?.emit('typing_stop', { conversationId })
+  }
 
-  /**
-   * Listen for typing start events from other users.
-   * @param {function} callback - Called with ({ userId })
-   * @returns {function} cleanup function
-   */
-  const onTypingStart = (callback) => {
-    socket.on('typing_start', callback);
-    return () => {
-      socket.off('typing_start', callback);
-    };
-  };
+  const markRead = (conversationId) => {
+    socketRef.current?.emit('mark_read', { conversationId })
+  }
 
-  /**
-   * Listen for typing stop events from other users.
-   * @param {function} callback - Called with ({ userId })
-   * @returns {function} cleanup function
-   */
-  const onTypingStop = (callback) => {
-    socket.on('typing_stop', callback);
-    return () => {
-      socket.off('typing_stop', callback);
-    };
-  };
+  const onNewMessage = (callback) => {
+    socketRef.current?.on('new_message', callback)
+    return () => socketRef.current?.off('new_message', callback)
+  }
+
+  const onTyping = (callback) => {
+    socketRef.current?.on('user_typing', callback)
+    return () => socketRef.current?.off('user_typing', callback)
+  }
+
+  const onMessagesRead = (callback) => {
+    socketRef.current?.on('messages_read', callback)
+    return () => socketRef.current?.off('messages_read', callback)
+  }
+
+  const onNotificationUpdate = (callback) => {
+    socketRef.current?.on('notification_update', callback)
+    return () => socketRef.current?.off('notification_update', callback)
+  }
 
   return {
-    socket,
+    socket: socketRef.current,
     connected,
-    onNotificationUpdate,
-    joinConversation,
+    error,
     sendMessage,
-    onNewMessage,
+    joinConversation,
     startTyping,
     stopTyping,
-    onTypingStart,
-    onTypingStop,
-  };
+    markRead,
+    onNewMessage,
+    onTyping,
+    onMessagesRead,
+    onNotificationUpdate
+  }
 }
