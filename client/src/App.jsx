@@ -40,6 +40,10 @@ import ProgressTrackingPage    from './pages/marketplace/ProgressTrackingPage';
 import OwnerChatPage           from './pages/marketplace/OwnerChatPage';
 import OwnerNotificationsPage  from './pages/marketplace/OwnerNotificationsPage';
 
+// Marketplace Builder Sub-pages — Phase M5
+import BuilderOverviewPage     from './pages/marketplace/BuilderOverviewPage';
+import BrowseProjectsPage      from './pages/marketplace/BrowseProjectsPage';
+
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -379,7 +383,29 @@ function App() {
               <BuilderDashboard />
             </MarketplaceRoute>
           }
-        />
+        >
+          {/* M5A — Overview */}
+          <Route path="overview" element={<BuilderOverviewPage />} />
+
+          {/* M5B — Browse Projects */}
+          <Route path="projects" element={<BrowseProjectsPage />} />
+
+          {/* M5C — Project Details (page built in M5C) */}
+          <Route path="projects/:id" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Project Details — coming in M5C</h3></div>} />
+
+          {/* M5D — My Proposals (page built in M5D) */}
+          <Route path="proposals" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>My Proposals — coming in M5D</h3></div>} />
+
+          {/* M5E — Active Project Workspace (page built in M5E) */}
+          <Route path="workspace" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Active Projects — coming in M5E</h3></div>} />
+          <Route path="workspace/:projectId" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Project Workspace — coming in M5E</h3></div>} />
+
+          {/* M6C — Browse Materials (shared with vendor, page built in M6C) */}
+          <Route path="materials" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Browse Materials — coming in M6C</h3></div>} />
+
+          {/* M5F — Notifications (page built in M5F) */}
+          <Route path="notifications" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Notifications — coming in M5F</h3></div>} />
+        </Route>
         <Route
           path="/marketplace/vendor"
           element={

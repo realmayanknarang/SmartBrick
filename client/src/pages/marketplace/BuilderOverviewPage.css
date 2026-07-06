@@ -1,0 +1,348 @@
+/*
+ * client/src/pages/marketplace/BuilderOverviewPage.css
+ *
+ * Styles for the Builder Dashboard Overview page.
+ * Follows the same design system token conventions as OwnerOverviewPage.css.
+ */
+
+/* ─── Welcome Section ─── */
+.builder-welcome {
+  margin-bottom: var(--space-6);
+}
+
+.builder-welcome__greeting {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  letter-spacing: 0.02em;
+}
+
+.builder-welcome__name {
+  margin: var(--space-1) 0 var(--space-2) 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-3xl, 30px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+  line-height: 1.2;
+}
+
+.builder-welcome__sub {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.5;
+}
+
+/* ─── Metrics Grid ─── */
+.builder-metrics {
+  margin-bottom: var(--space-6);
+}
+
+.builder-metrics__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 1200px) {
+  .builder-metrics__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .builder-metrics__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Metric Card ─── */
+.builder-metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 140px;
+  position: relative;
+  overflow: hidden;
+}
+
+.builder-metric-card--accent::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent, #E8C547), #f5d76e);
+  border-radius: var(--radius-sm, 4px) var(--radius-sm, 4px) 0 0;
+}
+
+.builder-metric-card--loading {
+  justify-content: center;
+}
+
+.builder-metric-card__icon-row {
+  display: flex;
+  align-items: center;
+}
+
+.builder-metric-card__icon {
+  color: var(--color-accent, #E8C547);
+  opacity: 0.85;
+}
+
+.builder-metric-card__value {
+  margin: var(--space-2) 0 0 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-3xl, 30px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+  line-height: 1;
+}
+
+.builder-metric-card__label {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-xs, 12px);
+  font-weight: var(--weight-medium, 500);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── Skeleton Animations ─── */
+.skeleton-icon {
+  width: 32px;
+  height: 32px;
+  background-color: var(--color-border-dark, #4A5D6E);
+  border-radius: 50%;
+}
+
+.skeleton-value {
+  width: 60px;
+  height: 28px;
+  background-color: var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.skeleton-label {
+  width: 120px;
+  height: 16px;
+  background-color: var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.skeleton-line {
+  height: 20px;
+  background-color: var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-sm, 4px);
+  width: 100%;
+}
+
+.pulse {
+  animation: pulse-anim 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-anim {
+  0%   { opacity: 0.6; }
+  50%  { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}
+
+/* ─── Bottom Row ─── */
+.builder-overview-row {
+  display: flex;
+  gap: var(--space-5);
+}
+
+@media (max-width: 1024px) {
+  .builder-overview-row {
+    flex-direction: column;
+  }
+}
+
+/* ─── Recent Proposals Card ─── */
+.builder-recent-card {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+
+.builder-section-title {
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-lg, 18px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+  margin-top: 0;
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+  padding-bottom: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.builder-recent-card__loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+
+.builder-recent-card__empty {
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  padding: var(--space-4) 0;
+  text-align: center;
+}
+
+/* Proposals List */
+.builder-proposals-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.builder-proposal-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface-dark, #1A2B3C);
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+.builder-proposal-item__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.builder-proposal-item__title {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  font-weight: var(--weight-medium, 500);
+  color: var(--color-text-on-dark, #FFFFFF);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.builder-proposal-item__date {
+  font-size: var(--text-xs, 12px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  opacity: 0.75;
+}
+
+/* Proposal Status Badges */
+.proposal-status-badge {
+  font-size: 11px;
+  font-weight: var(--weight-bold, 700);
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.proposal-status--pending {
+  background-color: rgba(232, 197, 71, 0.15);
+  color: #E8C547;
+  border: 1px solid rgba(232, 197, 71, 0.3);
+}
+
+.proposal-status--approved {
+  background-color: rgba(60, 181, 122, 0.15);
+  color: #3CB57A;
+  border: 1px solid rgba(60, 181, 122, 0.3);
+}
+
+.proposal-status--rejected {
+  background-color: rgba(231, 29, 54, 0.15);
+  color: #e71d36;
+  border: 1px solid rgba(231, 29, 54, 0.3);
+}
+
+.proposal-status--withdrawn {
+  background-color: rgba(108, 117, 125, 0.15);
+  color: #adb5bd;
+  border: 1px solid rgba(173, 181, 189, 0.3);
+}
+
+.builder-view-all-link {
+  display: inline-block;
+  margin-top: var(--space-4);
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+  color: var(--color-accent, #E8C547);
+  text-decoration: none;
+  font-weight: var(--weight-medium, 500);
+  transition: opacity 0.15s ease;
+}
+
+.builder-view-all-link:hover {
+  opacity: 0.75;
+}
+
+/* ─── CTA Card ─── */
+.builder-cta-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.builder-cta-card__content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.builder-cta-card__icon-wrapper {
+  margin-bottom: var(--space-4);
+}
+
+.builder-cta-card__title {
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-lg, 18px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+  padding-bottom: var(--space-3);
+}
+
+.builder-cta-card__text {
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.6;
+  margin-top: 0;
+  margin-bottom: var(--space-5);
+  flex-grow: 1;
+}
+
+.builder-cta-card__button {
+  align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+  .builder-cta-card__button {
+    width: 100%;
+    text-align: center;
+  }
+}
