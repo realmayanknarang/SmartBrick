@@ -1,0 +1,378 @@
+/*
+ * client/src/pages/marketplace/MyProposalsPage.css
+ *
+ * Styles for the My Proposals page — Sub-phase M5D.
+ * Desktop table + mobile card layout, tab-filtered list.
+ */
+
+/* ─── Page Shell ─── */
+.my-proposals-page {
+  padding: var(--space-5);
+}
+
+/* ─── Header ─── */
+.my-proposals-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-5);
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.my-proposals-page__header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.my-proposals-page__title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-2xl, 24px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.my-proposals-page__count {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background-color: rgba(232, 197, 71, 0.12);
+  color: var(--color-accent, #E8C547);
+  border: 1px solid rgba(232, 197, 71, 0.25);
+  border-radius: 12px;
+  font-size: var(--text-xs, 12px);
+  font-weight: var(--weight-bold, 700);
+  letter-spacing: 0.4px;
+}
+
+/* ─── Loading Skeletons ─── */
+.mp-skeleton-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.mp-skeleton-row {
+  height: 56px;
+  background-color: var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.pulse {
+  animation: pulse-anim 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-anim {
+  0%   { opacity: 0.6; }
+  50%  { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}
+
+/* ─── Global Empty State ─── */
+.my-proposals-page__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  text-align: center;
+  gap: var(--space-4);
+  padding: var(--space-8);
+}
+
+.my-proposals-page__empty-icon {
+  margin-bottom: var(--space-2);
+}
+
+.my-proposals-page__empty-title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-xl, 20px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.my-proposals-page__empty-subtitle {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.5;
+  max-width: 380px;
+}
+
+/* ─── Per-tab Empty State ─── */
+.mp-tab-empty {
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+}
+
+.mp-tab-empty p {
+  margin: 0;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+}
+
+/* ─── Status Badges ─── */
+.mp-status-badge {
+  font-size: 11px;
+  font-weight: var(--weight-bold, 700);
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.mp-status--pending {
+  background-color: rgba(232, 197, 71, 0.15);
+  color: #E8C547;
+  border: 1px solid rgba(232, 197, 71, 0.3);
+}
+
+.mp-status--approved {
+  background-color: rgba(60, 181, 122, 0.15);
+  color: #3CB57A;
+  border: 1px solid rgba(60, 181, 122, 0.3);
+}
+
+.mp-status--rejected {
+  background-color: rgba(231, 29, 54, 0.12);
+  color: #e71d36;
+  border: 1px solid rgba(231, 29, 54, 0.3);
+}
+
+.mp-status--withdrawn {
+  background-color: rgba(108, 117, 125, 0.15);
+  color: #adb5bd;
+  border: 1px solid rgba(173, 181, 189, 0.3);
+}
+
+/* ─── Type Badges ─── */
+.mp-type-badge {
+  font-size: 10px;
+  font-weight: var(--weight-bold, 700);
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: var(--radius-sm, 4px);
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+.mp-type-badge--house {
+  background-color: rgba(0, 119, 182, 0.15);
+  color: #00b4d8;
+  border: 1px solid rgba(0, 180, 216, 0.3);
+}
+.mp-type-badge--villa {
+  background-color: rgba(114, 9, 183, 0.15);
+  color: #b5179e;
+  border: 1px solid rgba(181, 23, 158, 0.3);
+}
+.mp-type-badge--apartment {
+  background-color: rgba(20, 116, 111, 0.15);
+  color: #2ec4b6;
+  border: 1px solid rgba(46, 196, 182, 0.3);
+}
+.mp-type-badge--commercial {
+  background-color: rgba(232, 197, 71, 0.15);
+  color: #E8C547;
+  border: 1px solid rgba(232, 197, 71, 0.3);
+}
+.mp-type-badge--industrial {
+  background-color: rgba(247, 127, 0, 0.15);
+  color: #f77f00;
+  border: 1px solid rgba(247, 127, 0, 0.3);
+}
+.mp-type-badge--other {
+  background-color: rgba(108, 117, 125, 0.15);
+  color: #adb5bd;
+  border: 1px solid rgba(173, 181, 189, 0.3);
+}
+
+/* ─── Action Buttons ─── */
+.mp-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.mp-action-btn--full {
+  width: 100%;
+  justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ─── Desktop Table ─── */
+.mp-table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+.mp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+}
+
+.mp-th {
+  background-color: rgba(19, 35, 53, 0.8);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  font-size: 11px;
+  font-weight: var(--weight-bold, 700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+.mp-table-row {
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+  transition: background-color 0.15s ease;
+}
+
+.mp-table-row:last-child {
+  border-bottom: none;
+}
+
+.mp-table-row:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.mp-table-cell {
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text-on-dark, #FFFFFF);
+  vertical-align: middle;
+}
+
+.mp-table-cell--title {
+  max-width: 200px;
+}
+
+.mp-table-cell--muted {
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+.mp-project-title {
+  font-weight: var(--weight-medium, 500);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.mp-bid-value {
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-accent, #E8C547);
+}
+
+/* Hide table on mobile */
+@media (max-width: 880px) {
+  .mp-table-wrapper {
+    display: none;
+  }
+}
+
+/* ─── Mobile Cards ─── */
+.mp-cards-list {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+@media (max-width: 880px) {
+  .mp-cards-list {
+    display: flex;
+  }
+}
+
+.mp-proposal-card {
+  background-color: var(--color-surface-navy, #132335);
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-md, 8px);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mp-proposal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.mp-proposal-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.mp-proposal-card__title {
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+  line-height: 1.3;
+  flex: 1;
+}
+
+.mp-proposal-card__meta {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.mp-proposal-card__meta-item {
+  font-size: var(--text-xs, 12px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+.mp-proposal-card__meta-item--date {
+  opacity: 0.75;
+}
+
+.mp-proposal-card__metrics {
+  display: flex;
+  gap: var(--space-5);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-border-dark, #4A5D6E);
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+.mp-proposal-card__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mp-proposal-card__metric-label {
+  font-size: 10px;
+  font-weight: var(--weight-bold, 700);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+.mp-proposal-card__metric-value {
+  font-size: var(--text-base, 14px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.mp-proposal-card__footer {
+  padding-top: var(--space-1);
+}

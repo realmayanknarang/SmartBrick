@@ -1,0 +1,576 @@
+/*
+ * client/src/pages/marketplace/BuilderProjectDetailPage.css
+ *
+ * Styles for the Builder Project Detail page — Sub-phase M5C.
+ * Navy/gold design system, two-column layout, proposal panel states.
+ */
+
+/* ─── Page Shell ─── */
+.bpd-page {
+  padding: var(--space-5);
+}
+
+.bpd-page--loading .bpd-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--space-5);
+}
+
+.skeleton-header {
+  height: 40px;
+  width: 240px;
+  background-color: var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-sm, 4px);
+  margin-bottom: var(--space-5);
+}
+
+.skeleton-card-tall {
+  height: 400px;
+  background-color: var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-md, 8px);
+}
+
+.pulse {
+  animation: pulse-anim 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-anim {
+  0%   { opacity: 0.6; }
+  50%  { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}
+
+/* ─── Toast ─── */
+.bpd-toast {
+  position: fixed;
+  top: var(--space-5);
+  right: var(--space-5);
+  z-index: 1000;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-sm, 4px);
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  font-weight: var(--weight-medium, 500);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  max-width: 420px;
+  animation: slide-in 0.25s ease forwards;
+}
+
+@keyframes slide-in {
+  from { transform: translateX(120%); opacity: 0; }
+  to   { transform: translateX(0);   opacity: 1; }
+}
+
+.bpd-toast--success {
+  background-color: #1a3d2e;
+  color: #3CB57A;
+  border: 1px solid rgba(60, 181, 122, 0.4);
+}
+
+.bpd-toast--error {
+  background-color: #3d1a1a;
+  color: #e71d36;
+  border: 1px solid rgba(231, 29, 54, 0.4);
+}
+
+/* ─── Header ─── */
+.bpd-header {
+  margin-bottom: var(--space-5);
+}
+
+.bpd-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  text-decoration: none;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+  font-weight: var(--weight-medium, 500);
+  transition: color 0.15s ease;
+}
+
+.bpd-back-link:hover {
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+/* ─── Two-column Layout ─── */
+.bpd-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .bpd-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Left Column ─── */
+.bpd-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Title row: type badge + status pill */
+.bpd-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.bpd-type-badge {
+  font-size: 11px;
+  font-weight: var(--weight-bold, 700);
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm, 4px);
+  letter-spacing: 0.5px;
+}
+
+.bpd-type-badge--house {
+  background-color: rgba(0, 119, 182, 0.15);
+  color: #00b4d8;
+  border: 1px solid rgba(0, 180, 216, 0.3);
+}
+.bpd-type-badge--villa {
+  background-color: rgba(114, 9, 183, 0.15);
+  color: #b5179e;
+  border: 1px solid rgba(181, 23, 158, 0.3);
+}
+.bpd-type-badge--apartment {
+  background-color: rgba(20, 116, 111, 0.15);
+  color: #2ec4b6;
+  border: 1px solid rgba(46, 196, 182, 0.3);
+}
+.bpd-type-badge--commercial {
+  background-color: rgba(232, 197, 71, 0.15);
+  color: #E8C547;
+  border: 1px solid rgba(232, 197, 71, 0.3);
+}
+.bpd-type-badge--industrial {
+  background-color: rgba(247, 127, 0, 0.15);
+  color: #f77f00;
+  border: 1px solid rgba(247, 127, 0, 0.3);
+}
+.bpd-type-badge--other {
+  background-color: rgba(108, 117, 125, 0.15);
+  color: #adb5bd;
+  border: 1px solid rgba(173, 181, 189, 0.3);
+}
+
+/* Project Status */
+.bpd-status-pill {
+  font-size: 11px;
+  font-weight: var(--weight-bold, 700);
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+}
+.bpd-status--open {
+  background-color: rgba(60, 181, 122, 0.15);
+  color: #3CB57A;
+  border: 1px solid rgba(60, 181, 122, 0.3);
+}
+.bpd-status--locked {
+  background-color: rgba(232, 197, 71, 0.15);
+  color: #E8C547;
+  border: 1px solid rgba(232, 197, 71, 0.3);
+}
+.bpd-status--completed {
+  background-color: rgba(108, 117, 125, 0.15);
+  color: #adb5bd;
+  border: 1px solid rgba(173, 181, 189, 0.3);
+}
+
+/* Project title */
+.bpd-project-title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-3xl, 28px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+  line-height: 1.25;
+}
+
+/* ─── Details Card ─── */
+.bpd-details-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.bpd-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-4) var(--space-5);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+.bpd-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.bpd-detail-label {
+  font-size: 11px;
+  font-weight: var(--weight-bold, 700);
+  text-transform: uppercase;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  letter-spacing: 0.5px;
+}
+
+.bpd-detail-value {
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark, #FFFFFF);
+  font-weight: var(--weight-medium, 500);
+}
+
+.bpd-detail-value--icon {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ─── Description ─── */
+.bpd-description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+  padding-bottom: var(--space-5);
+}
+
+.bpd-description__text {
+  margin: var(--space-1) 0 0 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.65;
+
+  /* Truncate when not expanded */
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bpd-description__text--expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+.bpd-description__toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+  color: var(--color-accent, #E8C547);
+  font-weight: var(--weight-medium, 500);
+  text-decoration: underline;
+  align-self: flex-start;
+  transition: opacity 0.15s ease;
+}
+.bpd-description__toggle:hover { opacity: 0.75; }
+
+/* ─── Posted row ─── */
+.bpd-posted-row {
+  display: flex;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.bpd-posted-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* ─── Error card ─── */
+.bpd-error-card {
+  max-width: 480px;
+}
+.bpd-error-card h3 {
+  margin: 0 0 var(--space-3) 0;
+  color: var(--color-text-on-dark, #fff);
+}
+.bpd-error-card p {
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  margin: 0 0 var(--space-4) 0;
+}
+
+/* ─── RIGHT COLUMN: Proposal Panel ─── */
+.bpd-right-col {
+  position: sticky;
+  top: var(--space-5);
+}
+
+.bpd-proposal-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Panel shared typography */
+.bpd-panel-title {
+  margin: 0 0 var(--space-2) 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-xl, 20px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.bpd-panel-subtitle {
+  margin: 0 0 var(--space-4) 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.5;
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+  padding-bottom: var(--space-4);
+}
+
+/* ─── Proposal Form (State 1) ─── */
+.bpd-proposal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.bpd-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.bpd-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bpd-textarea-label {
+  font-size: 11px;
+  font-weight: var(--weight-bold, 700);
+  text-transform: uppercase;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  letter-spacing: 0.5px;
+}
+
+.bpd-optional {
+  font-weight: var(--weight-regular, 400);
+  text-transform: none;
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+.bpd-textarea {
+  background-color: var(--color-surface-dark, #1A2B3C);
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-sm, 4px);
+  color: var(--color-text-on-dark, #FFFFFF);
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  line-height: 1.5;
+  padding: var(--space-3);
+  resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.bpd-textarea::placeholder {
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  opacity: 0.6;
+}
+
+.bpd-textarea:focus {
+  border-color: var(--color-accent, #E8C547);
+  box-shadow: 0 0 0 2px rgba(232, 197, 71, 0.15);
+}
+
+.bpd-form-error {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+  color: #e71d36;
+  background-color: rgba(231, 29, 54, 0.08);
+  border: 1px solid rgba(231, 29, 54, 0.25);
+  border-radius: var(--radius-sm, 4px);
+  padding: var(--space-2) var(--space-3);
+}
+
+.bpd-submit-btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--space-2);
+}
+
+/* ─── Existing Proposal Panel (State 2) ─── */
+.bpd-existing-proposal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.bpd-existing-proposal__status-row {
+  display: flex;
+  align-items: center;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+/* Proposal status badge */
+.bpd-prop-status-badge {
+  font-size: 12px;
+  font-weight: var(--weight-bold, 700);
+  padding: 5px 12px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+}
+.bpd-prop-status--pending {
+  background-color: rgba(232, 197, 71, 0.15);
+  color: #E8C547;
+  border: 1px solid rgba(232, 197, 71, 0.3);
+}
+.bpd-prop-status--approved {
+  background-color: rgba(60, 181, 122, 0.15);
+  color: #3CB57A;
+  border: 1px solid rgba(60, 181, 122, 0.3);
+}
+.bpd-prop-status--rejected {
+  background-color: rgba(231, 29, 54, 0.12);
+  color: #e71d36;
+  border: 1px solid rgba(231, 29, 54, 0.3);
+}
+.bpd-prop-status--withdrawn {
+  background-color: rgba(108, 117, 125, 0.15);
+  color: #adb5bd;
+  border: 1px solid rgba(173, 181, 189, 0.3);
+}
+
+.bpd-existing-proposal__metrics {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+.bpd-metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bpd-metric-label {
+  font-size: 12px;
+  font-weight: var(--weight-medium, 500);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.bpd-metric-value {
+  font-size: var(--text-base, 14px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+/* Approved banner */
+.bpd-approved-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  background-color: rgba(60, 181, 122, 0.1);
+  border: 1px solid rgba(60, 181, 122, 0.3);
+  border-radius: var(--radius-sm, 4px);
+  padding: var(--space-4);
+}
+
+.bpd-approved-banner__emoji {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.bpd-approved-banner strong {
+  display: block;
+  color: #3CB57A;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  margin-bottom: 4px;
+}
+
+.bpd-approved-banner p {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+.bpd-workspace-btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--space-2);
+}
+
+/* Status message (pending / rejected) */
+.bpd-status-message {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+  line-height: 1.5;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.bpd-status-message--muted {
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  background-color: rgba(159, 176, 188, 0.06);
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+/* ─── Locked Panel (State 3) ─── */
+.bpd-locked-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+
+.bpd-locked-panel__icon {
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(159, 176, 188, 0.08);
+  border-radius: 50%;
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+.bpd-locked-panel__text {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+@media (max-width: 960px) {
+  .bpd-right-col {
+    position: static;
+  }
+}
