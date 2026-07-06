@@ -5,8 +5,8 @@
  * Allows marketplace owners to post a new project with client-side validation.
  */
 
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import TextInput from '../../components/TextInput';
 import Select from '../../components/Select';
 import Button from '../../components/Button';
@@ -53,6 +53,8 @@ function TextareaField({ label, required, value, onChange, placeholder, error })
 
 function CreateProjectPage() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEdit = !!id;
 
   // Form Fields State
   const [title, setTitle] = useState('');
@@ -69,6 +71,37 @@ function CreateProjectPage() {
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState('');
+
+  // Fetch project details if in edit mode
+  useEffect(() => {
+    if (!isEdit) return;
+
+    let active = true;
+    async function fetchProject() {
+      try {
+        setLoading(true);
+        const res = await apiClient.get(`/api/marketplace/projects/${id}`);
+        if (!active) return;
+
+        const p = res.data.project;
+        setTitle(p.title || '');
+        setLocation(p.location || '');
+        setConstructionType(p.constructionType || '');
+        setPlotSize(p.plotSize || '');
+        setBudgetMin(p.budgetMin ? String(p.budgetMin) : '');
+        setBudgetMax(p.budgetMax ? String(p.budgetMax) : '');
+        setTimeline(p.timeline || '');
+        setDescription(p.description || '');
+      } catch (err) {
+        console.error('[CreateProjectPage] Failed to fetch project:', err);
+        setSubmitError('Failed to load project details.');
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    fetchProject();
+    return () => { active = false; };
+  }, [id, isEdit]);
 
   // Construction type dropdown options
   const constructionOptions = [
@@ -138,7 +171,6 @@ function CreateProjectPage() {
       const payload = {
         title: title.trim(),
         location: location.trim(),
-        constructionType,
         plotSize: plotSize.trim() || undefined,
         budgetMin: Number(budgetMin),
         budgetMax: Number(budgetMax),
@@ -146,9 +178,14 @@ function CreateProjectPage() {
         description: description.trim()
       };
 
-      await apiClient.post('/api/marketplace/projects', payload);
-
-      setSubmitSuccess('Project posted successfully!');
+      if (!isEdit) {
+        payload.constructionType = constructionType;
+        await apiClient.post('/api/marketplace/projects', payload);
+        setSubmitSuccess('Project posted successfully!');
+      } else {
+        await apiClient.patch(`/api/marketplace/projects/${id}`, payload);
+        setSubmitSuccess('Project updated successfully!');
+      }
       
       setTimeout(() => {
         navigate('/marketplace/owner/projects');
@@ -156,8 +193,7 @@ function CreateProjectPage() {
 
     } catch (err) {
       console.error('[CreateProjectPage] Submit failed:', err);
-      // Try to capture exact error from the API response
-      const apiErrorMessage = err?.response?.data?.message || err?.response?.data?.error || 'Failed to post project. Please try again.';
+      const apiErrorMessage = err?.response?.data?.message || err?.response?.data?.error || 'Failed to save project. Please try again.';
       setSubmitError(apiErrorMessage);
       setLoading(false);
     }
@@ -167,10 +203,10 @@ function CreateProjectPage() {
     <div className="create-project-page">
       {/* Header Row */}
       <header className="create-project-page__header">
-        <Link to="/marketplace/owner/projects" className="create-project-page__back-btn" aria-label="Back to projects">
+        <Link to={isEdit ? `/marketplace/owner/projects/${id}` : '/marketplace/owner/projects'} className="create-project-page__back-btn" aria-label="Back">
           <ArrowLeftIcon />
         </Link>
-        <h2 className="create-project-page__title">Post a New Project</h2>
+        <h2 className="create-project-page__title">{isEdit ? 'Edit Project' : 'Post a New Project'}</h2>
       </header>
 
       <Card surface="navy-secondary" padding="var(--space-6)">
@@ -207,7 +243,7 @@ function CreateProjectPage() {
                 onChange={(e) => setConstructionType(e.target.value)}
                 required
                 error={errors.constructionType}
-                disabled={loading}
+                disabled={loading || isEdit}
               />
 
               <TextInput
@@ -290,7 +326,7 @@ function CreateProjectPage() {
             disabled={loading}
             className="create-project-submit"
           >
-            {loading ? 'Posting...' : 'Post Project'}
+            {loading ? (isEdit ? 'Saving...' : 'Posting...') : (isEdit ? 'Save Changes' : 'Post Project')}
           </Button>
         </form>
       </Card>

@@ -365,6 +365,7 @@ function App() {
           <Route path="overview" element={<OwnerOverviewPage />} />
           <Route path="projects" element={<OwnerProjectsPage />} />
           <Route path="projects/new" element={<CreateProjectPage />} />
+          <Route path="projects/:id/edit" element={<CreateProjectPage />} />
           <Route path="projects/:id" element={<ProjectDetailPage />} />
           <Route path="projects/:id/progress" element={<ProgressTrackingPage />} />
           <Route path="projects/:id/chat" element={<OwnerChatPage />} />

@@ -13,10 +13,21 @@ import './TabBar.css';
  * @param {object} props
  * @param {Array<{ label: string, content: React.ReactNode }>} props.tabs
  */
-function TabBar({ tabs = [] }) {
-  const [activeIdx, setActiveIdx] = useState(0);
+function TabBar({ tabs = [], activeTab, onChange }) {
+  const [localActiveIdx, setLocalActiveIdx] = useState(0);
+  const isControlled = activeTab !== undefined;
+  const activeIdx = isControlled ? activeTab : localActiveIdx;
 
   if (!tabs || tabs.length === 0) return null;
+
+  const handleTabClick = (idx) => {
+    if (onChange) {
+      onChange(idx);
+    }
+    if (!isControlled) {
+      setLocalActiveIdx(idx);
+    }
+  };
 
   return (
     <div className="tab-bar-container">
@@ -31,7 +42,7 @@ function TabBar({ tabs = [] }) {
               aria-selected={isActive}
               tabIndex={isActive ? 0 : -1}
               className={`tab-bar__tab ${isActive ? 'tab-bar__tab--active' : ''}`}
-              onClick={() => setActiveIdx(idx)}
+              onClick={() => handleTabClick(idx)}
             >
               {tab.label}
             </button>
