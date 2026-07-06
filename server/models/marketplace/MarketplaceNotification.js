@@ -15,6 +15,7 @@
  */
 
 import mongoose from 'mongoose';
+import { getIO } from '../../config/socket.js';
 
 const { Schema } = mongoose;
 
@@ -78,6 +79,15 @@ const marketplaceNotificationSchema = new Schema(
 marketplaceNotificationSchema.index(
   { recipient: 1, isRead: 1, createdAt: -1 }
 );
+
+marketplaceNotificationSchema.post('save', function (doc) {
+  try {
+    const io = getIO();
+    io.emit('notification_update', { recipientId: doc.recipient.toString() });
+  } catch (err) {
+    console.warn('[socket] Failed to emit notification_update:', err.message);
+  }
+});
 
 const MarketplaceNotification = mongoose.model(
   'MarketplaceNotification',

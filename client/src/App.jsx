@@ -30,6 +30,16 @@ import OperationsPage      from './pages/OperationsPage';      // Grouped wrappe
 import OwnerDashboard   from './pages/marketplace/OwnerDashboard';
 import BuilderDashboard from './pages/marketplace/BuilderDashboard';
 import VendorDashboard  from './pages/marketplace/VendorDashboard';
+
+// Marketplace Owner Sub-pages — Phase M4
+import OwnerOverviewPage       from './pages/marketplace/OwnerOverviewPage';
+import OwnerProjectsPage       from './pages/marketplace/OwnerProjectsPage';
+import CreateProjectPage       from './pages/marketplace/CreateProjectPage';
+import ProjectDetailPage       from './pages/marketplace/ProjectDetailPage';
+import ProgressTrackingPage    from './pages/marketplace/ProgressTrackingPage';
+import OwnerChatPage           from './pages/marketplace/OwnerChatPage';
+import OwnerNotificationsPage  from './pages/marketplace/OwnerNotificationsPage';
+
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -351,7 +361,16 @@ function App() {
               <OwnerDashboard />
             </MarketplaceRoute>
           }
-        />
+        >
+          <Route path="overview" element={<OwnerOverviewPage />} />
+          <Route path="projects" element={<OwnerProjectsPage />} />
+          <Route path="projects/new" element={<CreateProjectPage />} />
+          <Route path="projects/:id" element={<ProjectDetailPage />} />
+          <Route path="projects/:id/progress" element={<ProgressTrackingPage />} />
+          <Route path="projects/:id/chat" element={<OwnerChatPage />} />
+          <Route path="notifications" element={<OwnerNotificationsPage />} />
+          <Route path="builders" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Find Builders Page Coming Soon</h3></div>} />
+        </Route>
         <Route
           path="/marketplace/builder"
           element={

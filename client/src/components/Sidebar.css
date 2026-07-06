@@ -285,3 +285,52 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Sidebar Unread Badge & Footer/Signout ─── */
+.sidebar__item-badge {
+  margin-left:      auto;
+  background-color: var(--color-accent);
+  color:            var(--color-surface-dark);
+  font-size:        10px;
+  font-weight:      var(--weight-bold);
+  padding:          2px 6px;
+  border-radius:    10px;
+  line-height:      1;
+}
+
+.sidebar__footer {
+  margin-top:       auto;
+  border-top:       1px solid var(--color-border-dark);
+  padding:          var(--space-3) var(--space-4);
+}
+
+.sidebar__signout-btn {
+  display:          flex;
+  align-items:      center;
+  gap:              var(--space-3);
+  background:       none;
+  border:           none;
+  width:            100%;
+  color:            var(--color-text-on-dark-muted);
+  font-family:      var(--font-body);
+  font-size:        var(--text-base);
+  font-weight:      var(--weight-medium);
+  cursor:           pointer;
+  padding:          var(--space-2) 0;
+  transition:       color var(--transition-base);
+  text-align:       left;
+}
+
+.sidebar__signout-btn:hover {
+  color:            var(--color-text-on-dark);
+}
+
+.sidebar__signout-icon {
+  flex-shrink:      0;
+  transition:       transform var(--transition-base);
+}
+
+.sidebar__signout-btn:hover .sidebar__signout-icon {
+  transform:        translateX(2px);
+}
+

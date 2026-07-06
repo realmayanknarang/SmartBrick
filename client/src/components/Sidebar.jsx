@@ -51,6 +51,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { SignOutButton } from '@clerk/clerk-react';
 import './Sidebar.css';
 
 // ─── Brand mark (same inline SVG as PublicNav for consistency) ────────────────
@@ -111,10 +112,11 @@ function HamburgerIcon({ isOpen }) {
  * @param {string}                                    [props.className]
  */
 function Sidebar({
-  items      = [],
-  activePath = '',
-  logoText   = 'SmartBrick',
-  className  = '',
+  items       = [],
+  activePath  = '',
+  logoText    = 'SmartBrick',
+  className   = '',
+  showSignOut = false,
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -159,8 +161,12 @@ function Sidebar({
             </div>
           )}
           <ul className="sidebar__nav" role="list">
-            {group.items.map(({ icon, label, path }) => {
-              const isActive = activePath === path;
+            {group.items.map(({ icon, label, path, badge }) => {
+              // Highlight projects tab for child pages under /marketplace/owner/projects/:id (excluding /new)
+              const isActive = activePath === path || 
+                (path === '/marketplace/owner/projects' && 
+                 activePath.startsWith('/marketplace/owner/projects/') && 
+                 !activePath.endsWith('/new'));
 
               return (
                 <li key={path} className="sidebar__item">
@@ -182,6 +188,11 @@ function Sidebar({
 
                     {/* Label */}
                     <span className="sidebar__item-label">{label}</span>
+
+                    {/* Badge */}
+                    {badge !== undefined && badge !== null && (
+                      <span className="sidebar__item-badge">{badge}</span>
+                    )}
                   </Link>
                 </li>
               );
@@ -237,6 +248,21 @@ function Sidebar({
 
         {/* ── Nav items ──────────────────────────────────── */}
         {navList}
+
+        {/* ── Sign Out Button ────────────────────────────── */}
+        {showSignOut && (
+          <div className="sidebar__footer">
+            <SignOutButton redirectUrl="/login">
+              <button className="sidebar__signout-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="sidebar__signout-icon">
+                  <path d="M5 3H19C20.1 3 21 3.9 21 5V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15H5V19H19V5H5V9H3V5C3 3.9 3.9 3 5 3Z" fill="currentColor" />
+                  <path d="M11 16L15 12L11 8V11H3V13H11V16Z" fill="currentColor" />
+                </svg>
+                <span className="sidebar__item-label">Sign Out</span>
+              </button>
+            </SignOutButton>
+          </div>
+        )}
       </aside>
     </>
   );

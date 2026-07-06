@@ -88,6 +88,7 @@ router.post('/sync', requireAuth, async (req, res) => {
     }
 
     return res.status(200).json({
+      id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
