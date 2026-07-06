@@ -45,6 +45,8 @@ import BuilderOverviewPage          from './pages/marketplace/BuilderOverviewPag
 import BrowseProjectsPage           from './pages/marketplace/BrowseProjectsPage';
 import BuilderProjectDetailPage     from './pages/marketplace/BuilderProjectDetailPage';
 import MyProposalsPage              from './pages/marketplace/MyProposalsPage';
+import ProjectWorkspacePage         from './pages/marketplace/ProjectWorkspacePage';
+import BuilderNotificationsPage     from './pages/marketplace/BuilderNotificationsPage';
 
 import apiClient from './api/client';
 
@@ -398,15 +400,15 @@ function App() {
           {/* M5D — My Proposals */}
           <Route path="proposals" element={<MyProposalsPage />} />
 
-          {/* M5E — Active Project Workspace (page built in M5E) */}
-          <Route path="workspace" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Active Projects — coming in M5E</h3></div>} />
-          <Route path="workspace/:projectId" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Project Workspace — coming in M5E</h3></div>} />
+          {/* M5E — Active Project Workspace */}
+          <Route path="workspace" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Select a project from My Proposals to open the workspace.</h3></div>} />
+          <Route path="workspace/:projectId" element={<ProjectWorkspacePage />} />
 
           {/* M6C — Browse Materials (shared with vendor, page built in M6C) */}
           <Route path="materials" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Browse Materials — coming in M6C</h3></div>} />
 
-          {/* M5F — Notifications (page built in M5F) */}
-          <Route path="notifications" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Notifications — coming in M5F</h3></div>} />
+          {/* M5F — Builder Notifications */}
+          <Route path="notifications" element={<BuilderNotificationsPage />} />
         </Route>
         <Route
           path="/marketplace/vendor"
