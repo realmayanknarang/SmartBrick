@@ -1,0 +1,182 @@
+/*
+ * client/src/components/marketplace/NotificationsList.css
+ *
+ * Shared styles for the NotificationsList component.
+ * Used by OwnerNotificationsPage and BuilderNotificationsPage.
+ */
+
+.notifications-list-root {
+  padding: var(--space-5);
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+
+.nl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+
+.nl-header__title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-2xl, 24px);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+/* ─── List ───────────────────────────────────────────────────────────────── */
+
+.nl-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.nl-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-base);
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+.nl-item:hover {
+  border-color: var(--color-accent, #E8C547);
+  transform: translateX(4px);
+}
+
+/* Gold unread dot */
+.nl-item__unread-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-accent, #E8C547);
+  border-radius: 50%;
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 8px rgba(232, 197, 71, 0.6);
+  flex-shrink: 0;
+}
+
+.nl-item__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-surface-dark, #1A2B3C);
+  border-radius: 50%;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+  margin-left: var(--space-3);
+}
+
+.nl-item--unread .nl-item__icon-wrap {
+  background-color: var(--color-surface-dark-raised, #2E4154);
+  color: var(--color-text-on-dark, #FFFFFF);
+  border-color: var(--color-accent, #E8C547);
+}
+
+.nl-item__details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.nl-item__message {
+  margin: 0;
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.4;
+  padding-right: var(--space-4);
+}
+
+.nl-item--unread .nl-item__message {
+  color: var(--color-text-on-dark, #FFFFFF);
+  font-weight: var(--weight-medium, 500);
+}
+
+.nl-item__time {
+  font-size: var(--text-xs, 12px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  opacity: 0.7;
+}
+
+.nl-item__arrow {
+  font-size: var(--text-lg, 18px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  opacity: 0;
+  transition: all var(--transition-base);
+  margin-right: var(--space-2);
+  flex-shrink: 0;
+}
+
+.nl-item:hover .nl-item__arrow {
+  opacity: 1;
+  color: var(--color-accent, #E8C547);
+}
+
+/* ─── Empty State ────────────────────────────────────────────────────────── */
+
+.nl-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.nl-empty__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  gap: var(--space-4);
+}
+
+.nl-empty__icon {
+  font-size: 48px;
+}
+
+.nl-empty__title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-xl, 20px);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.nl-empty__desc {
+  margin: 0;
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  line-height: 1.5;
+}
+
+/* ─── Loading Skeletons ──────────────────────────────────────────────────── */
+
+.nl-loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.nl-skeleton {
+  height: 68px;
+}
+
+.pulse {
+  animation: nl-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes nl-pulse {
+  0%   { opacity: 0.6; }
+  50%  { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}

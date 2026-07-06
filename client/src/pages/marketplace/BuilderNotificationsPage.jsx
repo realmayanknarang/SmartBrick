@@ -1,18 +1,17 @@
 /**
- * client/src/pages/marketplace/OwnerNotificationsPage.jsx
+ * client/src/pages/marketplace/BuilderNotificationsPage.jsx
  *
- * Owner Notifications Page — Sub-phase M4F.
- * Refactored in M5F to use the shared NotificationsList component.
- * Navigation targets remain owner-specific.
+ * Builder Notifications Page — Sub-phase M5F.
+ * Renders notifications using the shared NotificationsList component.
+ * Navigation targets are builder-specific (different from M4F owner routes).
  */
 
 import { useState, useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import NotificationsList from '../../components/marketplace/NotificationsList';
 import apiClient from '../../api/client';
-import './OwnerNotificationsPage.css';
 
-function OwnerNotificationsPage() {
+function BuilderNotificationsPage() {
   const navigate = useNavigate();
   const { setUnreadCount } = useOutletContext();
 
@@ -24,11 +23,12 @@ function OwnerNotificationsPage() {
       setLoading(true);
       const res = await apiClient.get('/api/marketplace/notifications');
       setNotifications(res.data.notifications || []);
+      // Update sidebar badge via outlet context
       if (setUnreadCount) {
         setUnreadCount(res.data.unreadCount || 0);
       }
     } catch (err) {
-      console.error('[OwnerNotificationsPage] Fetch failed:', err);
+      console.error('[BuilderNotificationsPage] Fetch failed:', err);
     } finally {
       setLoading(false);
     }
@@ -43,7 +43,7 @@ function OwnerNotificationsPage() {
       await apiClient.patch('/api/marketplace/notifications/mark-read');
       await fetchNotifications();
     } catch (err) {
-      console.error('[OwnerNotificationsPage] Bulk mark read failed:', err);
+      console.error('[BuilderNotificationsPage] Bulk mark read failed:', err);
     }
   };
 
@@ -53,45 +53,48 @@ function OwnerNotificationsPage() {
       try {
         await apiClient.patch(`/api/marketplace/notifications/${item._id}/mark-read`);
       } catch (err) {
-        console.error('[OwnerNotificationsPage] Mark read failed:', err);
+        console.error('[BuilderNotificationsPage] Mark read failed:', err);
       }
     }
 
-    // Owner-specific navigation routing
-    let target = '/marketplace/owner/projects';
-    if (item.relatedProject) {
+    // Builder-specific navigation routing
+    const projectId = item.relatedProject;
+    let target = '/marketplace/builder/proposals';
+
+    if (projectId) {
       switch (item.type) {
-        case 'proposal_received':
         case 'proposal_approved':
+          target = '/marketplace/builder/proposals';
+          break;
         case 'proposal_rejected':
-          target = `/marketplace/owner/projects/${item.relatedProject}`;
+          target = '/marketplace/builder/proposals';
           break;
         case 'progress_update':
         case 'milestone_completed':
-          target = `/marketplace/owner/projects/${item.relatedProject}/progress`;
+          target = `/marketplace/builder/workspace/${projectId}`;
           break;
         case 'new_message':
-          target = `/marketplace/owner/projects/${item.relatedProject}/chat`;
+          // Navigate to workspace Chat tab (tab index 2 — handled via URL or state)
+          target = `/marketplace/builder/workspace/${projectId}`;
           break;
         default:
-          target = `/marketplace/owner/projects/${item.relatedProject}`;
+          target = '/marketplace/builder/proposals';
           break;
       }
     }
+
     navigate(target);
   };
 
   return (
-    <div className="owner-notifications-page">
-      <NotificationsList
-        notifications={notifications}
-        onMarkAllRead={handleMarkAllRead}
-        onNotificationClick={handleNotificationClick}
-        isLoading={loading}
-        emptyDescription="You will receive updates here when builders submit proposals or update project progress."
-      />
-    </div>
+    <NotificationsList
+      notifications={notifications}
+      onMarkAllRead={handleMarkAllRead}
+      onNotificationClick={handleNotificationClick}
+      isLoading={loading}
+      emptyDescription="You will receive updates here when owners respond to your proposals or there is project activity."
+    />
   );
 }
 
-export default OwnerNotificationsPage;
+export default BuilderNotificationsPage;
