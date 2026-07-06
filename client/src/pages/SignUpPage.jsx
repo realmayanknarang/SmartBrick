@@ -184,10 +184,11 @@ function SignUpPage() {
   async function handleGoogleSignUp() {
     if (!isLoaded) return;
     try {
+      const baseUrl = window.location.origin;
       await signUp.authenticateWithRedirect({
         strategy:           'oauth_google',
-        redirectUrl:        '/sso-callback',
-        redirectUrlComplete: '/login',
+        redirectUrl:        `${baseUrl}/sso-callback`,
+        redirectUrlComplete: baseUrl,
       });
     } catch (err) {
       const clerkMsg = err?.errors?.[0]?.longMessage

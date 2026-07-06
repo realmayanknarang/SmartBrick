@@ -135,10 +135,11 @@ function LoginPage() {
   async function handleGoogleSignIn() {
     if (!isLoaded) return;
     try {
+      const baseUrl = window.location.origin;
       await signIn.authenticateWithRedirect({
         strategy:           'oauth_google',
-        redirectUrl:        '/sso-callback',
-        redirectUrlComplete: '/login',  // After SSO, App.jsx redirects based on role
+        redirectUrl:        `${baseUrl}/sso-callback`,
+        redirectUrlComplete: baseUrl,  // After SSO, App.jsx redirects based on role
       });
     } catch (err) {
       const clerkMsg = err?.errors?.[0]?.longMessage
