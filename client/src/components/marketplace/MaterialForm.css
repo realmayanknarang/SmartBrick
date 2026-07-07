@@ -1,0 +1,79 @@
+/*
+ * client/src/components/marketplace/MaterialForm.css
+ *
+ * Styles for the shared MaterialForm component — Phase M6B.
+ * Follows the CreateProjectPage.css design system conventions.
+ */
+
+.material-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.material-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ─── Price + Unit row ─── */
+.material-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: var(--space-4);
+  align-items: start;
+}
+
+@media (max-width: 540px) {
+  .material-form__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Field with helper text ─── */
+.material-form__field-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.material-form__helper {
+  margin: 0;
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-xs, 12px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  padding-left: 2px;
+}
+
+/* ─── Actions ─── */
+.material-form__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-top: var(--space-2);
+}
+
+.material-form__cancel-link {
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.material-form__cancel-link:hover {
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+@media (max-width: 540px) {
+  .material-form__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .material-form__cancel-link {
+    text-align: center;
+  }
+}

@@ -48,6 +48,14 @@ import MyProposalsPage              from './pages/marketplace/MyProposalsPage';
 import ProjectWorkspacePage         from './pages/marketplace/ProjectWorkspacePage';
 import BuilderNotificationsPage     from './pages/marketplace/BuilderNotificationsPage';
 
+// Marketplace Vendor Sub-pages — Phase M6
+import VendorOverviewPage     from './pages/marketplace/VendorOverviewPage';
+import MyMaterialsPage        from './pages/marketplace/MyMaterialsPage';
+import AddMaterialPage        from './pages/marketplace/AddMaterialPage';
+import EditMaterialPage       from './pages/marketplace/EditMaterialPage';
+import BrowseMaterialsPage    from './pages/marketplace/BrowseMaterialsPage';
+import PriceComparisonPage    from './pages/marketplace/PriceComparisonPage';
+
 import apiClient from './api/client';
 
 // ---------------------------------------------------------------------------
@@ -417,7 +425,22 @@ function App() {
               <VendorDashboard />
             </MarketplaceRoute>
           }
-        />
+        >
+          {/* M6A — Overview */}
+          <Route index element={<Navigate to="/marketplace/vendor/overview" replace />} />
+          <Route path="overview" element={<VendorOverviewPage />} />
+
+          {/* M6B — My Materials CRUD */}
+          <Route path="materials" element={<MyMaterialsPage />} />
+          <Route path="materials/new" element={<AddMaterialPage />} />
+          <Route path="materials/:id/edit" element={<EditMaterialPage />} />
+
+          {/* M6C — Browse All Materials (shared) */}
+          <Route path="browse" element={<BrowseMaterialsPage />} />
+
+          {/* M6D — Price Comparison */}
+          <Route path="compare" element={<PriceComparisonPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

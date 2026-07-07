@@ -1,0 +1,108 @@
+/*
+ * client/src/pages/marketplace/MaterialPageShared.css
+ *
+ * Shared styles for AddMaterialPage and EditMaterialPage — Phase M6B.
+ * Follows CreateProjectPage.css conventions.
+ */
+
+/* ─── Page Container ─── */
+.msp-page {
+  padding: var(--space-5);
+  max-width: 680px;
+  position: relative;
+}
+
+/* ─── Header ─── */
+.msp-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.msp-back-btn {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.msp-back-btn:hover {
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.msp-title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-2xl, 24px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+/* ─── Error Banner ─── */
+.msp-error-banner {
+  background-color: rgba(224, 92, 92, 0.1);
+  border: 1px solid rgba(224, 92, 92, 0.4);
+  border-radius: var(--radius-sm, 4px);
+  color: #E05C5C;
+  padding: var(--space-4);
+  font-size: var(--text-base, 14px);
+  margin-bottom: var(--space-4);
+}
+
+/* ─── Loading Skeleton ─── */
+.msp-loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+
+.msp-skeleton-line {
+  height: 20px;
+  background-color: var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-sm, 4px);
+  width: 100%;
+}
+
+.pulse {
+  animation: pulse-anim 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-anim {
+  0%   { opacity: 0.6; }
+  50%  { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}
+
+/* ─── Toast ─── */
+.msp-toast {
+  position: fixed;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill, 999px);
+  font-size: var(--text-base, 14px);
+  font-weight: var(--weight-medium, 500);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  animation: toast-in 0.25s ease-out;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.msp-toast--success {
+  background-color: var(--color-success, #3CB57A);
+  color: #FFFFFF;
+}
+
+.msp-toast--error {
+  background-color: #E05C5C;
+  color: #FFFFFF;
+}
