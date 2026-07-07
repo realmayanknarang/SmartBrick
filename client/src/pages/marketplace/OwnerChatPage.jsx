@@ -6,9 +6,10 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useOutletContext } from 'react-router-dom';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
+import ChatWindow from '../../components/marketplace/ChatWindow';
 import apiClient from '../../api/client';
 import './OwnerChatPage.css';
 
@@ -23,16 +24,9 @@ function ArrowLeftIcon() {
   );
 }
 
-function ChatPlaceholderIcon() {
-  return (
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-on-dark-muted, #9FB0BC)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    </svg>
-  );
-}
-
 function OwnerChatPage() {
   const { id: projectId } = useParams();
+  const { mongoUserId } = useOutletContext();
   const [project, setProject] = useState(null);
   const [conversation, setConversation] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -134,21 +128,13 @@ function OwnerChatPage() {
       </header>
 
       {showChatPlaceholder ? (
-        <Card surface="navy-secondary" className="chat-box-card" padding="var(--space-6)">
-          <div className="chat-placeholder-content">
-            <div className="chat-placeholder-icon">
-              <ChatPlaceholderIcon />
-            </div>
-            <h3 className="chat-placeholder-title">Real-Time Chat Coming Soon</h3>
-            <p className="chat-placeholder-desc">
-              Chat UI coming in Phase M7 — conversationId: <code className="conversation-code">{conversation._id}</code>
-            </p>
-            <div className="chat-meta-info">
-              <span><strong>Owner ID:</strong> {conversation.owner}</span>
-              <span><strong>Builder ID:</strong> {conversation.builder}</span>
-            </div>
-          </div>
-        </Card>
+        <ChatWindow
+          conversationId={conversation._id}
+          currentUserId={mongoUserId || ''}
+          projectTitle={project.title}
+          otherParticipantName={conversation.builder?.name || 'Builder'}
+          otherParticipantId={conversation.builder?._id || conversation.builder || ''}
+        />
       ) : (
         <Card surface="navy-secondary" className="chat-locked-card" padding="var(--space-6)">
           <div className="chat-locked-content">

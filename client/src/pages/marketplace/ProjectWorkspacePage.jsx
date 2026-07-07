@@ -12,6 +12,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import TabBar from '../../components/TabBar';
+import ChatWindow from '../../components/marketplace/ChatWindow';
 import apiClient from '../../api/client';
 import './ProjectWorkspacePage.css';
 
@@ -453,7 +454,7 @@ function MilestonesTab({ projectId, milestones, setMilestones, onToast }) {
 
 // ─── TAB 3: Chat ─────────────────────────────────────────────────────────────
 
-function ChatTab({ conversation }) {
+function ChatTab({ conversation, projectTitle, currentUserId }) {
   if (!conversation) {
     return (
       <Card surface="navy" className="pw-section-card">
@@ -464,15 +465,13 @@ function ChatTab({ conversation }) {
     );
   }
   return (
-    <Card surface="navy" className="pw-section-card">
-      <h3 className="pw-section-title">Chat</h3>
-      <div className="pw-chat-placeholder">
-        <span className="pw-chat-placeholder__icon">💬</span>
-        <p className="pw-chat-placeholder__text">
-          Chat UI coming in Phase M7 — conversationId: <code>{conversation._id}</code>
-        </p>
-      </div>
-    </Card>
+    <ChatWindow
+      conversationId={conversation._id}
+      currentUserId={currentUserId || ''}
+      projectTitle={projectTitle}
+      otherParticipantName={conversation.owner?.name || 'Owner'}
+      otherParticipantId={conversation.owner?._id || conversation.owner || ''}
+    />
   );
 }
 
@@ -710,7 +709,13 @@ function ProjectWorkspacePage() {
     },
     {
       label: 'Chat',
-      content: <ChatTab conversation={conversation} />,
+      content: (
+        <ChatTab
+          conversation={conversation}
+          projectTitle={project.title}
+          currentUserId={mongoUserId}
+        />
+      ),
     },
     {
       label: 'Project Details',
