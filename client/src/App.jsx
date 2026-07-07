@@ -412,12 +412,21 @@ function App() {
           <Route path="workspace" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Select a project from My Proposals to open the workspace.</h3></div>} />
           <Route path="workspace/:projectId" element={<ProjectWorkspacePage />} />
 
-          {/* M6C — Browse Materials (shared with vendor, page built in M6C) */}
-          <Route path="materials" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Browse Materials — coming in M6C</h3></div>} />
+          {/* M6C — Browse Materials (shared with vendor) */}
+          <Route path="materials" element={<BrowseMaterialsPage />} />
 
           {/* M5F — Builder Notifications */}
           <Route path="notifications" element={<BuilderNotificationsPage />} />
         </Route>
+        {/* M6C — Role-agnostic compare route (navigated from BrowseMaterialsPage) */}
+        <Route
+          path="/marketplace/compare"
+          element={
+            <MarketplaceRoute>
+              <PriceComparisonPage />
+            </MarketplaceRoute>
+          }
+        />
         <Route
           path="/marketplace/vendor"
           element={

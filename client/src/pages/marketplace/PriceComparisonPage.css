@@ -1,0 +1,363 @@
+/*
+ * client/src/pages/marketplace/PriceComparisonPage.css
+ *
+ * Styles for the Material Price Comparison page — Phase M6C.
+ * Premium side-by-side comparison layout.
+ */
+
+/* ─── Page ─── */
+.pcp-page {
+  padding: var(--space-5);
+  max-width: 1100px;
+}
+
+/* ─── Header ─── */
+.pcp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.pcp-header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.pcp-back-link {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.pcp-back-link:hover {
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.pcp-header__title {
+  margin: 0 0 4px;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-2xl, 24px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+}
+
+.pcp-header__subtitle {
+  margin: 0;
+  font-size: var(--text-sm, 13px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+/* ─── Legend ─── */
+.pcp-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background-color: rgba(255, 250, 86, 0.05);
+  border: 1px solid rgba(255, 250, 86, 0.15);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.pcp-legend__badge {
+  font-size: 12px;
+  font-weight: var(--weight-bold, 700);
+  white-space: nowrap;
+}
+
+.pcp-legend__badge--best {
+  color: var(--color-accent, #fffa56);
+}
+
+.pcp-legend__text {
+  font-size: var(--text-xs, 12px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+/* ─── Comparison Grid ─── */
+.pcp-comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+/* ─── Comparison Column ─── */
+.pcp-col {
+  background-color: var(--color-surface-dark, #1A2B3C);
+  border: 1px solid var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pcp-col--best {
+  border-color: var(--color-accent, #fffa56);
+  box-shadow: 0 0 0 1px rgba(255, 250, 86, 0.15), 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.pcp-col--skeleton {
+  pointer-events: none;
+}
+
+/* ─── Best Price Badge ─── */
+.pcp-best-badge {
+  background: linear-gradient(90deg, rgba(255, 250, 86, 0.15) 0%, rgba(255, 250, 86, 0.05) 100%);
+  border-bottom: 1px solid rgba(255, 250, 86, 0.2);
+  color: var(--color-accent, #fffa56);
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-xs, 12px);
+  font-weight: var(--weight-bold, 700);
+  letter-spacing: 0.3px;
+  padding: var(--space-2) var(--space-4);
+  text-align: center;
+}
+
+/* ─── Column Image ─── */
+.pcp-col__img-wrapper {
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  background-color: var(--color-surface-dark-raised, #2E4154);
+}
+
+.pcp-col__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pcp-col__img-placeholder {
+  width: 100%;
+  height: 140px;
+  background-color: var(--color-surface-dark-raised, #2E4154);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Column Body (name/vendor/badge) ─── */
+.pcp-col__body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border-bottom: 1px solid var(--color-border-dark, #4A5D6E);
+}
+
+.pcp-category-badge {
+  font-size: 11px;
+  font-weight: var(--weight-bold, 700);
+  padding: 3px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  text-transform: capitalize;
+  align-self: flex-start;
+}
+
+.pcp-col__name {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: var(--text-lg, 18px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text-on-dark, #FFFFFF);
+  line-height: 1.25;
+}
+
+.pcp-col__vendor {
+  margin: 0;
+  font-size: var(--text-xs, 12px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  font-style: italic;
+}
+
+/* ─── Comparison Rows ─── */
+.pcp-col__rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.pcp-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid rgba(74, 93, 110, 0.4);
+}
+
+.pcp-row:last-child {
+  border-bottom: none;
+}
+
+.pcp-row--price {
+  background-color: rgba(255, 250, 86, 0.03);
+}
+
+.pcp-row--price-best {
+  background-color: rgba(255, 250, 86, 0.08);
+}
+
+.pcp-row__label {
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-xs, 12px);
+  font-weight: var(--weight-medium, 500);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.pcp-row__value {
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+  color: var(--color-text-on-dark, #FFFFFF);
+  text-align: right;
+}
+
+.pcp-row__value em {
+  font-style: italic;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+.pcp-row__price {
+  font-size: var(--text-xl, 20px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-accent, #fffa56);
+}
+
+.pcp-col--best .pcp-row__price {
+  color: var(--color-accent, #fffa56);
+}
+
+.pcp-row__unit {
+  font-size: var(--text-xs, 12px);
+  font-weight: var(--weight-regular, 400);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+.pcp-row__muted {
+  font-style: italic;
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+/* ─── Stock Badges ─── */
+.pcp-stock {
+  font-size: 11px;
+  font-weight: var(--weight-bold, 700);
+  padding: 3px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.pcp-stock--out {
+  background-color: rgba(224, 92, 92, 0.15);
+  color: #E05C5C;
+  border: 1px solid rgba(224, 92, 92, 0.3);
+}
+
+.pcp-stock--low {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.pcp-stock--ok {
+  background-color: rgba(60, 181, 122, 0.15);
+  color: #3CB57A;
+  border: 1px solid rgba(60, 181, 122, 0.3);
+}
+
+/* ─── Skeleton ─── */
+.pcp-skeleton-line {
+  background-color: var(--color-border-dark, #4A5D6E);
+  border-radius: var(--radius-sm, 4px);
+  margin-bottom: var(--space-2);
+}
+
+.pcp-pulse {
+  animation: pcp-pulse-anim 1.5s infinite ease-in-out;
+}
+
+@keyframes pcp-pulse-anim {
+  0%   { opacity: 0.6; }
+  50%  { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}
+
+/* ─── Empty State ─── */
+.pcp-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+}
+
+.pcp-empty-state__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.pcp-empty-state__text {
+  margin: 0;
+  font-size: var(--text-base, 14px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+}
+
+/* ─── Error Banner ─── */
+.pcp-error-banner {
+  background-color: rgba(224, 92, 92, 0.1);
+  border: 1px solid rgba(224, 92, 92, 0.4);
+  border-radius: var(--radius-sm, 4px);
+  color: #E05C5C;
+  padding: var(--space-4);
+  font-size: var(--text-base, 14px);
+  margin-bottom: var(--space-5);
+}
+
+/* ─── Footer ─── */
+.pcp-footer {
+  margin-top: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pcp-footer__link {
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-sm, 13px);
+  color: var(--color-text-on-dark-muted, #9FB0BC);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.pcp-footer__link:hover {
+  color: var(--color-accent, #fffa56);
+}
+
+@media (max-width: 768px) {
+  .pcp-comparison-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pcp-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
