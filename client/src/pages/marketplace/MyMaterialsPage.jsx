@@ -30,7 +30,8 @@ const CATEGORY_COLORS = {
   other:      { bg: 'rgba(100,116,139,0.18)', color: '#94a3b8', border: 'rgba(100,116,139,0.3)' },
 };
 
-// Category placeholder icons (SVG) for cards with no image
+// ─── Category placeholder icons (SVG) ────────────────────────────────────────
+
 function CategoryIcon({ category }) {
   const color = CATEGORY_COLORS[category]?.color || '#94a3b8';
   switch (category) {
@@ -125,14 +126,14 @@ function ToggleSwitch({ checked, onChange, disabled, id }) {
 
 function SkeletonCard() {
   return (
-    <div className="mmp-card mmp-card--skeleton">
+    <Card surface="navy" padding="0" className="mmp-card mmp-card--skeleton">
       <div className="mmp-card__img-placeholder pulse" />
       <div className="mmp-card__body">
         <div className="skeleton-line pulse" style={{ width: '60%', height: '14px', marginBottom: '8px' }} />
         <div className="skeleton-line pulse" style={{ width: '85%', height: '18px', marginBottom: '8px' }} />
         <div className="skeleton-line pulse" style={{ width: '40%', height: '14px' }} />
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -191,7 +192,11 @@ function MaterialCard({ material, onToggleActive, onDelete, togglingId }) {
   const isToggling = togglingId === material._id;
 
   return (
-    <div className={`mmp-card${!material.isActive ? ' mmp-card--inactive' : ''}`}>
+    <Card
+      surface="navy"
+      padding="0"
+      className={`mmp-card${!material.isActive ? ' mmp-card--inactive' : ''}`}
+    >
       {/* Card image / placeholder */}
       {imageUrl ? (
         <div className="mmp-card__img-wrapper">
@@ -278,7 +283,7 @@ function MaterialCard({ material, onToggleActive, onDelete, togglingId }) {
           </button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
 

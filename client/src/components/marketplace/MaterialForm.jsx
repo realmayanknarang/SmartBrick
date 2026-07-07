@@ -11,6 +11,7 @@
  * onSubmit       function(formData) — called with validated form data on submit
  * isLoading      boolean — disables all inputs and the submit button
  * submitLabel    string — label for the submit button (e.g. "Add Material" / "Save Changes")
+ * loadingLabel   string — label shown while loading (defaults to "Saving...")
  */
 
 import { useState } from 'react';
@@ -34,20 +35,15 @@ const CATEGORY_OPTIONS = [
   { value: 'other',      label: 'Other' },
 ];
 
-// ─── Back Arrow Icon ──────────────────────────────────────────────────────────
-
-function ArrowLeftIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <line x1="19" y1="12" x2="5" y2="12" />
-      <polyline points="12 19 5 12 12 5" />
-    </svg>
-  );
-}
-
 // ─── MaterialForm ─────────────────────────────────────────────────────────────
 
-function MaterialForm({ initialValues = {}, onSubmit, isLoading, submitLabel = 'Submit' }) {
+function MaterialForm({
+  initialValues = {},
+  onSubmit,
+  isLoading,
+  submitLabel  = 'Submit',
+  loadingLabel = 'Saving...',
+}) {
   // Form State — initialise from initialValues (supports pre-fill for Edit)
   const [name, setName]               = useState(initialValues.name         ?? '');
   const [category, setCategory]       = useState(initialValues.category     ?? '');
@@ -217,7 +213,7 @@ function MaterialForm({ initialValues = {}, onSubmit, isLoading, submitLabel = '
             id="material-form-image-url"
           />
           <p className="material-form__helper">
-            Enter a direct image URL if available. File upload coming soon.
+            Image upload via URL — enter a direct image URL if available (optional). File upload coming soon.
           </p>
         </div>
 
@@ -231,7 +227,7 @@ function MaterialForm({ initialValues = {}, onSubmit, isLoading, submitLabel = '
           disabled={isLoading}
           id="material-form-submit-btn"
         >
-          {isLoading ? 'Saving...' : submitLabel}
+          {isLoading ? loadingLabel : submitLabel}
         </Button>
 
         <Link

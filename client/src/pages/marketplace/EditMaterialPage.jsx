@@ -6,7 +6,7 @@
  *
  * On mount: fetches GET /api/marketplace/materials/:id to pre-fill form.
  * On submit: PATCH /api/marketplace/materials/:id
- * On success: toast + redirect to /marketplace/vendor/materials
+ * On success: toast "Changes saved!" + redirect to /marketplace/vendor/materials
  */
 
 import { useState, useEffect } from 'react';
@@ -125,6 +125,7 @@ function EditMaterialPage() {
               onSubmit={handleSubmit}
               isLoading={isLoading}
               submitLabel="Save Changes"
+              loadingLabel="Saving Changes..."
             />
           </>
         )}

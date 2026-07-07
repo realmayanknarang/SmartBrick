@@ -6,13 +6,14 @@
  *
  * Uses the shared MaterialForm component.
  * On submit: POST /api/marketplace/materials
- * On success: toast + redirect to /marketplace/vendor/materials
+ * On success: toast + redirect to /marketplace/vendor/materials after 1 second
  */
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Card from '../../components/Card';
 import MaterialForm from '../../components/marketplace/MaterialForm';
+import apiClient from '../../api/client';
 import './MaterialPageShared.css';
 
 // ─── Back Arrow Icon ──────────────────────────────────────────────────────────
@@ -39,13 +40,11 @@ function Toast({ message, type }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-import apiClient from '../../api/client';
-
 function AddMaterialPage() {
-  const navigate    = useNavigate();
-  const [isLoading, setIsLoading]   = useState(false);
+  const navigate      = useNavigate();
+  const [isLoading, setIsLoading]     = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [toast, setToast]           = useState({ message: '', type: 'success' });
+  const [toast, setToast]             = useState({ message: '', type: 'success' });
 
   function showToast(message, type = 'success') {
     setToast({ message, type });
@@ -91,6 +90,7 @@ function AddMaterialPage() {
           onSubmit={handleSubmit}
           isLoading={isLoading}
           submitLabel="Add Material"
+          loadingLabel="Adding..."
         />
       </Card>
     </div>

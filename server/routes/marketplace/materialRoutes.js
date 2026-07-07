@@ -52,7 +52,7 @@ const VALID_CATEGORIES = [
 
 const UPDATABLE_FIELDS = [
   'name', 'category', 'brand', 'pricePerUnit',
-  'unit', 'stock', 'deliveryTime', 'isActive',
+  'unit', 'stock', 'deliveryTime', 'isActive', 'images',
 ];
 
 const DEFAULT_LIMIT = 20;
@@ -132,7 +132,7 @@ router.post(
     try {
       const {
         name, category, brand,
-        pricePerUnit, unit, stock, deliveryTime,
+        pricePerUnit, unit, stock, deliveryTime, images,
       } = req.body;
 
       // ── Validation ────────────────────────────────────────────────────────
@@ -151,6 +151,7 @@ router.post(
         unit:         String(unit).trim(),
         stock:        stock !== undefined ? Number(stock) : 0,
         deliveryTime: deliveryTime ? String(deliveryTime).trim() : undefined,
+        images:       Array.isArray(images) ? images : undefined,
       });
 
       return res.status(201).json({ material });
