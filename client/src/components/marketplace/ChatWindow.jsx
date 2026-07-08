@@ -4,12 +4,21 @@ import Button from '../Button';
 import './ChatWindow.css';
 
 const GROUP_WINDOW_MS = 5 * 60 * 1000;
-const MAX_TEXTAREA_HEIGHT = 96;
+const MAX_TEXTAREA_HEIGHT = 72;
 
 function ChatIcon() {
   return (
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
+function ArrowLeftIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="19" y1="12" x2="5" y2="12" />
+      <polyline points="12 19 5 12 12 5" />
     </svg>
   );
 }
@@ -92,34 +101,35 @@ function ChatWindow({
   currentUserId,
   projectTitle,
   otherParticipantName,
-  otherParticipantId = '',
-  messages,
-  isLoading = false,
-  error = '',
-  isOtherParticipantOnline = false,
-  isOtherParticipantTyping = false,
-  onRetry,
-  onSendMessage,
-  isSending = false,
 }) {
+  const normalizedCurrentUserId = currentUserId?.toString?.() || currentUserId;
   const [draft, setDraft] = useState('');
   const [showAttachTip, setShowAttachTip] = useState(false);
-  const [draftMessages, setDraftMessages] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [isOtherParticipantOnline] = useState(false);
+  const [isOtherParticipantTyping] = useState(false);
 
   const messageListRef = useRef(null);
   const textareaRef = useRef(null);
   const attachTipTimeoutRef = useRef(null);
-  const normalizedCurrentUserId = currentUserId?.toString?.() || currentUserId;
-  const normalizedOtherParticipantId = otherParticipantId?.toString?.() || otherParticipantId;
-  const usesExternalMessages = Array.isArray(messages);
-  const activeMessages = usesExternalMessages ? messages : draftMessages;
+  const normalizedOtherParticipantId = useMemo(() => {
+    const otherMessage = messages.find((message) => {
+      const senderId = message.sender?._id || message.sender;
+      return senderId && senderId !== normalizedCurrentUserId;
+    });
+
+    const derivedSenderId = otherMessage?.sender?._id || otherMessage?.sender;
+    return derivedSenderId?.toString?.() || derivedSenderId || '';
+  }, [messages, normalizedCurrentUserId]);
 
   const normalizedMessages = useMemo(
-    () => buildBubbleLayout(activeMessages, normalizedCurrentUserId),
-    [activeMessages, normalizedCurrentUserId]
+    () => buildBubbleLayout(messages, normalizedCurrentUserId),
+    [messages, normalizedCurrentUserId]
   );
 
-  const canSend = draft.trim().length > 0 && !isSending;
+  const canSend = draft.trim().length > 0;
 
   useEffect(() => {
     const listNode = messageListRef.current;
@@ -145,38 +155,34 @@ function ChatWindow({
     };
   }, []);
 
-  async function submitDraft() {
+  function submitDraft() {
     const trimmedDraft = draft.trim();
-    if (!trimmedDraft || isSending) return;
+    if (!trimmedDraft) return;
 
-    if (onSendMessage) {
-      await onSendMessage(trimmedDraft, conversationId);
-    } else {
-      setDraftMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          _id: `local-${Date.now()}`,
-          sender: { _id: normalizedCurrentUserId, name: 'You' },
-          content: trimmedDraft,
-          createdAt: new Date().toISOString(),
-          readBy: normalizedCurrentUserId ? [normalizedCurrentUserId] : [],
-        },
-      ]);
-    }
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        _id: `local-${Date.now()}`,
+        sender: { _id: normalizedCurrentUserId, name: 'You' },
+        content: trimmedDraft,
+        createdAt: new Date().toISOString(),
+        readBy: normalizedCurrentUserId ? [normalizedCurrentUserId] : [],
+      },
+    ]);
 
     setDraft('');
   }
 
-  async function handleSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault();
-    await submitDraft();
+    submitDraft();
   }
 
   function handleKeyDown(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       if (canSend) {
-        void submitDraft();
+        submitDraft();
       }
     }
   }
@@ -191,6 +197,11 @@ function ChatWindow({
     attachTipTimeoutRef.current = setTimeout(() => {
       setShowAttachTip(false);
     }, 2200);
+  }
+
+  function handleRetry() {
+    setError('');
+    setIsLoading(false);
   }
 
   function renderMessages() {
@@ -215,7 +226,7 @@ function ChatWindow({
       return (
         <div className="chat-window__state chat-window__state--error" role="alert">
           <p className="chat-window__state-title">Failed to load messages. Check your connection.</p>
-          <Button type="button" variant="primary" size="sm" onClick={onRetry}>
+          <Button type="button" variant="primary" size="sm" onClick={handleRetry}>
             Retry
           </Button>
         </div>
@@ -284,13 +295,21 @@ function ChatWindow({
     <Card surface="navy-secondary" className="chat-window-card" padding="0">
       <section className="chat-window" aria-label={`Conversation ${conversationId}`}>
         <header className="chat-window__header">
-          <div className="chat-window__header-copy">
-            <p className="chat-window__project-title">{projectTitle || 'Project Chat'}</p>
-            <h3 className="chat-window__participant-title">
-              {otherParticipantName
-                ? `Chatting with ${otherParticipantName}`
-                : 'Project conversation'}
-            </h3>
+          <div className="chat-window__header-left">
+            <button
+              type="button"
+              className="chat-window__back-button"
+              aria-label="Back"
+              onClick={() => window.history.back()}
+            >
+              <ArrowLeftIcon />
+            </button>
+            <div className="chat-window__header-copy">
+              <p className="chat-window__project-title">{projectTitle || 'Project Chat'}</p>
+              <h3 className="chat-window__participant-title">
+                {otherParticipantName ? `Chatting with ${otherParticipantName}` : 'Project conversation'}
+              </h3>
+            </div>
           </div>
           <div className="chat-window__presence" aria-live="polite">
             <span
