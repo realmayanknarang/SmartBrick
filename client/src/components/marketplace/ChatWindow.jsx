@@ -234,7 +234,8 @@ function ChatWindow({
   useEffect(() => {
     if (!conversationId) return;
 
-    const cleanup = onNewMessage?.((message) => {
+    const cleanup = onNewMessage?.((payload) => {
+      const message = payload?.message || payload;
       if (!isSameConversation(message, conversationId)) return;
 
       const pendingMatch = pendingMessagesRef.current.find((pendingMessage) =>
@@ -442,7 +443,7 @@ function ChatWindow({
     }
 
     try {
-      const response = await apiClient.post(`/marketplace/messages/${conversationId}`, {
+      const response = await apiClient.post(`/api/marketplace/messages/${conversationId}`, {
         content: trimmedContent,
         messageType: 'text',
       });
