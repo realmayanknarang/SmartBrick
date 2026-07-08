@@ -6,6 +6,7 @@ import './ChatWindow.css';
 
 const GROUP_WINDOW_MS = 5 * 60 * 1000;
 const MAX_TEXTAREA_HEIGHT = 72;
+const REMOTE_TYPING_TIMEOUT_MS = 3000;
 
 function ChatIcon() {
   return (
@@ -193,6 +194,7 @@ function ChatWindow({
   const textareaRef = useRef(null);
   const attachTipTimeoutRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+  const remoteTypingTimeoutRef = useRef(null);
   const composerErrorTimeoutRef = useRef(null);
   const isTypingRef = useRef(false);
   const scrollBehaviorRef = useRef(null);
@@ -309,16 +311,34 @@ function ChatWindow({
   }, [conversationId, markRead, normalizedCurrentUserId, onNewMessage]);
 
   useEffect(() => {
-    const cleanup = onTyping?.(({ userId, isTyping }) => {
+    const cleanup = onTyping?.(({ conversationId: typingConversationId, userId, isTyping }) => {
+      if (typingConversationId && typingConversationId.toString?.() !== conversationId.toString?.()) return;
       if (!userId) return;
       if (userId.toString?.() === normalizedCurrentUserId) return;
+
+      if (remoteTypingTimeoutRef.current) {
+        clearTimeout(remoteTypingTimeoutRef.current);
+        remoteTypingTimeoutRef.current = null;
+      }
+
       setIsOtherParticipantTyping(Boolean(isTyping));
+
+      if (isTyping) {
+        remoteTypingTimeoutRef.current = setTimeout(() => {
+          setIsOtherParticipantTyping(false);
+          remoteTypingTimeoutRef.current = null;
+        }, REMOTE_TYPING_TIMEOUT_MS);
+      }
     });
 
     return () => {
+      if (remoteTypingTimeoutRef.current) {
+        clearTimeout(remoteTypingTimeoutRef.current);
+        remoteTypingTimeoutRef.current = null;
+      }
       cleanup?.();
     };
-  }, [normalizedCurrentUserId, onTyping]);
+  }, [conversationId, normalizedCurrentUserId, onTyping]);
 
   useEffect(() => {
     if (!normalizedOtherParticipantId) return undefined;
@@ -386,6 +406,10 @@ function ChatWindow({
 
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
+      }
+
+      if (remoteTypingTimeoutRef.current) {
+        clearTimeout(remoteTypingTimeoutRef.current);
       }
 
       if (composerErrorTimeoutRef.current) {
@@ -495,13 +519,17 @@ function ChatWindow({
     setShowNewMessageNudge(false);
     scrollBehaviorRef.current = 'smooth';
 
-    try {
-      const savedMessage = await sendMessage?.(conversationId, trimmedContent);
-      removePendingMessage(optimisticMessage._id);
-      replaceMessageById(optimisticMessage._id, savedMessage);
-      return;
-    } catch (socketErr) {
-      console.error('[ChatWindow] Socket send failed, falling back to REST:', socketErr);
+    if (sendMessage) {
+      try {
+        const savedMessage = await sendMessage(conversationId, trimmedContent);
+        if (savedMessage) {
+          removePendingMessage(optimisticMessage._id);
+          replaceMessageById(optimisticMessage._id, savedMessage);
+          return;
+        }
+      } catch (socketErr) {
+        console.error('[ChatWindow] Socket send failed, falling back to REST:', socketErr);
+      }
     }
 
     try {
