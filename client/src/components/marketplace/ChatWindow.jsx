@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Card from '../Card';
 import Button from '../Button';
+import apiClient from '../../api/client';
 import './ChatWindow.css';
 
 const GROUP_WINDOW_MS = 5 * 60 * 1000;
@@ -101,6 +102,14 @@ function ChatWindow({
   currentUserId,
   projectTitle,
   otherParticipantName,
+  sendMessage,
+  joinConversation,
+  startTyping,
+  stopTyping,
+  onNewMessage,
+  onTyping,
+  onMessagesRead,
+  markRead,
 }) {
   const normalizedCurrentUserId = currentUserId?.toString?.() || currentUserId;
   const [draft, setDraft] = useState('');
@@ -109,11 +118,18 @@ function ChatWindow({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isOtherParticipantOnline] = useState(false);
-  const [isOtherParticipantTyping] = useState(false);
+  const [isOtherParticipantTyping, setIsOtherParticipantTyping] = useState(false);
+  const [reloadToken, setReloadToken] = useState(0);
+  const [showNewMessageNudge, setShowNewMessageNudge] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   const messageListRef = useRef(null);
+  const bottomRef = useRef(null);
   const textareaRef = useRef(null);
   const attachTipTimeoutRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+  const isTypingRef = useRef(false);
+  const scrollBehaviorRef = useRef(null);
   const normalizedOtherParticipantId = useMemo(() => {
     const otherMessage = messages.find((message) => {
       const senderId = message.sender?._id || message.sender;
@@ -132,11 +148,121 @@ function ChatWindow({
   const canSend = draft.trim().length > 0;
 
   useEffect(() => {
-    const listNode = messageListRef.current;
-    if (!listNode) return;
+    if (!scrollBehaviorRef.current) return;
 
-    listNode.scrollTop = listNode.scrollHeight;
+    const behavior = scrollBehaviorRef.current;
+    scrollBehaviorRef.current = null;
+
+    requestAnimationFrame(() => {
+      bottomRef.current?.scrollIntoView({ behavior });
+    });
   }, [isLoading, isOtherParticipantTyping, normalizedMessages.length]);
+
+  useEffect(() => {
+    if (!conversationId) return;
+
+    let active = true;
+
+    async function fetchMessages() {
+      try {
+        setIsLoading(true);
+        setError('');
+
+        const response = await apiClient.get(`/api/marketplace/messages/${conversationId}`);
+        if (!active) return;
+
+        setMessages(Array.isArray(response.data?.messages) ? response.data.messages : []);
+        setShowNewMessageNudge(false);
+        scrollBehaviorRef.current = 'auto';
+        markRead?.(conversationId);
+      } catch (err) {
+        if (!active) return;
+        setError(err?.response?.data?.message || 'Failed to load messages.');
+      } finally {
+        if (active) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    fetchMessages();
+
+    return () => {
+      active = false;
+    };
+  }, [conversationId, reloadToken, markRead]);
+
+  useEffect(() => {
+    if (!conversationId) return;
+    joinConversation?.(conversationId);
+  }, [conversationId, joinConversation]);
+
+  useEffect(() => {
+    if (!conversationId) return;
+
+    const cleanup = onNewMessage?.((message) => {
+      const messageConversationId = message?.conversation?._id || message?.conversation;
+      if (!messageConversationId) return;
+      if (messageConversationId.toString?.() !== conversationId.toString?.()) return;
+
+      const shouldScroll = isNearBottom();
+      setMessages((prev) => {
+        if (prev.some((entry) => entry._id === message._id)) return prev;
+        return [...prev, message];
+      });
+
+      if (shouldScroll) {
+        scrollBehaviorRef.current = 'smooth';
+        setShowNewMessageNudge(false);
+      } else {
+        setShowNewMessageNudge(true);
+      }
+
+      const senderId = message.sender?._id || message.sender;
+      if (senderId && senderId.toString?.() !== normalizedCurrentUserId) {
+        markRead?.(conversationId);
+      }
+    });
+
+    return () => {
+      cleanup?.();
+    };
+  }, [conversationId, markRead, normalizedCurrentUserId, onNewMessage]);
+
+  useEffect(() => {
+    const cleanup = onTyping?.(({ userId, isTyping }) => {
+      if (!userId) return;
+      if (userId.toString?.() === normalizedCurrentUserId) return;
+      setIsOtherParticipantTyping(Boolean(isTyping));
+    });
+
+    return () => {
+      cleanup?.();
+    };
+  }, [normalizedCurrentUserId, onTyping]);
+
+  useEffect(() => {
+    if (!conversationId) return;
+
+    const cleanup = onMessagesRead?.(({ conversationId: cId, readBy }) => {
+      if (!cId) return;
+      if (cId.toString?.() !== conversationId.toString?.()) return;
+
+      setMessages((prev) =>
+        prev.map((msg) => {
+          if (readByIncludes(msg.readBy || [], readBy)) return msg;
+          return {
+            ...msg,
+            readBy: [...(msg.readBy || []), readBy],
+          };
+        })
+      );
+    });
+
+    return () => {
+      cleanup?.();
+    };
+  }, [conversationId, onMessagesRead]);
 
   useEffect(() => {
     const textareaNode = textareaRef.current;
@@ -152,25 +278,51 @@ function ChatWindow({
       if (attachTipTimeoutRef.current) {
         clearTimeout(attachTipTimeoutRef.current);
       }
-    };
-  }, []);
 
-  function submitDraft() {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      if (isTypingRef.current && conversationId) {
+        stopTyping?.(conversationId);
+      }
+    };
+  }, [conversationId, stopTyping]);
+
+  function isNearBottom() {
+    const container = messageListRef.current;
+    if (!container) return true;
+    return container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+  }
+
+  function scrollToBottom(behavior = 'smooth') {
+    bottomRef.current?.scrollIntoView({ behavior });
+  }
+
+  function handleMessagesScroll() {
+    if (showNewMessageNudge && isNearBottom()) {
+      setShowNewMessageNudge(false);
+    }
+  }
+
+  async function submitDraft() {
     const trimmedDraft = draft.trim();
     if (!trimmedDraft) return;
 
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        _id: `local-${Date.now()}`,
-        sender: { _id: normalizedCurrentUserId, name: 'You' },
-        content: trimmedDraft,
-        createdAt: new Date().toISOString(),
-        readBy: normalizedCurrentUserId ? [normalizedCurrentUserId] : [],
-      },
-    ]);
-
     setDraft('');
+    setShowNewMessageNudge(false);
+    scrollToBottom('smooth');
+
+    if (!conversationId || !sendMessage) return;
+
+    try {
+      setIsSending(true);
+      await sendMessage(conversationId, trimmedDraft);
+    } catch (err) {
+      console.error('[ChatWindow] Failed to send message:', err);
+    } finally {
+      setIsSending(false);
+    }
   }
 
   function handleSubmit(event) {
@@ -187,6 +339,27 @@ function ChatWindow({
     }
   }
 
+  function handleDraftChange(event) {
+    const value = event.target.value;
+    setDraft(value);
+
+    if (!conversationId || !startTyping || !stopTyping) return;
+
+    if (!isTypingRef.current) {
+      startTyping(conversationId);
+      isTypingRef.current = true;
+    }
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      stopTyping(conversationId);
+      isTypingRef.current = false;
+    }, 900);
+  }
+
   function handleAttachmentClick() {
     setShowAttachTip(true);
 
@@ -201,7 +374,12 @@ function ChatWindow({
 
   function handleRetry() {
     setError('');
-    setIsLoading(false);
+    setReloadToken((prev) => prev + 1);
+  }
+
+  function handleNewMessageNudgeClick() {
+    setShowNewMessageNudge(false);
+    scrollToBottom('smooth');
   }
 
   function renderMessages() {
@@ -326,7 +504,7 @@ function ChatWindow({
           </div>
         </header>
 
-        <div ref={messageListRef} className="chat-window__messages">
+        <div ref={messageListRef} className="chat-window__messages" onScroll={handleMessagesScroll}>
           {renderMessages()}
           <div className="chat-window__typing-zone" aria-live="polite">
             {isOtherParticipantTyping && (
@@ -342,6 +520,16 @@ function ChatWindow({
               </div>
             )}
           </div>
+          {showNewMessageNudge && !isLoading && !error && (
+            <button
+              type="button"
+              className="chat-window__new-message"
+              onClick={handleNewMessageNudgeClick}
+            >
+              ↓ New message
+            </button>
+          )}
+          <div ref={bottomRef} />
         </div>
 
         <form className="chat-window__composer" onSubmit={handleSubmit}>
@@ -366,7 +554,7 @@ function ChatWindow({
             <textarea
               ref={textareaRef}
               value={draft}
-              onChange={(event) => setDraft(event.target.value)}
+              onChange={handleDraftChange}
               onKeyDown={handleKeyDown}
               className="chat-window__textarea"
               placeholder="Type a message..."
@@ -377,7 +565,7 @@ function ChatWindow({
           <button
             type="submit"
             className="chat-window__send-button"
-            disabled={!canSend}
+            disabled={!canSend || isSending}
             aria-label="Send message"
           >
             <SendIcon />

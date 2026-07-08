@@ -454,7 +454,19 @@ function MilestonesTab({ projectId, milestones, setMilestones, onToast }) {
 
 // ─── TAB 3: Chat ─────────────────────────────────────────────────────────────
 
-function ChatTab({ conversation, projectTitle, currentUserId }) {
+function ChatTab({
+  conversation,
+  projectTitle,
+  currentUserId,
+  sendMessage,
+  joinConversation,
+  startTyping,
+  stopTyping,
+  onNewMessage,
+  onTyping,
+  onMessagesRead,
+  markRead,
+}) {
   if (!conversation) {
     return (
       <Card surface="navy" className="pw-section-card">
@@ -471,6 +483,14 @@ function ChatTab({ conversation, projectTitle, currentUserId }) {
       projectTitle={projectTitle}
       otherParticipantName={conversation.owner?.name || 'Owner'}
       otherParticipantId={conversation.owner?._id || conversation.owner || ''}
+      sendMessage={sendMessage}
+      joinConversation={joinConversation}
+      startTyping={startTyping}
+      stopTyping={stopTyping}
+      onNewMessage={onNewMessage}
+      onTyping={onTyping}
+      onMessagesRead={onMessagesRead}
+      markRead={markRead}
     />
   );
 }
@@ -578,7 +598,17 @@ function ProjectDetailsTab({ project, proposal }) {
 
 function ProjectWorkspacePage() {
   const { projectId } = useParams();
-  const { mongoUserId } = useOutletContext();
+  const {
+    mongoUserId,
+    sendMessage,
+    joinConversation,
+    startTyping,
+    stopTyping,
+    onNewMessage,
+    onTyping,
+    onMessagesRead,
+    markRead,
+  } = useOutletContext();
 
   const [loading, setLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
@@ -714,6 +744,14 @@ function ProjectWorkspacePage() {
           conversation={conversation}
           projectTitle={project.title}
           currentUserId={mongoUserId}
+          sendMessage={sendMessage}
+          joinConversation={joinConversation}
+          startTyping={startTyping}
+          stopTyping={stopTyping}
+          onNewMessage={onNewMessage}
+          onTyping={onTyping}
+          onMessagesRead={onMessagesRead}
+          markRead={markRead}
         />
       ),
     },

@@ -81,7 +81,17 @@ function PackageIcon() {
 
 function BuilderDashboard() {
   const { pathname } = useLocation();
-  const { onNotificationUpdate } = useSocket();
+  const {
+    onNotificationUpdate,
+    sendMessage,
+    joinConversation,
+    startTyping,
+    stopTyping,
+    onNewMessage,
+    onTyping,
+    onMessagesRead,
+    markRead,
+  } = useSocket();
   const [unreadCount, setUnreadCount] = useState(0);
   const [mongoUserId, setMongoUserId] = useState(null);
 
@@ -174,7 +184,21 @@ function BuilderDashboard() {
     <div className="dash-shell">
       <Sidebar items={navItems} activePath={pathname} showSignOut={true} />
       <main className="dash-main" id="main-content">
-        <Outlet context={{ unreadCount, setUnreadCount, mongoUserId }} />
+        <Outlet
+          context={{
+            unreadCount,
+            setUnreadCount,
+            mongoUserId,
+            sendMessage,
+            joinConversation,
+            startTyping,
+            stopTyping,
+            onNewMessage,
+            onTyping,
+            onMessagesRead,
+            markRead,
+          }}
+        />
       </main>
     </div>
   );

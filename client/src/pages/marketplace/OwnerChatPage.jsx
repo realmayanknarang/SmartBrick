@@ -26,7 +26,17 @@ function ArrowLeftIcon() {
 
 function OwnerChatPage() {
   const { id: projectId } = useParams();
-  const { mongoUserId } = useOutletContext();
+  const {
+    mongoUserId,
+    sendMessage,
+    joinConversation,
+    startTyping,
+    stopTyping,
+    onNewMessage,
+    onTyping,
+    onMessagesRead,
+    markRead,
+  } = useOutletContext();
   const [project, setProject] = useState(null);
   const [conversation, setConversation] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -134,6 +144,14 @@ function OwnerChatPage() {
           projectTitle={project.title}
           otherParticipantName={conversation.builder?.name || 'Builder'}
           otherParticipantId={conversation.builder?._id || conversation.builder || ''}
+          sendMessage={sendMessage}
+          joinConversation={joinConversation}
+          startTyping={startTyping}
+          stopTyping={stopTyping}
+          onNewMessage={onNewMessage}
+          onTyping={onTyping}
+          onMessagesRead={onMessagesRead}
+          markRead={markRead}
         />
       ) : (
         <Card surface="navy-secondary" className="chat-locked-card" padding="var(--space-6)">
