@@ -35,6 +35,8 @@ function OwnerChatPage() {
     onNewMessage,
     onTyping,
     onMessagesRead,
+    onUserOnline,
+    onUserOffline,
     markRead,
   } = useOutletContext();
   const [project, setProject] = useState(null);
@@ -151,6 +153,8 @@ function OwnerChatPage() {
           onNewMessage={onNewMessage}
           onTyping={onTyping}
           onMessagesRead={onMessagesRead}
+          onUserOnline={onUserOnline}
+          onUserOffline={onUserOffline}
           markRead={markRead}
         />
       ) : (

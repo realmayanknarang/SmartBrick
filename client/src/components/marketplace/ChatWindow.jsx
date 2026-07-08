@@ -45,15 +45,44 @@ function getFirstName(name) {
   return name?.trim()?.split(/\s+/)?.[0] || 'Participant';
 }
 
-function formatTime(timestamp) {
-  const date = new Date(timestamp);
-  if (Number.isNaN(date.getTime())) return '';
-
-  return date.toLocaleTimeString('en-IN', {
+function formatClock(date) {
+  return date.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
   });
+}
+
+function isSameDay(left, right) {
+  return (
+    left.getFullYear() === right.getFullYear() &&
+    left.getMonth() === right.getMonth() &&
+    left.getDate() === right.getDate()
+  );
+}
+
+function formatMessageTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return '';
+
+  const now = new Date();
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+
+  if (isSameDay(date, now)) {
+    return formatClock(date);
+  }
+
+  if (isSameDay(date, yesterday)) {
+    return `Yesterday ${formatClock(date)}`;
+  }
+
+  const datePart = date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+
+  return `${datePart}, ${formatClock(date)}`;
 }
 
 function isGrouped(prevMessage, nextMessage) {
@@ -132,6 +161,7 @@ function matchesPendingMessage(message, pendingMessage, currentUserId) {
 function ChatWindow({
   conversationId,
   currentUserId,
+  otherParticipantId,
   projectTitle,
   otherParticipantName,
   sendMessage,
@@ -141,15 +171,18 @@ function ChatWindow({
   onNewMessage,
   onTyping,
   onMessagesRead,
+  onUserOnline,
+  onUserOffline,
   markRead,
 }) {
   const normalizedCurrentUserId = currentUserId?.toString?.() || currentUserId;
+  const normalizedProvidedOtherParticipantId = otherParticipantId?.toString?.() || otherParticipantId || '';
   const [draft, setDraft] = useState('');
   const [showAttachTip, setShowAttachTip] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [isOtherParticipantOnline] = useState(false);
+  const [isOtherParticipantOnline, setIsOtherParticipantOnline] = useState(false);
   const [isOtherParticipantTyping, setIsOtherParticipantTyping] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
   const [showNewMessageNudge, setShowNewMessageNudge] = useState(false);
@@ -165,6 +198,10 @@ function ChatWindow({
   const scrollBehaviorRef = useRef(null);
   const pendingMessagesRef = useRef([]);
   const normalizedOtherParticipantId = useMemo(() => {
+    if (normalizedProvidedOtherParticipantId) {
+      return normalizedProvidedOtherParticipantId;
+    }
+
     const otherMessage = messages.find((message) => {
       const senderId = message.sender?._id || message.sender;
       return senderId && senderId !== normalizedCurrentUserId;
@@ -172,7 +209,7 @@ function ChatWindow({
 
     const derivedSenderId = otherMessage?.sender?._id || otherMessage?.sender;
     return derivedSenderId?.toString?.() || derivedSenderId || '';
-  }, [messages, normalizedCurrentUserId]);
+  }, [messages, normalizedCurrentUserId, normalizedProvidedOtherParticipantId]);
 
   const normalizedMessages = useMemo(
     () => buildBubbleLayout(messages, normalizedCurrentUserId),
@@ -227,9 +264,8 @@ function ChatWindow({
   }, [conversationId, reloadToken, markRead]);
 
   useEffect(() => {
-    if (!conversationId) return;
-    joinConversation?.(conversationId);
-  }, [conversationId, joinConversation]);
+    setIsOtherParticipantOnline(false);
+  }, [conversationId, normalizedOtherParticipantId]);
 
   useEffect(() => {
     if (!conversationId) return;
@@ -283,6 +319,32 @@ function ChatWindow({
       cleanup?.();
     };
   }, [normalizedCurrentUserId, onTyping]);
+
+  useEffect(() => {
+    if (!normalizedOtherParticipantId) return undefined;
+
+    const cleanupOnline = onUserOnline?.(({ userId }) => {
+      if (userId?.toString?.() === normalizedOtherParticipantId) {
+        setIsOtherParticipantOnline(true);
+      }
+    });
+
+    const cleanupOffline = onUserOffline?.(({ userId }) => {
+      if (userId?.toString?.() === normalizedOtherParticipantId) {
+        setIsOtherParticipantOnline(false);
+      }
+    });
+
+    return () => {
+      cleanupOnline?.();
+      cleanupOffline?.();
+    };
+  }, [normalizedOtherParticipantId, onUserOffline, onUserOnline]);
+
+  useEffect(() => {
+    if (!conversationId) return;
+    joinConversation?.(conversationId);
+  }, [conversationId, joinConversation]);
 
   useEffect(() => {
     if (!conversationId) return;
@@ -623,7 +685,7 @@ function ChatWindow({
               )}
               {message.endsGroup && (
                 <div className="chat-window__meta-row">
-                  <span className="chat-window__timestamp">{formatTime(message.createdAt)}</span>
+                  <span className="chat-window__timestamp">{formatMessageTimestamp(message.createdAt)}</span>
                   {message.isSent && !message.failed && (
                     <span className="chat-window__receipt" aria-label={hasOtherReadReceipt ? 'Read' : 'Sent'}>
                       {message.isOptimistic ? '...' : readReceipt}
@@ -673,7 +735,15 @@ function ChatWindow({
           </div>
         </header>
 
-        <div ref={messageListRef} className="chat-window__messages" onScroll={handleMessagesScroll}>
+        <div
+          ref={messageListRef}
+          className="chat-window__messages"
+          onScroll={handleMessagesScroll}
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions text"
+          aria-label="Message history"
+        >
           {renderMessages()}
           <div className="chat-window__typing-zone" aria-live="polite">
             {isOtherParticipantTyping && (
@@ -727,6 +797,7 @@ function ChatWindow({
               onKeyDown={handleKeyDown}
               className="chat-window__textarea"
               placeholder="Type a message..."
+              aria-label="Type a message"
               rows={1}
             />
           </div>

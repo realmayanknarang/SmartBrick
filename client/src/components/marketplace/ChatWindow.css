@@ -6,8 +6,9 @@
 .chat-window {
   display: flex;
   flex-direction: column;
-  height: 620px;
-  min-height: 620px;
+  height: min(620px, calc(100dvh - 160px));
+  min-height: 480px;
+  max-height: 720px;
 }
 
 .chat-window__header {
@@ -104,6 +105,8 @@
 
 .chat-window__messages {
   flex: 1;
+  min-height: 0;
+  max-height: 100%;
   overflow-y: auto;
   padding: var(--space-5);
   background:
@@ -123,7 +126,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-width: min(80%, 560px);
+  max-width: min(75%, 560px);
 }
 
 .chat-window__message--sent {
@@ -535,9 +538,14 @@
 }
 
 @media (max-width: 640px) {
+  .chat-window-card {
+    min-height: calc(100dvh - 96px);
+  }
+
   .chat-window {
-    height: 560px;
-    min-height: 560px;
+    height: calc(100dvh - 96px);
+    min-height: 0;
+    max-height: none;
   }
 
   .chat-window__header {
@@ -555,10 +563,11 @@
 
   .chat-window__message,
   .chat-window__skeleton-row {
-    max-width: 88%;
+    max-width: 75%;
   }
 
   .chat-window__composer {
     padding-inline: var(--space-4);
+    padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
   }
 }

@@ -465,6 +465,8 @@ function ChatTab({
   onNewMessage,
   onTyping,
   onMessagesRead,
+  onUserOnline,
+  onUserOffline,
   markRead,
 }) {
   if (!conversation) {
@@ -490,6 +492,8 @@ function ChatTab({
       onNewMessage={onNewMessage}
       onTyping={onTyping}
       onMessagesRead={onMessagesRead}
+      onUserOnline={onUserOnline}
+      onUserOffline={onUserOffline}
       markRead={markRead}
     />
   );
@@ -607,6 +611,8 @@ function ProjectWorkspacePage() {
     onNewMessage,
     onTyping,
     onMessagesRead,
+    onUserOnline,
+    onUserOffline,
     markRead,
   } = useOutletContext();
 
@@ -751,6 +757,8 @@ function ProjectWorkspacePage() {
           onNewMessage={onNewMessage}
           onTyping={onTyping}
           onMessagesRead={onMessagesRead}
+          onUserOnline={onUserOnline}
+          onUserOffline={onUserOffline}
           markRead={markRead}
         />
       ),

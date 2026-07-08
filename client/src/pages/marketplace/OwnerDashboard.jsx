@@ -77,6 +77,8 @@ function OwnerDashboard() {
     onNewMessage,
     onTyping,
     onMessagesRead,
+    onUserOnline,
+    onUserOffline,
     markRead,
   } = useSocket();
   const [unreadCount, setUnreadCount] = useState(0);
@@ -177,6 +179,8 @@ function OwnerDashboard() {
             onNewMessage,
             onTyping,
             onMessagesRead,
+            onUserOnline,
+            onUserOffline,
             markRead,
           }}
         />

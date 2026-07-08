@@ -116,6 +116,16 @@ export function useSocket() {
     return () => socketRef.current?.off('messages_read', callback)
   }
 
+  const onUserOnline = (callback) => {
+    socketRef.current?.on('user_online', callback)
+    return () => socketRef.current?.off('user_online', callback)
+  }
+
+  const onUserOffline = (callback) => {
+    socketRef.current?.on('user_offline', callback)
+    return () => socketRef.current?.off('user_offline', callback)
+  }
+
   const onNotificationUpdate = (callback) => {
     socketRef.current?.on('notification_update', callback)
     return () => socketRef.current?.off('notification_update', callback)
@@ -133,6 +143,8 @@ export function useSocket() {
     onNewMessage,
     onTyping,
     onMessagesRead,
+    onUserOnline,
+    onUserOffline,
     onNotificationUpdate
   }
 }

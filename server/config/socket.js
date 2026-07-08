@@ -13,6 +13,50 @@ import Message from '../models/marketplace/Message.js';
 import MarketplaceNotification from '../models/marketplace/MarketplaceNotification.js';
 
 let io = null;
+const onlineSocketCounts = new Map();
+
+function incrementOnlineSocketCount(userId) {
+  const key = userId.toString();
+  const nextCount = (onlineSocketCounts.get(key) || 0) + 1;
+  onlineSocketCounts.set(key, nextCount);
+  return nextCount;
+}
+
+function decrementOnlineSocketCount(userId) {
+  const key = userId.toString();
+  const nextCount = Math.max((onlineSocketCounts.get(key) || 1) - 1, 0);
+
+  if (nextCount === 0) {
+    onlineSocketCounts.delete(key);
+  } else {
+    onlineSocketCounts.set(key, nextCount);
+  }
+
+  return nextCount;
+}
+
+function emitPresenceToRooms(socket, eventName, roomIds, userId) {
+  if (!roomIds?.length || !userId) return;
+  socket.to(roomIds).emit(eventName, { userId: userId.toString() });
+}
+
+function emitCurrentlyOnlineParticipants(socket, conversations, currentUserId) {
+  const currentId = currentUserId.toString();
+  const onlineParticipantIds = new Set();
+
+  conversations.forEach((conversation) => {
+    [conversation.owner, conversation.builder].forEach((participantId) => {
+      const id = participantId?.toString();
+      if (id && id !== currentId && onlineSocketCounts.has(id)) {
+        onlineParticipantIds.add(id);
+      }
+    });
+  });
+
+  onlineParticipantIds.forEach((userId) => {
+    socket.emit('user_online', { userId });
+  });
+}
 
 export function initializeSocket(httpServer) {
   io = new Server(httpServer, {
@@ -56,6 +100,7 @@ export function initializeSocket(httpServer) {
 
       // Attach user to socket
       socket.user = user;
+      socket.data.userMongoId = user._id.toString();
 
       // Join a user-specific room for notifications
       socket.join(`user:${user._id}`);
@@ -66,12 +111,18 @@ export function initializeSocket(httpServer) {
           { owner: user._id },
           { builder: user._id }
         ]
-      }).select('_id');
+      }).select('_id owner builder');
 
       // Join a room for each conversation
       const roomIds = conversations.map(c => `conversation:${c._id.toString()}`);
       socket.join(roomIds);
+      socket.data.conversationRoomIds = roomIds;
       console.log(`User ${user._id} joined ${roomIds.length} conversation rooms`);
+
+      if (incrementOnlineSocketCount(user._id) === 1) {
+        emitPresenceToRooms(socket, 'user_online', roomIds, user._id);
+      }
+      emitCurrentlyOnlineParticipants(socket, conversations, user._id);
 
     } catch (err) {
       console.error('Socket authentication failed:', err.message);
@@ -96,7 +147,13 @@ export function initializeSocket(httpServer) {
 
         if (!isParticipant) return;
 
-        socket.join(`conversation:${conversationId}`);
+        const roomId = `conversation:${conversationId}`;
+        socket.join(roomId);
+        socket.data.conversationRoomIds = Array.from(
+          new Set([...(socket.data.conversationRoomIds || []), roomId])
+        );
+        socket.to(roomId).emit('user_online', { userId: socket.data.userMongoId });
+        emitCurrentlyOnlineParticipants(socket, [conversation], socket.user._id);
         console.log(`Socket ${socket.id} joined conversation ${conversationId}`);
       } catch (err) {
         console.error('Failed to join conversation:', err);
@@ -200,6 +257,18 @@ export function initializeSocket(httpServer) {
         });
       } catch (err) {
         console.error('mark_read error:', err);
+      }
+    });
+
+    socket.on('disconnecting', () => {
+      const remainingSockets = decrementOnlineSocketCount(socket.data.userMongoId);
+      if (remainingSockets === 0) {
+        emitPresenceToRooms(
+          socket,
+          'user_offline',
+          socket.data.conversationRoomIds || [],
+          socket.data.userMongoId
+        );
       }
     });
 
