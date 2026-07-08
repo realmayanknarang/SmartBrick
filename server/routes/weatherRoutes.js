@@ -40,7 +40,7 @@
 import { Router } from 'express';
 import mongoose    from 'mongoose';
 import Site        from '../models/Site.js';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { weatherLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();

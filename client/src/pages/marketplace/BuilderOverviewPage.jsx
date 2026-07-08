@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../../contexts/AuthContext';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import apiClient from '../../api/client';
@@ -122,10 +122,10 @@ function MetricCard({ label, value, icon, loading, accent }) {
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 function BuilderOverviewPage() {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { setUnreadCount } = useOutletContext();
 
-  const displayName = user?.firstName || user?.fullName || 'Builder';
+  const displayName = user?.name || user?.email?.split('@')[0] || 'Builder';
 
   const [openProjectsCount, setOpenProjectsCount] = useState(0);
   const [myProposals, setMyProposals] = useState([]);

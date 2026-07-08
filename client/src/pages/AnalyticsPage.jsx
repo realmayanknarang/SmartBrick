@@ -25,7 +25,7 @@
 
 import { useState, useEffect }       from 'react';
 import { useLocation, Link }         from 'react-router-dom';
-import { useUser, SignOutButton }     from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import {
   ResponsiveContainer,
   PieChart, Pie, Cell, Tooltip, Legend,
@@ -104,6 +104,7 @@ function ChartEmpty({ message = 'No data yet for this view.' }) {
 // ─── Main page ───────────────────────────────────────────────────────────────
 function AnalyticsPage() {
   const { pathname } = useLocation();
+  const { signOut } = useAuth();
 
   const [data,    setData]    = useState(null);
   const [loading, setLoading] = useState(true);
@@ -216,9 +217,7 @@ function AnalyticsPage() {
           <div className="dash-topbar__right">
             <Link to="/dashboard" className="dash-topbar__link">Overview</Link>
             <Link to="/" className="dash-topbar__link">Home</Link>
-            <SignOutButton>
-              <button className="dash-topbar__signout">Sign out</button>
-            </SignOutButton>
+            <button className="dash-topbar__signout" onClick={signOut}>Sign out</button>
           </div>
         </header>
 

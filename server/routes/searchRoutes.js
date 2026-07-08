@@ -10,7 +10,7 @@
 
 import { Router } from 'express';
 import genAI from '../config/gemini.js';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { searchLimiter } from '../middleware/rateLimiter.js';
 import { sanitizeUserQuestion } from '../utils/promptSanitizer.js';
 import Vendor from '../models/Vendor.js';

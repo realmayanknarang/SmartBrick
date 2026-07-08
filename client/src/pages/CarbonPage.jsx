@@ -17,7 +17,7 @@
 
 import { useState }               from 'react';
 import { useLocation, Link }      from 'react-router-dom';
-import { useUser, SignOutButton }  from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import Sidebar                    from '../components/Sidebar';
 import { NAV_ITEMS } from '../config/dashboardNav.jsx';
 import Card                       from '../components/Card';
@@ -37,6 +37,7 @@ const MATERIALS = [
 // ── CarbonPage ────────────────────────────────────────────────────────────────
 function CarbonPage() {
   const { pathname } = useLocation();
+  const { user, signOut } = useAuth();
 
   const [material,      setMaterial]      = useState('cement');
   const [weightTonnes,  setWeightTonnes]  = useState('');
@@ -85,9 +86,7 @@ function CarbonPage() {
           <div className="dash-topbar__right">
             <Link to="/dashboard" className="dash-topbar__link">Overview</Link>
             <Link to="/" className="dash-topbar__link">Home</Link>
-            <SignOutButton>
-              <button className="dash-topbar__signout" id="carbon-signout-btn">Sign out</button>
-            </SignOutButton>
+            <button className="dash-topbar__signout" id="carbon-signout-btn" onClick={signOut}>Sign out</button>
           </div>
         </header>
 

@@ -6,18 +6,14 @@
  * Exports
  * ───────
  *  resolveMarketplaceUser
- *    Runs AFTER requireAuth (depends on req.clerkUserId).
- *    Looks up the full User document (including _id) by clerkUserId
- *    and attaches it to req.user.  All marketplace route handlers that
- *    need the caller's MongoDB _id use this instead of duplicating the
- *    lookup.
+ *    Does nothing now because requireAuth already attaches req.user!
  *
  *  checkProjectOwnership
  *    A factory that returns an async middleware verifying that the
  *    authenticated user (req.user._id) owns the MarketplaceProject
  *    identified by req.params.id (or req.params.projectId).
  *    Returns 403 if the check fails.
- *    Must run AFTER resolveMarketplaceUser.
+ *    Must run AFTER requireAuth.
  *
  *  isApprovedBuilder
  *    Async utility (not Express middleware) that returns true when
@@ -36,34 +32,10 @@ import Proposal           from '../../models/marketplace/Proposal.js';
 // ---------------------------------------------------------------------------
 
 /**
- * Fetches the full MongoDB User document for the authenticated Clerk user
- * and attaches it to req.user.  Handlers can then use req.user._id,
- * req.user.role, req.user.name, etc. without an extra DB round-trip.
- *
- * Must run AFTER requireAuth (which sets req.clerkUserId).
+ * No-op now because requireAuth already attaches req.user!
  */
 export async function resolveMarketplaceUser(req, res, next) {
-  try {
-    const user = await User.findOne({ clerkUserId: req.clerkUserId })
-      .select('_id name email role')
-      .lean();
-
-    if (!user) {
-      return res.status(403).json({
-        error:   'Forbidden',
-        message: 'No SmartBrick account found for this user. Please complete registration.',
-      });
-    }
-
-    req.user = user;
-    return next();
-  } catch (err) {
-    console.error('[resolveMarketplaceUser] Unexpected error:', err);
-    return res.status(500).json({
-      error:   'Internal Server Error',
-      message: 'An unexpected error occurred while resolving user identity.',
-    });
-  }
+  return next();
 }
 
 // ---------------------------------------------------------------------------

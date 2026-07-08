@@ -8,7 +8,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../../contexts/AuthContext';
 import TabBar from '../../components/TabBar';
 import Button from '../../components/Button';
 import { useSocket } from '../../hooks/useSocket';

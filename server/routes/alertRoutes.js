@@ -47,7 +47,7 @@
  */
 
 import { Router }      from 'express';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { fetchStockAlerts, fetchBudgetAlerts } from '../utils/alertData.js';
 
 const router = Router();

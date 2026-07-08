@@ -4,9 +4,9 @@ dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
-import { clerkMiddleware } from '@clerk/express';
 import connectDB from './config/db.js';
 import authRouter      from './routes/auth.js';
+import authRoutes      from './routes/authRoutes.js';
 import testAuthRouter  from './routes/testAuth.js'; // PHASE 3 SCAFFOLD — delete after verification
 import dashboardRouter from './routes/dashboardRoutes.js'; // Phase 7A
 import ocrRouter       from './routes/ocrRoutes.js';       // Phase 7C
@@ -33,6 +33,14 @@ import notificationRouter from './routes/marketplace/notificationRoutes.js'; // 
 import { apiLimiter }  from './middleware/rateLimiter.js';
 import { initializeSocket } from './config/socket.js';
 
+// Check for required env vars first
+const requiredEnvVars = ['JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(key => !process.env[key]);
+if (missingEnvVars.length > 0) {
+  console.error('Missing required environment variables:', missingEnvVars.join(', '));
+  process.exit(1);
+}
+
 connectDB();
 
 const app = express();
@@ -56,10 +64,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Populate req.auth on every request so requireAuth / getAuth() work
-// throughout the application without per-route setup.
-app.use(clerkMiddleware());
-
 // Rate-limit all /api routes (100 req / 15 min per IP).
 // Must be registered before route handlers so abusive clients are rejected
 // before reaching Clerk verification or database queries.
@@ -78,8 +82,11 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
+// Auth routes (signup, signin, me, signout) — mount before other routes
+app.use('/api', authRoutes);
+
 // Auth: session sync (links a Clerk user ID to a MongoDB User document)
-app.use('/api/auth', authRouter);
+app.use('/api', authRouter);
 
 // PHASE 3 SCAFFOLD — verify auth stack end-to-end; delete once confirmed working
 // Routes: /api/test-auth/public  /api/test-auth/protected  /api/test-auth/owner-only

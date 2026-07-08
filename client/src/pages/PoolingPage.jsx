@@ -6,7 +6,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { SignOutButton } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import Sidebar from '../components/Sidebar';
 import Card from '../components/Card';
 import { NAV_ITEMS } from '../config/dashboardNav.jsx';
@@ -30,6 +30,7 @@ function formatINR(value) {
 
 function PoolingPage() {
   const { pathname } = useLocation();
+  const { signOut } = useAuth();
   const [orders, setOrders]           = useState([]);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [selected, setSelected]       = useState(new Set());
@@ -123,9 +124,7 @@ function PoolingPage() {
           </div>
           <div className="dash-topbar__right">
             <Link to="/dashboard" className="dash-topbar__link">Overview</Link>
-            <SignOutButton>
-              <button className="dash-topbar__signout">Sign out</button>
-            </SignOutButton>
+            <button className="dash-topbar__signout" onClick={signOut}>Sign out</button>
           </div>
         </header>
 

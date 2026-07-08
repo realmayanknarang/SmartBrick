@@ -12,7 +12,7 @@
  */
 
 import { Router }      from 'express';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import User            from '../models/User.js';
 import PurchaseOrder   from '../models/PurchaseOrder.js';
 import {
@@ -28,18 +28,13 @@ const PENDING_FILTER = {
   approvalStage: { $nin: ['approved', 'rejected'] },
 };
 
-async function resolveUserRole(req) {
-  const user = await User.findOne({ clerkUserId: req.clerkUserId }).select('role').lean();
-  return user?.role ?? null;
-}
-
 // ---------------------------------------------------------------------------
 // GET /api/approvals/pending
 // ---------------------------------------------------------------------------
 
 router.get('/pending', requireAuth, async (req, res) => {
   try {
-    const userRole = await resolveUserRole(req);
+    const userRole = req.user.role;
 
     const orders = await PurchaseOrder.find(PENDING_FILTER)
       .populate('vendor', 'name category city')
@@ -85,13 +80,7 @@ router.patch('/:orderId/advance', requireAuth, async (req, res) => {
       });
     }
 
-    const userRole = await resolveUserRole(req);
-    if (!userRole) {
-      return res.status(403).json({
-        error:   'Forbidden',
-        message: 'No SmartBrick account found for this user.',
-      });
-    }
+    const userRole = req.user.role;
 
     const order = await PurchaseOrder.findById(orderId);
     if (!order) {

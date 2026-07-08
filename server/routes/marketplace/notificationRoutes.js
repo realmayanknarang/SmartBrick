@@ -27,7 +27,7 @@
 
 import { Router }              from 'express';
 import mongoose                from 'mongoose';
-import { requireAuth }         from '../../middleware/clerkAuth.js';
+import { requireAuth }         from '../../middleware/auth.js';
 import {
   resolveMarketplaceUser,
 }                              from '../../middleware/marketplace/checkOwnership.js';

@@ -19,7 +19,7 @@
 
 import { Router } from 'express';
 import mongoose from 'mongoose';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { forecastLimiter } from '../middleware/rateLimiter.js';
 import Site from '../models/Site.js';
 import Material from '../models/Material.js';

@@ -18,7 +18,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { useLocation }                   from 'react-router-dom';
-import { useUser, SignOutButton }         from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import { Link }                          from 'react-router-dom';
 import Sidebar                           from '../components/Sidebar';
 import { NAV_ITEMS } from '../config/dashboardNav.jsx';
@@ -50,7 +50,7 @@ function UploadIcon() {
 
 function InvoiceScannerPage() {
   const { pathname }    = useLocation();
-  const { user }        = useUser();
+  const { user, signOut } = useAuth();
   const fileInputRef    = useRef(null);
 
   const [selectedFile,   setSelectedFile]   = useState(null);
@@ -124,9 +124,9 @@ function InvoiceScannerPage() {
   }
 
   const displayName =
-    user?.fullName ||
+    user?.name ||
     user?.firstName ||
-    user?.emailAddresses?.[0]?.emailAddress?.split('@')[0] ||
+    user?.email?.split('@')[0] ||
     'there';
 
   return (
@@ -142,11 +142,9 @@ function InvoiceScannerPage() {
           <div className="dash-topbar__right">
             <Link to="/dashboard" className="dash-topbar__link">Overview</Link>
             <Link to="/" className="dash-topbar__link">Home</Link>
-            <SignOutButton>
-              <button className="dash-topbar__signout" id="invoice-scanner-signout-btn">
-                Sign out
-              </button>
-            </SignOutButton>
+            <button className="dash-topbar__signout" id="invoice-scanner-signout-btn" onClick={signOut}>
+              Sign out
+            </button>
           </div>
         </header>
 

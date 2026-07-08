@@ -32,7 +32,7 @@
 import { Router }   from 'express';
 import multer        from 'multer';
 import genAI          from '../config/gemini.js';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { ocrLimiter }  from '../middleware/rateLimiter.js';
 
 const router = Router();

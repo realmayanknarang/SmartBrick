@@ -6,7 +6,7 @@
  */
 
 import { useLocation, Link } from 'react-router-dom';
-import { SignOutButton } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import Sidebar from '../components/Sidebar';
 import { NAV_ITEMS } from '../config/dashboardNav.jsx';
 import TabBar from '../components/TabBar';
@@ -18,6 +18,7 @@ import './DashboardPage.css';
 
 function OperationsPage() {
   const { pathname } = useLocation();
+  const { signOut } = useAuth();
 
   const tabs = [
     { label: 'Invoice OCR', content: <InvoiceScannerPage /> },
@@ -38,9 +39,7 @@ function OperationsPage() {
           <div className="dash-topbar__right">
             <Link to="/dashboard" className="dash-topbar__link">Overview</Link>
             <Link to="/" className="dash-topbar__link">Home</Link>
-            <SignOutButton>
-              <button className="dash-topbar__signout">Sign out</button>
-            </SignOutButton>
+            <button className="dash-topbar__signout" onClick={signOut}>Sign out</button>
           </div>
         </header>
 

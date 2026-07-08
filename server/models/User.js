@@ -7,6 +7,14 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Name is required'],
       trim: true,
     },
+    firstName: {
+      type: String,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      trim: true,
+    },
     email: {
       type: String,
       required: [true, 'Email is required'],
@@ -17,6 +25,10 @@ const userSchema = new mongoose.Schema(
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         'Please provide a valid email address',
       ],
+    },
+    passwordHash: {
+      type: String,
+      required: false,
     },
     role: {
       type: String,

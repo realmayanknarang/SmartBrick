@@ -1,50 +1,19 @@
 /**
  * server/routes/auth.js
  *
- * POST /api/auth/sync
- * ------------------
- * Called by the client immediately after a successful Clerk sign-in.
- * Looks up the MongoDB User document by email (from the Clerk session)
- * and stamps it with the caller's Clerk user ID so that requireRole()
- * can resolve roles on subsequent requests without touching Clerk's API.
- *
- * This is a one-time link-up per user.  If the document is already
- * stamped with the same clerkUserId the operation is idempotent.
- *
- * Request headers:
- *   Authorization: Bearer <clerk-session-token>
- *
- * Response 200 — { role, name, email }
- * Response 404 — no MongoDB User found for that email
- * Response 401 — missing / invalid session (handled by requireAuth)
- *
- * POST /api/auth/set-role
- * -----------------------
- * Called by SelectRolePage for users who signed in via Google OAuth (or any
- * OAuth provider) and therefore have no role in MongoDB yet.
- *
- * - requireAuth only (caller has no role yet — requireRole would always 403).
- * - Validates role is one of the 7 allowed enum values (4 internal + 3 marketplace).
- * - Finds-or-creates the MongoDB User document (creating for genuine first-time
- *   Google sign-ups, updating for pre-seeded / pre-invited accounts).
- * - Returns 403 if the user already has a role (abuse/replay prevention).
- *
- * Response 200 — { success: true, role }
- * Response 400 — invalid role value
- * Response 403 — role already set
- * Response 401 — missing / invalid session
- *
- * Note on URL placement: the spec called for /api/users/set-role but the
- * already-implemented SelectRolePage calls /api/auth/set-role, so this
- * endpoint lives here to avoid a client-side change.  A /api/users router
- * can alias it in a future cleanup if desired.
+ * Custom JWT-based authentication endpoints:
+ * - POST /api/auth/signup: Register new user with email/password and role
+ * - POST /api/auth/signin: Sign in with email/password, return JWT
+ * - POST /api/auth/set-role: Set role for users who signed up without one
+ * - GET /api/auth/me: Get current user info
  */
 
 import { Router } from 'express';
-import { getAuth, clerkClient } from '@clerk/express';
 import User from '../models/User.js';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
+import { hashPassword, verifyPassword } from '../utils/password.js';
+import { signToken } from '../utils/jwt.js';
 
 const router = Router();
 
@@ -52,86 +21,151 @@ const router = Router();
 // endpoint on this router — protects against brute-force on auth flows.
 router.use(authLimiter);
 
-// ── POST /api/auth/sync ──────────────────────────────────────────────────────
+const ALLOWED_ROLES = [
+  'owner',
+  'project_manager',
+  'site_engineer',
+  'finance',
+  'marketplace_owner',
+  'builder',
+  'vendor_supplier',
+];
 
-router.post('/sync', requireAuth, async (req, res) => {
+// ── POST /api/auth/signup ────────────────────────────────────────────────────
+router.post('/signup', async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const { email, password, firstName, lastName, role } = req.body;
 
-    // Fetch the Clerk user object to get their primary email address.
-    const clerkUser = await clerkClient.users.getUser(userId);
-    const primaryEmail = clerkUser.emailAddresses
-      .find((e) => e.id === clerkUser.primaryEmailAddressId)
-      ?.emailAddress;
-
-    if (!primaryEmail) {
+    // Validate required fields
+    if (!email || !password) {
       return res.status(400).json({
         error: 'Bad Request',
-        message: 'No primary email address found on this Clerk account.',
+        message: 'Email and password are required.',
       });
     }
 
-    // Find the matching MongoDB user by email.
-    const user = await User.findOne({ email: primaryEmail.toLowerCase() });
-
-    if (!user) {
-      return res.status(404).json({
-        error: 'Not Found',
-        message: `No SmartBrick account found for ${primaryEmail}. Contact your project owner to be invited.`,
+    // Validate role if provided
+    if (role && !ALLOWED_ROLES.includes(role)) {
+      return res.status(400).json({
+        error: 'Bad Request',
+        message: `Invalid role. Must be one of: ${ALLOWED_ROLES.join(', ')}`,
       });
     }
 
-    // Stamp the Clerk user ID onto the document (idempotent).
-    if (user.clerkUserId !== userId) {
-      user.clerkUserId = userId;
-      await user.save();
+    // Check if user already exists
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
+      return res.status(409).json({
+        error: 'Conflict',
+        message: 'User with this email already exists.',
+      });
     }
 
-    return res.status(200).json({
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
+    // Hash password
+    const passwordHash = await hashPassword(password);
+
+    // Create user
+    const name = [firstName, lastName].filter(Boolean).join(' ') || email.split('@')[0];
+    const user = await User.create({
+      email: email.toLowerCase(),
+      passwordHash,
+      firstName: firstName || null,
+      lastName: lastName || null,
+      name,
+      role: role || null,
+    });
+
+    // Sign JWT
+    const token = signToken({ userId: user._id });
+
+    return res.status(201).json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
     });
   } catch (err) {
-    console.error('[POST /api/auth/sync] Error:', err);
+    console.error('[POST /api/auth/signup] Error:', err);
     return res.status(500).json({
       error: 'Internal Server Error',
-      message: 'An unexpected error occurred while syncing your account.',
+      message: 'An unexpected error occurred while creating your account.',
+    });
+  }
+});
+
+// ── POST /api/auth/signin ────────────────────────────────────────────────────
+router.post('/signin', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({
+        error: 'Bad Request',
+        message: 'Email and password are required.',
+      });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(401).json({
+        error: 'Unauthorized',
+        message: 'Invalid email or password.',
+      });
+    }
+
+    // Check if user has a password (for existing seed users)
+    if (!user.passwordHash) {
+      return res.status(401).json({
+        error: 'Unauthorized',
+        message: 'This account does not have a password set. Please contact support.',
+      });
+    }
+
+    // Verify password
+    const passwordValid = await verifyPassword(password, user.passwordHash);
+    if (!passwordValid) {
+      return res.status(401).json({
+        error: 'Unauthorized',
+        message: 'Invalid email or password.',
+      });
+    }
+
+    // Sign JWT
+    const token = signToken({ userId: user._id });
+
+    return res.status(200).json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+    });
+  } catch (err) {
+    console.error('[POST /api/auth/signin] Error:', err);
+    return res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'An unexpected error occurred while signing in.',
     });
   }
 });
 
 // ── POST /api/auth/set-role ──────────────────────────────────────────────────
-//
-// Called by SelectRolePage after a Google OAuth (or any OAuth) sign-up
-// where no role was captured during the sign-up flow.
-//
-// Protected by requireAuth only — the caller has NO role yet, which is
-// exactly why they're here.  requireRole() would always 403 them.
-//
-// Abuse prevention (Part D): if the user ALREADY has a role set, this
-// endpoint returns 403.  Changing an existing role requires an admin action
-// outside this endpoint, preventing privilege escalation via a replayed request.
-
-const ALLOWED_ROLES = [
-  // ── Internal team roles (Phases 1-13) ─────────────────────────────────────
-  'owner',
-  'project_manager',
-  'site_engineer',
-  'finance',
-  // ── Marketplace roles (Phase M1A+) ─────────────────────────────────────────
-  'marketplace_owner', // someone who wants to build a property
-  'builder',           // contractor / construction company
-  'vendor_supplier',   // material supplier
-];
-
 router.post('/set-role', requireAuth, async (req, res) => {
   try {
-    const { userId } = getAuth(req);
     const { role } = req.body;
 
-    // ── 1. Validate the submitted role ──────────────────────────────────────
+    // Validate role
     if (!role || !ALLOWED_ROLES.includes(role)) {
       return res.status(400).json({
         error: 'Bad Request',
@@ -139,60 +173,26 @@ router.post('/set-role', requireAuth, async (req, res) => {
       });
     }
 
-    // ── 2. Fetch the Clerk user to get name + email ──────────────────────────
-    const clerkUser = await clerkClient.users.getUser(userId);
-    const primaryEmail = clerkUser.emailAddresses
-      .find((e) => e.id === clerkUser.primaryEmailAddressId)
-      ?.emailAddress;
-
-    if (!primaryEmail) {
-      return res.status(400).json({
-        error: 'Bad Request',
-        message: 'No primary email address found on this Clerk account.',
+    // Get user from req
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        error: 'Not Found',
+        message: 'User not found.',
       });
     }
 
-    const email = primaryEmail.toLowerCase();
-
-    // ── 3. Check by clerkUserId first, then fall back to email ───────────────
-    //
-    // Priority:
-    //   a) clerkUserId match → the /auth/sync link-up already ran for this user
-    //   b) email match       → pre-created by seed / invite (no clerkUserId yet)
-    //   c) neither           → genuine first-time Google sign-up, create now
-    let user =
-      (await User.findOne({ clerkUserId: userId })) ||
-      (await User.findOne({ email }));
-
-    // ── 4. Abuse guard — role already set ───────────────────────────────────
-    if (user?.role) {
+    // Abuse guard — role already set
+    if (user.role) {
       return res.status(403).json({
         error: 'Forbidden',
         message: 'Role already set. Contact an admin to change it.',
       });
     }
 
-    // ── 5. Persist the role ──────────────────────────────────────────────────
-    if (user) {
-      // Existing document (seed or previously synced user without a role).
-      // Stamp clerkUserId if it isn't set yet, then apply the role.
-      user.clerkUserId = userId;
-      user.role = role;
-      await user.save();
-    } else {
-      // First-time Google OAuth user — no pre-existing document.
-      // Build name from Clerk profile (firstName + lastName) or fall back to email local-part.
-      const name =
-        [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') ||
-        email.split('@')[0];
-
-      user = await User.create({
-        name,
-        email,
-        role,
-        clerkUserId: userId,
-      });
-    }
+    // Set role
+    user.role = role;
+    await user.save();
 
     return res.status(200).json({
       success: true,
@@ -203,6 +203,28 @@ router.post('/set-role', requireAuth, async (req, res) => {
     return res.status(500).json({
       error: 'Internal Server Error',
       message: 'An unexpected error occurred while saving your role.',
+    });
+  }
+});
+
+// ── GET /api/auth/me ─────────────────────────────────────────────────────────
+router.get('/me', requireAuth, async (req, res) => {
+  try {
+    return res.status(200).json({
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+      },
+    });
+  } catch (err) {
+    console.error('[GET /api/auth/me] Error:', err);
+    return res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'An unexpected error occurred.',
     });
   }
 });

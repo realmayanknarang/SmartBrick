@@ -23,7 +23,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, Link }           from 'react-router-dom';
-import { useUser, SignOutButton }       from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import {
   MapContainer,
   TileLayer,
@@ -109,6 +109,7 @@ function MapFitBounds({ coordinates, origin, destination }) {
 
 function LogisticsPage() {
   const { pathname } = useLocation();
+  const { signOut } = useAuth();
 
   const [selectedVendor,  setSelectedVendor]  = useState('');
   const [selectedSite,    setSelectedSite]    = useState('');
@@ -161,9 +162,7 @@ function LogisticsPage() {
           <div className="dash-topbar__right">
             <Link to="/dashboard" className="dash-topbar__link">Overview</Link>
             <Link to="/" className="dash-topbar__link">Home</Link>
-            <SignOutButton>
-              <button className="dash-topbar__signout" id="logistics-signout-btn">Sign out</button>
-            </SignOutButton>
+            <button className="dash-topbar__signout" id="logistics-signout-btn" onClick={signOut}>Sign out</button>
           </div>
         </header>
 

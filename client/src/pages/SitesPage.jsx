@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { useUser, SignOutButton } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import Sidebar from '../components/Sidebar';
 import { NAV_ITEMS } from '../config/dashboardNav.jsx';
 import Card from '../components/Card';
@@ -18,6 +18,7 @@ import './SitesPage.css';
 
 function SitesPage() {
   const { pathname } = useLocation();
+  const { signOut } = useAuth();
   const [sites, setSites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -71,9 +72,7 @@ function SitesPage() {
           <div className="dash-topbar__right">
             <Link to="/dashboard" className="dash-topbar__link">Overview</Link>
             <Link to="/" className="dash-topbar__link">Home</Link>
-            <SignOutButton>
-              <button className="dash-topbar__signout">Sign out</button>
-            </SignOutButton>
+            <button className="dash-topbar__signout" onClick={signOut}>Sign out</button>
           </div>
         </header>
 

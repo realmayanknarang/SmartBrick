@@ -31,7 +31,7 @@
 import { Router }                  from 'express';
 import mongoose                    from 'mongoose';
 import { requireAuth, requireRole }
-                                   from '../../middleware/clerkAuth.js';
+                                   from '../../middleware/auth.js';
 import {
   resolveMarketplaceUser,
   isApprovedBuilder,

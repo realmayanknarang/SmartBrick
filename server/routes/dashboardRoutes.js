@@ -16,7 +16,7 @@
  */
 
 import { Router } from 'express';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import Site    from '../models/Site.js';
 import Vendor  from '../models/Vendor.js';
 import Project from '../models/Project.js';

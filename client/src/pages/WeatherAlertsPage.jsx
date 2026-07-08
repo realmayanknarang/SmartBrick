@@ -18,11 +18,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, Link }                from 'react-router-dom';
-import { useUser, SignOutButton }            from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import Sidebar                              from '../components/Sidebar';
 import { NAV_ITEMS } from '../config/dashboardNav.jsx';
-import Card                                 from '../components/Card';
-import apiClient                            from '../api/client';
+import Card                               from '../components/Card';
+import apiClient                          from '../api/client';
 import './WeatherAlertsPage.css';
 
 
@@ -87,6 +87,7 @@ function SiteWeatherCard({ site }) {
 
 function WeatherAlertsPage() {
   const { pathname } = useLocation();
+  const { signOut } = useAuth();
 
   const [sites,   setSites]   = useState([]);
   const [loading, setLoading] = useState(true);
@@ -132,9 +133,7 @@ function WeatherAlertsPage() {
           <div className="dash-topbar__right">
             <Link to="/dashboard" className="dash-topbar__link">Overview</Link>
             <Link to="/" className="dash-topbar__link">Home</Link>
-            <SignOutButton>
-              <button className="dash-topbar__signout" id="weather-alerts-signout-btn">Sign out</button>
-            </SignOutButton>
+            <button className="dash-topbar__signout" id="weather-alerts-signout-btn" onClick={signOut}>Sign out</button>
           </div>
         </header>
 

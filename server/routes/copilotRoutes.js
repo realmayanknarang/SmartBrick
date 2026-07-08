@@ -21,7 +21,7 @@
 
 import { Router } from 'express';
 import genAI from '../config/gemini.js';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { copilotLimiter } from '../middleware/rateLimiter.js';
 import { gatherRelevantContext } from '../utils/copilotContext.js';
 import { sanitizeUserQuestion } from '../utils/promptSanitizer.js';

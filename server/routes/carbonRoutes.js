@@ -30,7 +30,7 @@
  */
 
 import { Router } from 'express';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { carbonLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();

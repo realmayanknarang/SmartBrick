@@ -1,60 +1,9 @@
-/**
- * client/src/components/Sidebar.jsx
- *
- * SmartBrick reusable dashboard sidebar — Phase 4E / Phase 7G (mobile polish)
- * ─────────────────────────────────────────────────────────────────────────────
- * Renders the left-hand navigation panel used in the dashboard shell.
- *
- * Design
- * ──────────────────────────────────────────────────────────────────────────
- * •  Navy-secondary background (#2E4154), sits on the primary navy page bg
- * •  Brand mark at the top (same BrickIcon + wordmark as PublicNav)
- * •  Scrollable list of nav items, each: icon (left) + label (right)
- * •  Active item: gold left-border accent + slightly brighter background
- * •  Hover: subtle background lift
- * •  Mobile (≤ 768px): collapses to a top bar with hamburger toggle
- *
- * Responsibility boundary
- * ──────────────────────────────────────────────────────────────────────────
- * This component ONLY renders what it is given.  It does NOT:
- *   • Filter items by role (the dashboard shell does that)
- *   • Track active path itself (it receives `activePath` as a prop)
- *   • Handle navigation (items use react-router <Link> internally)
- *
- * Props
- * ──────────────────────────────────────────────────────────────────────────
- * items        Array<{ icon: ReactNode, label: string, path: string }>
- *              The list of nav items to render.  Pass only the items the
- *              current user's role should see — this component renders all
- *              of them unconditionally.
- *
- * activePath   string — the current URL path (e.g. "/dashboard").
- *              An item whose `.path` matches this string gets the active style.
- *              Typically supplied via useLocation().pathname from react-router.
- *
- * logoText     string — wordmark, defaults to "SmartBrick".
- *
- * className    Extra class(es) merged onto the root element (optional).
- *
- * Usage
- * ──────────────────────────────────────────────────────────────────────────
- *   import { useLocation } from 'react-router-dom';
- *
- *   const { pathname } = useLocation();
- *   const items = [
- *     { icon: <HomeIcon />, label: 'Overview',  path: '/dashboard' },
- *     { icon: <FileIcon />, label: 'Requisitions', path: '/dashboard/requisitions' },
- *   ];
- *
- *   <Sidebar items={items} activePath={pathname} />
- */
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { SignOutButton } from '@clerk/clerk-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import './Sidebar.css';
 
-// ─── Brand mark (same inline SVG as PublicNav for consistency) ────────────────
 function SidebarBrandMark() {
   return (
     <svg
@@ -74,7 +23,6 @@ function SidebarBrandMark() {
   );
 }
 
-// ─── Hamburger icon ──────────────────────────────────────────────────────────
 function HamburgerIcon({ isOpen }) {
   return (
     <svg
@@ -87,15 +35,13 @@ function HamburgerIcon({ isOpen }) {
       className="sidebar__hamburger-icon"
     >
       {isOpen ? (
-        // X icon when open
         <>
           <line x1="4" y1="4" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           <line x1="18" y1="4" x2="4" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </>
       ) : (
-        // Hamburger lines
         <>
-          <line x1="3" y1="6"  x2="19" y2="6"  stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <line x1="3" y1="6" x2="19" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           <line x1="3" y1="11" x2="19" y2="11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           <line x1="3" y1="16" x2="19" y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </>
@@ -104,13 +50,6 @@ function HamburgerIcon({ isOpen }) {
   );
 }
 
-/**
- * @param {object}                                    props
- * @param {Array<{icon:ReactNode,label:string,path:string}>} props.items
- * @param {string}                                    props.activePath
- * @param {string}                                    [props.logoText='SmartBrick']
- * @param {string}                                    [props.className]
- */
 function Sidebar({
   items       = [],
   activePath  = '',
@@ -119,13 +58,13 @@ function Sidebar({
   showSignOut = false,
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
 
-  // Close mobile drawer when navigating to a new path
   useEffect(() => {
     setMobileOpen(false);
   }, [activePath]);
 
-  // Lock body scroll when the mobile overlay is open
   useEffect(() => {
     if (mobileOpen) {
       document.body.style.overflow = 'hidden';
@@ -135,11 +74,19 @@ function Sidebar({
     return () => { document.body.style.overflow = ''; };
   }, [mobileOpen]);
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   const rootClasses = ['sidebar', mobileOpen ? 'sidebar--mobile-open' : '', className]
     .filter(Boolean)
     .join(' ');
 
-  // Group items by group name
   const groupedItems = [];
   items.forEach(item => {
     const groupName = item.group || null;
@@ -162,7 +109,6 @@ function Sidebar({
           )}
           <ul className="sidebar__nav" role="list">
             {group.items.map(({ icon, label, path, badge }) => {
-              // Highlight projects tab for child pages under /marketplace/owner/projects/:id (excluding /new)
               const isActive = activePath === path || 
                 (path === '/marketplace/owner/projects' && 
                  activePath.startsWith('/marketplace/owner/projects/') && 
@@ -179,17 +125,12 @@ function Sidebar({
                     aria-current={isActive ? 'page' : undefined}
                     onClick={() => setMobileOpen(false)}
                   >
-                    {/* Icon slot */}
                     {icon && (
                       <span className="sidebar__item-icon" aria-hidden="true">
                         {icon}
                       </span>
                     )}
-
-                    {/* Label */}
                     <span className="sidebar__item-label">{label}</span>
-
-                    {/* Badge */}
                     {badge !== undefined && badge !== null && (
                       <span className="sidebar__item-badge">{badge}</span>
                     )}
@@ -205,7 +146,6 @@ function Sidebar({
 
   return (
     <>
-      {/* ── Mobile top bar (visible only on narrow screens) ─────────────── */}
       <div className="sidebar__mobile-bar" aria-hidden={!mobileOpen}>
         <Link to="/" className="sidebar__brand-link sidebar__brand-link--mobile" aria-label="SmartBrick home">
           <SidebarBrandMark />
@@ -222,7 +162,6 @@ function Sidebar({
         </button>
       </div>
 
-      {/* ── Overlay backdrop for mobile ──────────────────────────────────── */}
       {mobileOpen && (
         <div
           className="sidebar__overlay"
@@ -231,14 +170,12 @@ function Sidebar({
         />
       )}
 
-      {/* ── Sidebar panel (desktop: always visible; mobile: drawer) ──────── */}
       <aside
         id="sidebar-nav-drawer"
         className={rootClasses}
         aria-label="Dashboard navigation"
-        aria-hidden={undefined} // always rendered in DOM for transitions
+        aria-hidden={undefined}
       >
-        {/* ── Brand mark ─────────────────────────────────── */}
         <div className="sidebar__brand">
           <Link to="/" className="sidebar__brand-link" aria-label="SmartBrick home">
             <SidebarBrandMark />
@@ -246,21 +183,17 @@ function Sidebar({
           </Link>
         </div>
 
-        {/* ── Nav items ──────────────────────────────────── */}
         {navList}
 
-        {/* ── Sign Out Button ────────────────────────────── */}
         {showSignOut && (
           <div className="sidebar__footer">
-            <SignOutButton redirectUrl="/login">
-              <button className="sidebar__signout-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="sidebar__signout-icon">
-                  <path d="M5 3H19C20.1 3 21 3.9 21 5V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15H5V19H19V5H5V9H3V5C3 3.9 3.9 3 5 3Z" fill="currentColor" />
-                  <path d="M11 16L15 12L11 8V11H3V13H11V16Z" fill="currentColor" />
-                </svg>
-                <span className="sidebar__item-label">Sign Out</span>
-              </button>
-            </SignOutButton>
+            <button className="sidebar__signout-btn" onClick={handleSignOut}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="sidebar__signout-icon">
+                <path d="M5 3H19C20.1 3 21 3.9 21 5V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15H5V19H19V5H5V9H3V5C3 3.9 3.9 3 5 3Z" fill="currentColor" />
+                <path d="M11 16L15 12L11 8V11H3V13H11V16Z" fill="currentColor" />
+              </svg>
+              <span className="sidebar__item-label">Sign Out</span>
+            </button>
           </div>
         )}
       </aside>

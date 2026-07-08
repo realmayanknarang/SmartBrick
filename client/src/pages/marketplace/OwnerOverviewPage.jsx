@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../../contexts/AuthContext';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import apiClient from '../../api/client';
@@ -147,7 +147,7 @@ function MetricCard({ label, value, icon, loading }) {
 }
 
 function OwnerOverviewPage() {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { unreadCount, setUnreadCount } = useOutletContext();
 
   const [activeProjects, setActiveProjects] = useState(0);
@@ -160,7 +160,7 @@ function OwnerOverviewPage() {
   const [recentActivity, setRecentActivity] = useState([]);
   const [activityLoading, setActivityLoading] = useState(true);
 
-  const displayName = user?.firstName || user?.fullName || 'Owner';
+  const displayName = user?.name || user?.email?.split('@')[0] || 'Owner';
 
   useEffect(() => {
     let active = true;

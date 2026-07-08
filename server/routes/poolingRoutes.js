@@ -10,7 +10,7 @@
  */
 
 import { Router }      from 'express';
-import { requireAuth } from '../middleware/clerkAuth.js';
+import { requireAuth } from '../middleware/auth.js';
 import PurchaseOrder   from '../models/PurchaseOrder.js';
 import { estimatePooling, POOLING_THRESHOLDS } from '../utils/poolingEstimator.js';
 

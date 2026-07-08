@@ -28,7 +28,7 @@
 
 import { useState, useEffect } from 'react';
 import { useLocation, Link }  from 'react-router-dom';
-import { useUser, SignOutButton } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import Sidebar from '../components/Sidebar';
 import { NAV_ITEMS } from '../config/dashboardNav.jsx';
 import Card    from '../components/Card';
@@ -115,7 +115,7 @@ function formatRupees(amount) {
 // ─── DashboardPage ─────────────────────────────────────────────────────────────
 
 function DashboardPage() {
-  const { user }          = useUser();
+  const { user, signOut } = useAuth();
   const { pathname }      = useLocation();
 
   // Summary metrics state
@@ -174,11 +174,11 @@ function DashboardPage() {
     return () => { cancelled = true; };
   }, []);
 
-  // Derive a friendly display name from Clerk user
+  // Derive a friendly display name from user
   const displayName =
-    user?.fullName ||
+    user?.name ||
     user?.firstName ||
-    user?.emailAddresses?.[0]?.emailAddress?.split('@')[0] ||
+    user?.email?.split('@')[0] ||
     'there';
 
   return (
@@ -196,11 +196,9 @@ function DashboardPage() {
           </div>
           <div className="dash-topbar__right">
             <Link to="/" className="dash-topbar__link">Home</Link>
-            <SignOutButton>
-              <button className="dash-topbar__signout" id="dashboard-sign-out-btn">
-                Sign out
-              </button>
-            </SignOutButton>
+            <button className="dash-topbar__signout" id="dashboard-sign-out-btn" onClick={signOut}>
+              Sign out
+            </button>
           </div>
         </header>
 

@@ -24,6 +24,7 @@ import Site          from '../models/Site.js';
 import Material      from '../models/Material.js';
 import PurchaseOrder from '../models/PurchaseOrder.js';
 import UsageHistory  from '../models/UsageHistory.js';
+import { hashPassword } from '../utils/password.js';
 
 // ─── tiny helpers ────────────────────────────────────────────────────────────
 
@@ -61,11 +62,12 @@ async function wipeAll() {
 // ─── 2. USERS (4 — one per role) ─────────────────────────────────────────────
 
 async function seedUsers() {
+  const password = await hashPassword('SmartBrick2026!');
   return User.insertMany([
-    { name: 'Vikram Singh Dhaliwal', email: 'owner@smartbrick-demo.com',    role: 'owner' },
-    { name: 'Neha Kapoor',           email: 'pm@smartbrick-demo.com',       role: 'project_manager' },
-    { name: 'Rajesh Kumar Sharma',   email: 'engineer@smartbrick-demo.com', role: 'site_engineer' },
-    { name: 'Sunita Arora',          email: 'finance@smartbrick-demo.com',  role: 'finance' },
+    { name: 'Vikram Singh Dhaliwal', firstName: 'Vikram', lastName: 'Dhaliwal', email: 'owner@smartbrick-demo.com',    role: 'owner', passwordHash: password },
+    { name: 'Neha Kapoor',           firstName: 'Neha', lastName: 'Kapoor', email: 'pm@smartbrick-demo.com',       role: 'project_manager', passwordHash: password },
+    { name: 'Rajesh Kumar Sharma',   firstName: 'Rajesh', lastName: 'Sharma', email: 'engineer@smartbrick-demo.com', role: 'site_engineer', passwordHash: password },
+    { name: 'Sunita Arora',          firstName: 'Sunita', lastName: 'Arora', email: 'finance@smartbrick-demo.com',  role: 'finance', passwordHash: password },
   ]);
 }
 

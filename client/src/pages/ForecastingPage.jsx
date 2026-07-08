@@ -10,7 +10,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { SignOutButton } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -92,6 +92,7 @@ function mergeChartData(history, forecast) {
 
 function ForecastingPage() {
   const { pathname } = useLocation();
+  const { signOut } = useAuth();
 
   const [options, setOptions] = useState({ sites: [], materials: [] });
   const [optionsLoading, setOptionsLoading] = useState(true);
@@ -164,9 +165,7 @@ function ForecastingPage() {
           <div className="dash-topbar__right">
             <Link to="/dashboard" className="dash-topbar__link">Overview</Link>
             <Link to="/" className="dash-topbar__link">Home</Link>
-            <SignOutButton>
-              <button className="dash-topbar__signout">Sign out</button>
-            </SignOutButton>
+            <button className="dash-topbar__signout" onClick={signOut}>Sign out</button>
           </div>
         </header>
 

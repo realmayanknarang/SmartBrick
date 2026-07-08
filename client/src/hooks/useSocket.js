@@ -1,16 +1,10 @@
-/**
- * client/src/hooks/useSocket.js
- *
- * Custom hook to interface with the Socket.io client.
- * Uses a singleton connection instance to avoid opening redundant connections.
- */
 
 import { useEffect, useRef, useState } from 'react'
 import { io } from 'socket.io-client'
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth } from '../contexts/AuthContext'
 
 export function useSocket() {
-  const { getToken } = useAuth()
+  const { token } = useAuth()
   const socketRef = useRef(null)
   const [connected, setConnected] = useState(false)
   const [error, setError] = useState(null)
@@ -20,8 +14,6 @@ export function useSocket() {
 
     async function connect() {
       try {
-        // Get the current Clerk session token
-        const token = await getToken()
         if (!token) return
 
         socket = io(
@@ -65,9 +57,8 @@ export function useSocket() {
         socket.disconnect()
       }
     }
-  }, [getToken])
+  }, [token])
 
-  // Expose methods for chat UI to use
   const sendMessage = (conversationId, content, messageType = 'text', fileUrl = null) => {
     return new Promise((resolve, reject) => {
       if (!socketRef.current?.connected) {
