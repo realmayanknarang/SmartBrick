@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../../contexts/AuthContext';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import apiClient from '../../api/client';
@@ -127,8 +127,8 @@ function ActiveMaterialCard({ material }) {
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 function VendorOverviewPage() {
-  const { user } = useUser();
-  const displayName = user?.firstName || user?.fullName || 'Vendor';
+  const { user } = useAuth();
+  const displayName = user?.firstName || user?.name || 'Vendor';
 
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
