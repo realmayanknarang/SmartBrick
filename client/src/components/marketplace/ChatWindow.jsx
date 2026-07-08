@@ -97,6 +97,38 @@ function readByIncludes(readBy = [], userId) {
   });
 }
 
+function normalizeMessageContent(content) {
+  return typeof content === 'string' ? content.trim() : '';
+}
+
+function getMessageSenderId(message) {
+  const senderId = message?.sender?._id || message?.sender;
+  return senderId?.toString?.() || senderId || '';
+}
+
+function isSameConversation(message, conversationId) {
+  const messageConversationId = message?.conversation?._id || message?.conversation;
+  return messageConversationId?.toString?.() === conversationId?.toString?.();
+}
+
+function matchesPendingMessage(message, pendingMessage, currentUserId) {
+  if (!message || !pendingMessage) return false;
+  if (!isSameConversation(message, pendingMessage.conversation)) return false;
+
+  const senderId = getMessageSenderId(message);
+  if (!senderId || senderId !== currentUserId) return false;
+
+  const incomingContent = normalizeMessageContent(message.content);
+  const pendingContent = normalizeMessageContent(pendingMessage.content);
+  if (!incomingContent || incomingContent !== pendingContent) return false;
+
+  const incomingTime = new Date(message.createdAt).getTime();
+  const pendingTime = new Date(pendingMessage.createdAt).getTime();
+  if (Number.isNaN(incomingTime) || Number.isNaN(pendingTime)) return false;
+
+  return Math.abs(incomingTime - pendingTime) <= 15000;
+}
+
 function ChatWindow({
   conversationId,
   currentUserId,
@@ -121,15 +153,17 @@ function ChatWindow({
   const [isOtherParticipantTyping, setIsOtherParticipantTyping] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
   const [showNewMessageNudge, setShowNewMessageNudge] = useState(false);
-  const [isSending, setIsSending] = useState(false);
+  const [composerError, setComposerError] = useState('');
 
   const messageListRef = useRef(null);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
   const attachTipTimeoutRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+  const composerErrorTimeoutRef = useRef(null);
   const isTypingRef = useRef(false);
   const scrollBehaviorRef = useRef(null);
+  const pendingMessagesRef = useRef([]);
   const normalizedOtherParticipantId = useMemo(() => {
     const otherMessage = messages.find((message) => {
       const senderId = message.sender?._id || message.sender;
@@ -201,9 +235,17 @@ function ChatWindow({
     if (!conversationId) return;
 
     const cleanup = onNewMessage?.((message) => {
-      const messageConversationId = message?.conversation?._id || message?.conversation;
-      if (!messageConversationId) return;
-      if (messageConversationId.toString?.() !== conversationId.toString?.()) return;
+      if (!isSameConversation(message, conversationId)) return;
+
+      const pendingMatch = pendingMessagesRef.current.find((pendingMessage) =>
+        matchesPendingMessage(message, pendingMessage, normalizedCurrentUserId)
+      );
+
+      if (pendingMatch) {
+        removePendingMessage(pendingMatch._id);
+        replaceMessageById(pendingMatch._id, message);
+        return;
+      }
 
       const shouldScroll = isNearBottom();
       setMessages((prev) => {
@@ -283,6 +325,10 @@ function ChatWindow({
         clearTimeout(typingTimeoutRef.current);
       }
 
+      if (composerErrorTimeoutRef.current) {
+        clearTimeout(composerErrorTimeoutRef.current);
+      }
+
       if (isTypingRef.current && conversationId) {
         stopTyping?.(conversationId);
       }
@@ -299,30 +345,125 @@ function ChatWindow({
     bottomRef.current?.scrollIntoView({ behavior });
   }
 
+  function showComposerError(message) {
+    setComposerError(message);
+
+    if (composerErrorTimeoutRef.current) {
+      clearTimeout(composerErrorTimeoutRef.current);
+    }
+
+    composerErrorTimeoutRef.current = setTimeout(() => {
+      setComposerError('');
+    }, 3200);
+  }
+
+  function clearTypingState() {
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+
+    if (isTypingRef.current && conversationId) {
+      stopTyping?.(conversationId);
+      isTypingRef.current = false;
+    }
+  }
+
+  function replaceMessageById(messageId, nextMessage) {
+    setMessages((prev) => prev.map((msg) => (msg._id === messageId ? nextMessage : msg)));
+  }
+
+  function markMessageFailed(messageId) {
+    setMessages((prev) =>
+      prev.map((msg) => (msg._id === messageId ? { ...msg, failed: true, isOptimistic: false } : msg))
+    );
+  }
+
+  function queuePendingMessage(message) {
+    pendingMessagesRef.current = [
+      ...pendingMessagesRef.current.filter((entry) => entry._id !== message._id),
+      message,
+    ];
+  }
+
+  function removePendingMessage(messageId) {
+    pendingMessagesRef.current = pendingMessagesRef.current.filter((msg) => msg._id !== messageId);
+  }
+
   function handleMessagesScroll() {
     if (showNewMessageNudge && isNearBottom()) {
       setShowNewMessageNudge(false);
     }
   }
 
+  async function deliverMessage(content, existingMessage = null) {
+    const trimmedContent = normalizeMessageContent(content);
+    if (!trimmedContent || !conversationId || !normalizedCurrentUserId) return;
+
+    const optimisticMessage = existingMessage || {
+      _id: `temp-${Date.now()}`,
+      conversation: conversationId,
+      sender: { _id: normalizedCurrentUserId, name: 'You' },
+      content: trimmedContent,
+      messageType: 'text',
+      readBy: normalizedCurrentUserId ? [normalizedCurrentUserId] : [],
+      createdAt: new Date().toISOString(),
+      isOptimistic: true,
+      failed: false,
+    };
+
+    if (!existingMessage) {
+      setMessages((prev) => [...prev, optimisticMessage]);
+    } else {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg._id === optimisticMessage._id
+            ? { ...optimisticMessage, content: trimmedContent, failed: false, isOptimistic: true, createdAt: new Date().toISOString() }
+            : msg
+        )
+      );
+    }
+
+    queuePendingMessage({
+      ...optimisticMessage,
+      content: trimmedContent,
+      createdAt: new Date().toISOString(),
+    });
+    setShowNewMessageNudge(false);
+    scrollBehaviorRef.current = 'smooth';
+
+    try {
+      const savedMessage = await sendMessage?.(conversationId, trimmedContent);
+      removePendingMessage(optimisticMessage._id);
+      replaceMessageById(optimisticMessage._id, savedMessage);
+      return;
+    } catch (socketErr) {
+      console.error('[ChatWindow] Socket send failed, falling back to REST:', socketErr);
+    }
+
+    try {
+      const response = await apiClient.post(`/marketplace/messages/${conversationId}`, {
+        content: trimmedContent,
+        messageType: 'text',
+      });
+      removePendingMessage(optimisticMessage._id);
+      replaceMessageById(optimisticMessage._id, response.data.message);
+    } catch (restErr) {
+      console.error('[ChatWindow] REST send failed:', restErr);
+      removePendingMessage(optimisticMessage._id);
+      markMessageFailed(optimisticMessage._id);
+      showComposerError('Failed to send message. Check your connection.');
+    }
+  }
+
   async function submitDraft() {
-    const trimmedDraft = draft.trim();
+    const trimmedDraft = normalizeMessageContent(draft);
     if (!trimmedDraft) return;
 
     setDraft('');
-    setShowNewMessageNudge(false);
-    scrollToBottom('smooth');
-
-    if (!conversationId || !sendMessage) return;
-
-    try {
-      setIsSending(true);
-      await sendMessage(conversationId, trimmedDraft);
-    } catch (err) {
-      console.error('[ChatWindow] Failed to send message:', err);
-    } finally {
-      setIsSending(false);
-    }
+    setComposerError('');
+    clearTypingState();
+    await deliverMessage(trimmedDraft);
   }
 
   function handleSubmit(event) {
@@ -345,6 +486,11 @@ function ChatWindow({
 
     if (!conversationId || !startTyping || !stopTyping) return;
 
+    if (!value.trim()) {
+      clearTypingState();
+      return;
+    }
+
     if (!isTypingRef.current) {
       startTyping(conversationId);
       isTypingRef.current = true;
@@ -357,7 +503,7 @@ function ChatWindow({
     typingTimeoutRef.current = setTimeout(() => {
       stopTyping(conversationId);
       isTypingRef.current = false;
-    }, 900);
+    }, 1500);
   }
 
   function handleAttachmentClick() {
@@ -375,6 +521,12 @@ function ChatWindow({
   function handleRetry() {
     setError('');
     setReloadToken((prev) => prev + 1);
+  }
+
+  function handleFailedMessageRetry(message) {
+    if (!message?.content) return;
+    setComposerError('');
+    deliverMessage(message.content, message);
   }
 
   function handleNewMessageNudgeClick() {
@@ -437,7 +589,12 @@ function ChatWindow({
           return (
             <div
               key={message._id}
-              className={`chat-window__message chat-window__message--${message.isSent ? 'sent' : 'received'}`}
+              className={[
+                'chat-window__message',
+                `chat-window__message--${message.isSent ? 'sent' : 'received'}`,
+                message.failed ? 'chat-window__message--failed' : '',
+                message.isOptimistic ? 'chat-window__message--optimistic' : '',
+              ].join(' ').trim()}
             >
               {message.startsGroup && (
                 <span className="chat-window__sender-label">{senderName}</span>
@@ -445,6 +602,8 @@ function ChatWindow({
               <div
                 className={[
                   'chat-window__bubble',
+                  message.failed ? 'chat-window__bubble--failed' : '',
+                  message.isOptimistic ? 'chat-window__bubble--optimistic' : '',
                   message.isSent ? 'chat-window__bubble--sent' : 'chat-window__bubble--received',
                   message.startsGroup ? 'chat-window__bubble--group-start' : 'chat-window__bubble--group-mid',
                   message.endsGroup ? 'chat-window__bubble--group-end' : 'chat-window__bubble--group-mid',
@@ -452,12 +611,21 @@ function ChatWindow({
               >
                 <p className="chat-window__bubble-text">{message.content}</p>
               </div>
+              {message.failed && (
+                <button
+                  type="button"
+                  className="chat-window__failed-retry"
+                  onClick={() => handleFailedMessageRetry(message)}
+                >
+                  Failed to send - Tap to retry
+                </button>
+              )}
               {message.endsGroup && (
                 <div className="chat-window__meta-row">
                   <span className="chat-window__timestamp">{formatTime(message.createdAt)}</span>
-                  {message.isSent && (
+                  {message.isSent && !message.failed && (
                     <span className="chat-window__receipt" aria-label={hasOtherReadReceipt ? 'Read' : 'Sent'}>
-                      {readReceipt}
+                      {message.isOptimistic ? '...' : readReceipt}
                     </span>
                   )}
                 </div>
@@ -565,12 +733,17 @@ function ChatWindow({
           <button
             type="submit"
             className="chat-window__send-button"
-            disabled={!canSend || isSending}
+            disabled={!canSend}
             aria-label="Send message"
           >
             <SendIcon />
           </button>
         </form>
+        {composerError && (
+          <div className="chat-window__composer-error" role="alert" aria-live="assertive">
+            {composerError}
+          </div>
+        )}
       </section>
     </Card>
   );
