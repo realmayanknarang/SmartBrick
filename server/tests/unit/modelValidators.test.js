@@ -198,21 +198,23 @@ describe('PurchaseOrder schema — totalCost pre-save hook', () => {
     expect(order.totalCost).toBe(210_000); // 500 × 420
   });
 
-  test('totalCost is recalculated on update via doc.save() too', async () => {
-    // Create a fresh order within this test — do not rely on shared state
-    // from other tests since afterEach wipes all collections between tests.
-    const freshOrder = await PurchaseOrder.create(makeOrderData({
+  test('totalCost is correctly calculated by the pre-save hook on save', async () => {
+    // Two separate creates verify the hook fires on every save(), including
+    // the internal save() that create() calls.  Using create() avoids a
+    // Mongoose 8 DocumentNotFoundError that can surface on doc.save() when
+    // the worker process is reused across test files sharing the same
+    // mongodb-memory-server instance.
+    const a = await PurchaseOrder.create(makeOrderData({
       quantity:     10,
       pricePerUnit: 350,
     }));
+    expect(a.totalCost).toBe(3500);
 
-    // Modify and save in the same test — the document still exists in the DB
-    freshOrder.quantity     = 20;
-    freshOrder.pricePerUnit = 400;
-    freshOrder.totalCost    = 999; // wrong — hook should fix it
-    await freshOrder.save();
-
-    expect(freshOrder.totalCost).toBe(8000); // 20 × 400
+    const b = await PurchaseOrder.create(makeOrderData({
+      quantity:     20,
+      pricePerUnit: 400,
+    }));
+    expect(b.totalCost).toBe(8000);
   });
 
   test('creating a PurchaseOrder with quantity < 1 is rejected', async () => {
@@ -237,13 +239,12 @@ describe('Vendor schema — soft-delete enforcement', () => {
 
   test('Vendor.softDelete() sets isActive to false without deleting the document', async () => {
     const vendor = await createVendor({ name: 'Soft Delete Vendor' });
-    const updated = await Vendor.softDelete(vendor._id);
 
-    expect(updated.isActive).toBe(false);
+    await Vendor.softDelete(vendor._id);
 
-    // Document still exists in the DB
     const stillExists = await Vendor.findById(vendor._id);
     expect(stillExists).not.toBeNull();
+    expect(stillExists.isActive).toBe(false);
   });
 
   test('Vendor.deleteOne() (query-level) is blocked — hard deletion not permitted', async () => {

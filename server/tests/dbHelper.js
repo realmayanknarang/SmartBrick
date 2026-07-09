@@ -40,6 +40,13 @@ beforeAll(async () => {
   if (mongoose.connection.readyState === 0) {
     await mongoose.connect(uri);
   }
+
+  // Drop and recreate the database so each test file starts with a completely
+  // clean slate — no documents, no indexes, no lingering state.  This avoids
+  // flaky DocumentNotFoundError / null-update issues that can surface when
+  // the same worker process runs multiple test files against the shared
+  // mongodb-memory-server instance.
+  await mongoose.connection.dropDatabase();
 });
 
 // After each individual test, wipe all documents from every registered
