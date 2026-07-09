@@ -41,7 +41,7 @@ const jsonRateLimitHandler = (_req, res, _next, options) => {
  * Prod:  100 req / 15 min per IP
  * Applied globally to all /api routes in index.js.
  */
-const API_MAX = isDev ? 600 : 100;
+const API_MAX = isDev ? 6000 : 100;
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: API_MAX,
