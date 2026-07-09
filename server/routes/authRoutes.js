@@ -27,8 +27,7 @@ router.post('/auth/signup', async (req, res) => {
       errors.password = 'Password must be at least 8 characters';
 
     const VALID_ROLES = [
-      'owner', 'project_manager', 'site_engineer', 'finance',
-      'marketplace_owner', 'builder', 'vendor_supplier'
+      'owner', 'builder', 'vendor'
     ];
     if (!role || !VALID_ROLES.includes(role))
       errors.role = 'Please select a valid role';

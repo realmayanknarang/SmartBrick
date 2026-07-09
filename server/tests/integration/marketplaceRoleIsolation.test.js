@@ -69,8 +69,8 @@ describe('M8A — marketplace role isolation', () => {
     expect(res.status).toBe(403);
   });
 
-  it('(b) marketplace_owner cannot submit a proposal → 403', async () => {
-    const { token } = await makeUser('marketplace_owner');
+  it('(b) owner cannot submit a proposal → 403', async () => {
+    const { token } = await makeUser('owner');
     const res = await request(app)
       .post('/api/marketplace/proposals')
       .set(auth(token))
@@ -87,24 +87,16 @@ describe('M8A — marketplace role isolation', () => {
     expect(res.status).toBe(403);
   });
 
-  it('(d) internal site_engineer cannot list projects → 403', async () => {
-    const { token } = await makeUser('site_engineer');
+  it('(d) vendor cannot list projects → 403', async () => {
+    const { token } = await makeUser('vendor');
     const res = await request(app)
       .get('/api/marketplace/projects')
       .set(auth(token));
     expect(res.status).toBe(403);
   });
 
-  it('internal role cannot browse marketplace materials → 403 (M8A Rule 3 fix)', async () => {
-    const { token } = await makeUser('finance');
-    const res = await request(app)
-      .get('/api/marketplace/materials')
-      .set(auth(token));
-    expect(res.status).toBe(403);
-  });
-
-  it('marketplace_owner CAN browse materials → 200 (fix does not break legit roles)', async () => {
-    const { token } = await makeUser('marketplace_owner');
+  it('owner CAN browse materials → 200', async () => {
+    const { token } = await makeUser('owner');
     const res = await request(app)
       .get('/api/marketplace/materials')
       .set(auth(token));
@@ -118,9 +110,9 @@ describe('M8A — marketplace role isolation', () => {
 });
 
 describe('M8A — ownership enforcement on writes', () => {
-  it('non-owner marketplace_owner cannot PATCH another owner’s project → 403', async () => {
-    const { user: ownerA } = await makeUser('marketplace_owner');
-    const { token: tokenB } = await makeUser('marketplace_owner');
+  it('non-owner owner cannot PATCH another owner’s project → 403', async () => {
+    const { user: ownerA } = await makeUser('owner');
+    const { token: tokenB } = await makeUser('owner');
 
     const project = await MarketplaceProject.create({
       owner: ownerA._id,
@@ -145,8 +137,8 @@ describe('M8A — ownership enforcement on writes', () => {
   });
 
   it('vendor cannot PATCH another vendor’s material → 403', async () => {
-    const { user: vendorA } = await makeUser('vendor_supplier');
-    const { token: tokenB } = await makeUser('vendor_supplier');
+    const { user: vendorA } = await makeUser('vendor');
+    const { token: tokenB } = await makeUser('vendor');
 
     const material = await MarketplaceMaterial.create({
       vendor: vendorA._id,
@@ -167,7 +159,7 @@ describe('M8A — ownership enforcement on writes', () => {
   });
 
   it('duplicate proposal returns a clean 400 message, not a raw Mongo error', async () => {
-    const { user: owner } = await makeUser('marketplace_owner');
+    const { user: owner } = await makeUser('owner');
     const { user: builder, token: builderToken } = await makeUser('builder');
 
     const project = await MarketplaceProject.create({

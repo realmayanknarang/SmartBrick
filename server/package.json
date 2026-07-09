@@ -31,6 +31,7 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "@clerk/express": "^2.1.38",
     "@jest/globals": "^30.4.1",
     "jest": "^30.4.2",
     "mongodb-memory-server": "^11.2.0",

@@ -6,7 +6,7 @@
  *
  * Routes
  * ──────
- *   POST   /api/marketplace/projects           — create a project (marketplace_owner)
+ *   POST   /api/marketplace/projects           — create a project (owner)
  *   GET    /api/marketplace/projects           — list projects (role-gated)
  *   GET    /api/marketplace/projects/:id       — single project detail
  *   PATCH  /api/marketplace/projects/:id       — update a project (owner only)
@@ -14,7 +14,7 @@
  *
  * Access rules
  * ────────────
- *   marketplace_owner — can create, read-own, update-own, soft-delete-own
+ *   owner — can create, read-own, update-own, soft-delete-own
  *   builder           — can read all "open" projects (with filters)
  *   all other roles   — 403 on every project list/detail endpoint
  *
@@ -67,13 +67,13 @@ function isCastError(err) {
 
 /**
  * Create a new MarketplaceProject.
- * Only marketplace_owner role may call this.
+ * Only owner role may call this.
  * The authenticated user's MongoDB _id is stamped as owner.
  */
 router.post(
   '/projects',
   requireAuth,
-  requireRole('marketplace_owner'),
+  requireRole('owner'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {
@@ -157,7 +157,7 @@ router.post(
 
 /**
  * List projects.  Behaviour is role-gated:
- *   marketplace_owner → own projects only (all statuses)
+ *   owner → own projects only (all statuses)
  *   builder           → all "open" projects, filterable + paginated
  *   other roles       → 403
  */
@@ -170,15 +170,15 @@ router.get(
       const { role } = req.user;
 
       // ── Role guard ────────────────────────────────────────────────────────
-      if (role !== 'marketplace_owner' && role !== 'builder') {
+      if (role !== 'owner' && role !== 'builder') {
         return res.status(403).json({
           error:   'Forbidden',
-          message: 'Only marketplace_owner and builder roles can access the project list.',
+          message: 'Only owner and builder roles can access the project list.',
         });
       }
 
-      // ── marketplace_owner view — own projects only ────────────────────────
-      if (role === 'marketplace_owner') {
+      // ── owner view — own projects only ────────────────────────
+      if (role === 'owner') {
         const projects = await MarketplaceProject.find({
           owner:    req.user._id,
           isActive: true,
@@ -246,7 +246,7 @@ router.get(
 /**
  * Single project detail.
  *   builder           → can view any open project
- *   marketplace_owner → can only view own projects
+ *   owner → can only view own projects
  *   other roles       → 403
  */
 router.get(
@@ -257,10 +257,10 @@ router.get(
     try {
       const { role } = req.user;
 
-      if (role !== 'marketplace_owner' && role !== 'builder') {
+      if (role !== 'owner' && role !== 'builder') {
         return res.status(403).json({
           error:   'Forbidden',
-          message: 'Only marketplace_owner and builder roles can view project details.',
+          message: 'Only owner and builder roles can view project details.',
         });
       }
 
@@ -279,8 +279,8 @@ router.get(
         });
       }
 
-      // marketplace_owner can only view their own projects.
-      if (role === 'marketplace_owner') {
+      // owner can only view their own projects.
+      if (role === 'owner') {
         if (project.owner._id.toString() !== req.user._id.toString()) {
           return res.status(403).json({
             error:   'Forbidden',
@@ -326,7 +326,7 @@ router.get(
 router.patch(
   '/projects/:id',
   requireAuth,
-  requireRole('marketplace_owner'),
+  requireRole('owner'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {
@@ -420,7 +420,7 @@ router.patch(
 router.delete(
   '/projects/:id',
   requireAuth,
-  requireRole('marketplace_owner'),
+  requireRole('owner'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {

@@ -23,12 +23,8 @@ router.use(authLimiter);
 
 const ALLOWED_ROLES = [
   'owner',
-  'project_manager',
-  'site_engineer',
-  'finance',
-  'marketplace_owner',
   'builder',
-  'vendor_supplier',
+  'vendor',
 ];
 
 // ── POST /api/auth/signup ────────────────────────────────────────────────────

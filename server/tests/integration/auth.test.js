@@ -56,10 +56,10 @@ describe('auth integration routes', () => {
 
   test('owner-only route returns 403 for the wrong role and 200 for owner', async () => {
     await User.create({
-      name: 'Site Engineer',
-      email: 'engineer@example.com',
-      role: 'site_engineer',
-      clerkUserId: 'user_engineer',
+      name: 'Builder',
+      email: 'builder@example.com',
+      role: 'builder',
+      clerkUserId: 'user_builder',
     });
     await User.create({
       name: 'Owner',
@@ -70,7 +70,7 @@ describe('auth integration routes', () => {
 
     const forbidden = await request(app)
       .get('/api/test-auth/owner-only')
-      .set('x-test-user-id', 'user_engineer');
+      .set('x-test-user-id', 'user_builder');
     expect(forbidden.status).toBe(403);
     expect(forbidden.body.error).toBe('Forbidden');
 
@@ -87,10 +87,10 @@ describe('auth integration routes', () => {
     const first = await request(app)
       .post('/api/auth/set-role')
       .set('x-test-user-id', 'user_new')
-      .send({ role: 'site_engineer' });
+      .send({ role: 'builder' });
 
     expect(first.status).toBe(200);
-    expect(first.body).toMatchObject({ success: true, role: 'site_engineer' });
+    expect(first.body).toMatchObject({ success: true, role: 'builder' });
 
     const second = await request(app)
       .post('/api/auth/set-role')
@@ -102,6 +102,6 @@ describe('auth integration routes', () => {
     expect(second.body.message).toMatch(/Role already set/);
 
     const stored = await User.findOne({ clerkUserId: 'user_new' }).lean();
-    expect(stored.role).toBe('site_engineer');
+    expect(stored.role).toBe('builder');
   });
 });

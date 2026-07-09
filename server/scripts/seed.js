@@ -59,15 +59,14 @@ async function wipeAll() {
   }
 }
 
-// ─── 2. USERS (4 — one per role) ─────────────────────────────────────────────
+// ─── 2. USERS (3 — one per role) ─────────────────────────────────────────────
 
 async function seedUsers() {
   const password = await hashPassword('SmartBrick2026!');
   return User.insertMany([
-    { name: 'Vikram Singh Dhaliwal', firstName: 'Vikram', lastName: 'Dhaliwal', email: 'owner@smartbrick-demo.com',    role: 'owner', passwordHash: password },
-    { name: 'Neha Kapoor',           firstName: 'Neha', lastName: 'Kapoor', email: 'pm@smartbrick-demo.com',       role: 'project_manager', passwordHash: password },
-    { name: 'Rajesh Kumar Sharma',   firstName: 'Rajesh', lastName: 'Sharma', email: 'engineer@smartbrick-demo.com', role: 'site_engineer', passwordHash: password },
-    { name: 'Sunita Arora',          firstName: 'Sunita', lastName: 'Arora', email: 'finance@smartbrick-demo.com',  role: 'finance', passwordHash: password },
+    { name: 'Vikram Singh Dhaliwal', firstName: 'Vikram', lastName: 'Dhaliwal', email: 'owner@smartbrick-demo.com',   role: 'owner',   passwordHash: password },
+    { name: 'Neha Kapoor',           firstName: 'Neha',   lastName: 'Kapoor',  email: 'builder@smartbrick-demo.com', role: 'builder', passwordHash: password },
+    { name: 'Rajesh Kumar Sharma',   firstName: 'Rajesh', lastName: 'Sharma',  email: 'vendor@smartbrick-demo.com',  role: 'vendor',  passwordHash: password },
   ]);
 }
 
@@ -659,7 +658,7 @@ async function main() {
   console.log('\n' + '─'.repeat(56));
   console.log('✅  Seed complete — summary');
   console.log('─'.repeat(56));
-  console.log(`   Users:          ${users.length}   (1 per role)`);
+  console.log(`   Users:          ${users.length}   (owner / builder / vendor)`);
   console.log(`   Vendors:        ${vendors.length}  (3 per category × 6 categories)`);
   console.log(`   Projects:       ${projects.length}   (planning / foundation / structure / finishing / completed)`);
   console.log(`   Sites:          ${sites.length}   (1–2 per project, Chandigarh-tricity region)`);

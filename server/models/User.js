@@ -35,19 +35,12 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Role is required'],
       enum: {
         values: [
-          // ── Internal team roles (Phases 1-13) ───────────────────────────────
-          'owner',
-          'project_manager',
-          'site_engineer',
-          'finance',
-          // ── Marketplace roles (Phase M1A+) ───────────────────────────────────
-          'marketplace_owner', // someone who wants to build a property
-          'builder',           // contractor / construction company
-          'vendor_supplier',   // material supplier
+          'owner',    // property owner who posts projects
+          'builder',  // contractor / construction company
+          'vendor',   // material supplier
         ],
         message:
-          'Role must be one of: owner, project_manager, site_engineer, finance, ' +
-          'marketplace_owner, builder, vendor_supplier',
+          'Role must be one of: owner, builder, vendor',
       },
     },
     /**

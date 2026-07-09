@@ -218,7 +218,7 @@ router.get(
 router.get(
   '/proposals/project/:projectId',
   requireAuth,
-  requireRole('marketplace_owner'),
+  requireRole('owner'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {
@@ -293,7 +293,7 @@ router.get(
 router.patch(
   '/proposals/:id/approve',
   requireAuth,
-  requireRole('marketplace_owner'),
+  requireRole('owner'),
   resolveMarketplaceUser,
   async (req, res) => {
     let session = null;
@@ -460,7 +460,7 @@ router.patch(
 router.patch(
   '/proposals/:id/reject',
   requireAuth,
-  requireRole('marketplace_owner'),
+  requireRole('owner'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {

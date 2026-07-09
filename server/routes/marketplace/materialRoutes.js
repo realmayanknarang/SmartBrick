@@ -6,18 +6,18 @@
  *
  * Routes
  * ──────
- *   POST   /api/marketplace/materials          — create a listing (vendor_supplier)
+ *   POST   /api/marketplace/materials          — create a listing (vendor)
  *   GET    /api/marketplace/materials          — browse active listings (any auth role)
  *   GET    /api/marketplace/materials/my       — vendor's own listings (active + inactive)
  *   GET    /api/marketplace/materials/:id      — single listing detail (any auth role)
- *   PATCH  /api/marketplace/materials/:id      — update own listing (vendor_supplier, owner)
- *   DELETE /api/marketplace/materials/:id      — soft-delete (vendor_supplier, owner)
+ *   PATCH  /api/marketplace/materials/:id      — update own listing (vendor, owner)
+ *   DELETE /api/marketplace/materials/:id      — soft-delete (vendor, owner)
  *
  * Access model
  * ────────────
- *   POST / PATCH / DELETE — vendor_supplier only, must own the listing
+ *   POST / PATCH / DELETE — vendor only, must own the listing
  *   GET (public browse)   — any authenticated user
- *   GET /my               — vendor_supplier only (their own listings, all statuses)
+ *   GET /my               — vendor only (their own listings, all statuses)
  *
  * Validation
  * ──────────
@@ -121,12 +121,12 @@ function validateMaterialFields(body, requireAll = true) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * A vendor_supplier creates a new material listing.
+ * A vendor creates a new material listing.
  */
 router.post(
   '/materials',
   requireAuth,
-  requireRole('vendor_supplier'),
+  requireRole('vendor'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {
@@ -176,7 +176,7 @@ router.post(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Returns ALL material listings owned by the authenticated vendor_supplier,
+ * Returns ALL material listings owned by the authenticated vendor,
  * including inactive (soft-deleted) ones.  No pagination.
  *
  * NOTE: This route is registered BEFORE /materials/:id so that Express matches
@@ -185,7 +185,7 @@ router.post(
 router.get(
   '/materials/my',
   requireAuth,
-  requireRole('vendor_supplier'),
+  requireRole('vendor'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {
@@ -211,8 +211,8 @@ router.get(
 
 /**
  * Browse active material listings.
- * Restricted to the three marketplace roles (marketplace_owner, builder,
- * vendor_supplier). Internal platform roles (owner, project_manager,
+ * Restricted to the three marketplace roles (owner, builder,
+ * vendor). Internal platform roles (owner, project_manager,
  * site_engineer, finance) receive 403 — they have no marketplace access
  * (Phase M8A route audit, Rule 3: role isolation).
  *
@@ -228,7 +228,7 @@ router.get(
 router.get(
   '/materials',
   requireAuth,
-  requireRole('marketplace_owner', 'builder', 'vendor_supplier'),
+  requireRole('owner', 'builder', 'vendor'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {
@@ -301,7 +301,7 @@ router.get(
 router.get(
   '/materials/:id',
   requireAuth,
-  requireRole('marketplace_owner', 'builder', 'vendor_supplier'),
+  requireRole('owner', 'builder', 'vendor'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {
@@ -345,7 +345,7 @@ router.get(
 router.patch(
   '/materials/:id',
   requireAuth,
-  requireRole('vendor_supplier'),
+  requireRole('vendor'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {
@@ -422,7 +422,7 @@ router.patch(
 router.delete(
   '/materials/:id',
   requireAuth,
-  requireRole('vendor_supplier'),
+  requireRole('vendor'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {
