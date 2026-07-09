@@ -82,3 +82,14 @@ img, svg, video {
   outline:        2px solid var(--color-inkwell);
   outline-offset: 3px;
 }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
