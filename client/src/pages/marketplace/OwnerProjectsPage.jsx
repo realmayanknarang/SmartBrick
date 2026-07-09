@@ -74,7 +74,7 @@ function OwnerProjectsPage() {
     async function fetchProjectsAndProposals() {
       try {
         setLoading(true);
-        const res = await apiClient.get('/api/marketplace/projects');
+        const res = await apiClient.get('/marketplace/projects');
         if (!active) return;
 
         const list = res.data.projects || [];
@@ -83,7 +83,7 @@ function OwnerProjectsPage() {
         // Fetch proposal counts in parallel for each project
         if (list.length > 0) {
           const countPromises = list.map(project =>
-            apiClient.get(`/api/marketplace/proposals/project/${project._id}`)
+            apiClient.get(`/marketplace/proposals/project/${project._id}`)
               .then(pRes => ({
                 id: project._id,
                 count: (pRes.data.proposals || []).length

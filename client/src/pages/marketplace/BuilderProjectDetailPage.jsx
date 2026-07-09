@@ -139,7 +139,7 @@ function ProposalForm({ projectId, onSubmitSuccess }) {
     setSubmitting(true);
     setApiError('');
     try {
-      const res = await apiClient.post('/api/marketplace/proposals', {
+      const res = await apiClient.post('/marketplace/proposals', {
         projectId,
         estimatedBudget: Number(budget),
         estimatedDuration: duration.trim(),
@@ -353,8 +353,8 @@ function BuilderProjectDetailPage() {
         setError('');
 
         const [projRes, myProposalsRes] = await Promise.all([
-          apiClient.get(`/api/marketplace/projects/${id}`),
-          apiClient.get('/api/marketplace/proposals/my'),
+          apiClient.get(`/marketplace/projects/${id}`),
+          apiClient.get('/marketplace/proposals/my'),
         ]);
 
         if (!active) return;

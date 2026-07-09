@@ -91,8 +91,8 @@ function ProjectDetailPage() {
       setError('');
       
       const [projRes, propRes] = await Promise.all([
-        apiClient.get(`/api/marketplace/projects/${id}`),
-        apiClient.get(`/api/marketplace/proposals/project/${id}`)
+        apiClient.get(`/marketplace/projects/${id}`),
+        apiClient.get(`/marketplace/proposals/project/${id}`)
       ]);
 
       setProject(projRes.data.project);
@@ -113,10 +113,10 @@ function ProjectDetailPage() {
   const handleReject = async (proposalId) => {
     try {
       setActionLoading(true);
-      await apiClient.patch(`/api/marketplace/proposals/${proposalId}/reject`);
+      await apiClient.patch(`/marketplace/proposals/${proposalId}/reject`);
       toast.success('Proposal rejected.');
       // Refresh proposals list
-      const propRes = await apiClient.get(`/api/marketplace/proposals/project/${id}`);
+      const propRes = await apiClient.get(`/marketplace/proposals/project/${id}`);
       setProposals(propRes.data.proposals || []);
     } catch (err) {
       console.error('[ProjectDetailPage] Reject failed:', err);
@@ -131,7 +131,7 @@ function ProjectDetailPage() {
     if (!confirmProposal) return;
     try {
       setActionLoading(true);
-      await apiClient.patch(`/api/marketplace/proposals/${confirmProposal._id}/approve`);
+      await apiClient.patch(`/marketplace/proposals/${confirmProposal._id}/approve`);
       toast.success('Builder approved! Project is now locked.');
       setConfirmProposal(null);
       // Refresh both project and proposals

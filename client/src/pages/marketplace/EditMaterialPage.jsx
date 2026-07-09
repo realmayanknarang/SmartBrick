@@ -4,8 +4,8 @@
  * Edit Material page — Phase M6B.
  * Route: /marketplace/vendor/materials/:id/edit
  *
- * On mount: fetches GET /api/marketplace/materials/:id to pre-fill form.
- * On submit: PATCH /api/marketplace/materials/:id
+ * On mount: fetches GET /marketplace/materials/:id to pre-fill form.
+ * On submit: PATCH /marketplace/materials/:id
  * On success: toast "Changes saved!" + redirect to /marketplace/vendor/materials
  */
 
@@ -47,7 +47,7 @@ function EditMaterialPage() {
     async function fetchMaterial() {
       try {
         setFetchLoading(true);
-        const res = await apiClient.get(`/api/marketplace/materials/${id}`);
+        const res = await apiClient.get(`/marketplace/materials/${id}`);
         if (active) setInitialValues(res.data.material);
       } catch (err) {
         console.error('[EditMaterialPage] fetch error:', err);
@@ -64,7 +64,7 @@ function EditMaterialPage() {
     setIsLoading(true);
     setSubmitError('');
     try {
-      await apiClient.patch(`/api/marketplace/materials/${id}`, formData);
+      await apiClient.patch(`/marketplace/materials/${id}`, formData);
       toast.success('Changes saved!');
       setTimeout(() => navigate('/marketplace/vendor/materials'), 1000);
     } catch (err) {

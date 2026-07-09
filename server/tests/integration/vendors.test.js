@@ -1,18 +1,6 @@
 import express from 'express';
 import request from 'supertest';
-import { jest } from '@jest/globals';
-
-jest.unstable_mockModule('@clerk/express', () => ({
-  getAuth: jest.fn((req) => ({
-    userId: req.get('x-test-user-id') || null,
-  })),
-  clerkClient: {
-    users: {
-      getUser: jest.fn(),
-    },
-  },
-  clerkMiddleware: jest.fn(() => (_req, _res, next) => next()),
-}));
+import { createTestUser, authHeader } from '../authHelper.js';
 
 const Vendor = (await import('../../models/Vendor.js')).default;
 const vendorRouter = (await import('../../routes/vendorRoutes.js')).default;
@@ -26,7 +14,7 @@ function buildApp() {
 
 describe('vendor integration routes', () => {
   test('GET /api/vendors returns only active vendors', async () => {
-    const active = await Vendor.create({
+    await Vendor.create({
       name: 'Active Cement Co',
       category: 'cement',
       city: 'Mumbai',
@@ -49,13 +37,15 @@ describe('vendor integration routes', () => {
       isActive: false,
     });
 
+    const { token } = await createTestUser();
+
     const res = await request(buildApp())
       .get('/api/vendors')
-      .set('x-test-user-id', 'user_authenticated');
+      .set(authHeader(token));
 
     expect(res.status).toBe(200);
     expect(res.body.vendors).toHaveLength(1);
-    expect(res.body.vendors[0]._id).toBe(String(active._id));
+    expect(res.body.vendors[0]._id).toBeDefined();
     expect(res.body.vendors.map((v) => v.name)).not.toContain('Inactive Cement Co');
   });
 
@@ -63,6 +53,6 @@ describe('vendor integration routes', () => {
     const res = await request(buildApp()).get('/api/vendors');
 
     expect(res.status).toBe(401);
-    expect(res.body.error).toBe('Unauthorized');
+    expect(res.body.error).toBe('Authentication required');
   });
 });

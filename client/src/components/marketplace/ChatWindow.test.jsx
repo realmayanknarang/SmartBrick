@@ -93,7 +93,7 @@ describe('ChatWindow', () => {
     renderChatWindow({ joinConversation, markRead });
 
     expect(await screen.findByText('Hello, I have reviewed your project.')).toBeInTheDocument();
-    expect(apiClient.get).toHaveBeenCalledWith('/api/marketplace/messages/conversation-1');
+    expect(apiClient.get).toHaveBeenCalledWith('/marketplace/messages/conversation-1');
     expect(joinConversation).toHaveBeenCalledWith('conversation-1');
     expect(markRead).toHaveBeenCalledWith('conversation-1');
 

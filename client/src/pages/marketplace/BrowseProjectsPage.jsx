@@ -234,7 +234,7 @@ function BrowseProjectsPage() {
       if (filters.budgetMax)        params.set('budgetMax', filters.budgetMax);
       if (filters.location)         params.set('location', filters.location);
 
-      const res = await apiClient.get(`/api/marketplace/projects?${params.toString()}`);
+      const res = await apiClient.get(`/marketplace/projects?${params.toString()}`);
       const data = res.data;
 
       // Support both paginated ({ projects, total }) and flat ({ projects }) responses

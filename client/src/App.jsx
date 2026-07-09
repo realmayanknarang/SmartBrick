@@ -50,6 +50,10 @@ import AddMaterialPage        from './pages/marketplace/AddMaterialPage';
 import EditMaterialPage       from './pages/marketplace/EditMaterialPage';
 import BrowseMaterialsPage    from './pages/marketplace/BrowseMaterialsPage';
 import PriceComparisonPage    from './pages/marketplace/PriceComparisonPage';
+import MarketplaceCopilotPage from './pages/marketplace/MarketplaceCopilotPage';
+import MarketplaceSitesVendorsPage from './pages/marketplace/MarketplaceSitesVendorsPage';
+import MarketplaceAnalyticsReportsPage from './pages/marketplace/MarketplaceAnalyticsReportsPage';
+import MarketplaceOperationsPage from './pages/marketplace/MarketplaceOperationsPage';
 
 import apiClient from './api/client';
 
@@ -221,6 +225,10 @@ function App() {
           <Route path="projects/:id/chat" element={<OwnerChatPage />} />
           <Route path="notifications" element={<OwnerNotificationsPage />} />
           <Route path="builders" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Find Builders Page Coming Soon</h3></div>} />
+          <Route path="copilot" element={<MarketplaceCopilotPage />} />
+          <Route path="sites-vendors" element={<MarketplaceSitesVendorsPage />} />
+          <Route path="analytics" element={<MarketplaceAnalyticsReportsPage />} />
+          <Route path="operations" element={<MarketplaceOperationsPage />} />
         </Route>
         <Route
           path="/marketplace/builder"
@@ -240,6 +248,10 @@ function App() {
           <Route path="materials" element={<BrowseMaterialsPage />} />
           {/* M5F — Builder Notifications */}
           <Route path="notifications" element={<BuilderNotificationsPage />} />
+          <Route path="copilot" element={<MarketplaceCopilotPage />} />
+          <Route path="sites-vendors" element={<MarketplaceSitesVendorsPage />} />
+          <Route path="analytics" element={<MarketplaceAnalyticsReportsPage />} />
+          <Route path="operations" element={<MarketplaceOperationsPage />} />
         </Route>
         {/* M6C — Role-agnostic compare route (navigated from BrowseMaterialsPage) */}
         <Route
@@ -269,6 +281,10 @@ function App() {
           <Route path="browse" element={<BrowseMaterialsPage />} />
           {/* M6D — Price Comparison */}
           <Route path="compare" element={<PriceComparisonPage />} />
+          <Route path="copilot" element={<MarketplaceCopilotPage />} />
+          <Route path="sites-vendors" element={<MarketplaceSitesVendorsPage />} />
+          <Route path="analytics" element={<MarketplaceAnalyticsReportsPage />} />
+          <Route path="operations" element={<MarketplaceOperationsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

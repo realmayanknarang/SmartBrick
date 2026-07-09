@@ -241,7 +241,7 @@ function ChatWindow({
         setIsLoading(true);
         setError('');
 
-        const response = await apiClient.get(`/api/marketplace/messages/${conversationId}`);
+        const response = await apiClient.get(`/marketplace/messages/${conversationId}`);
         if (!active) return;
 
         setMessages(Array.isArray(response.data?.messages) ? response.data.messages : []);
@@ -533,7 +533,7 @@ function ChatWindow({
     }
 
     try {
-      const response = await apiClient.post(`/api/marketplace/messages/${conversationId}`, {
+      const response = await apiClient.post(`/marketplace/messages/${conversationId}`, {
         content: trimmedContent,
         messageType: 'text',
       });

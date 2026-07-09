@@ -139,7 +139,7 @@ function VendorOverviewPage() {
     async function fetchMaterials() {
       try {
         setLoading(true);
-        const res = await apiClient.get('/api/marketplace/materials/my');
+        const res = await apiClient.get('/marketplace/materials/my');
         if (active) {
           setMaterials(res.data.materials || []);
         }

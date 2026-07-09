@@ -11,7 +11,7 @@
  *   • Comparison feature: select up to 3 materials, sticky "Compare Now" bar
  *   • Pagination (page controls at bottom)
  *
- * Fetch: GET /api/marketplace/materials (returns isActive: true materials only)
+ * Fetch: GET /marketplace/materials (returns isActive: true materials only)
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
@@ -347,7 +347,7 @@ function BrowseMaterialsPage() {
       if (minStock)  params.minStock  = minStock;
       if (search)    params.search    = search;
 
-      const res = await apiClient.get('/api/marketplace/materials', { params });
+      const res = await apiClient.get('/marketplace/materials', { params });
       if (fetchId !== fetchIdRef.current) return; // stale
 
       setMaterials(res.data.materials || []);

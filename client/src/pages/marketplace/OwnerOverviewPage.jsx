@@ -171,7 +171,7 @@ function OwnerOverviewPage() {
         setProjectsLoading(true);
         setProposalsLoading(true);
 
-        const projectsRes = await apiClient.get('/api/marketplace/projects');
+        const projectsRes = await apiClient.get('/marketplace/projects');
         if (!active) return;
 
         const ownerProjects = projectsRes.data.projects || [];
@@ -189,7 +189,7 @@ function OwnerOverviewPage() {
         }
 
         const proposalPromises = ownerProjects.map(project =>
-          apiClient.get(`/api/marketplace/proposals/project/${project._id}`)
+          apiClient.get(`/marketplace/proposals/project/${project._id}`)
             .then(res => res.data.proposals || [])
             .catch(() => []) // swallow errors per project
         );
@@ -219,7 +219,7 @@ function OwnerOverviewPage() {
         setNotificationsLoading(true);
         setActivityLoading(true);
 
-        const response = await apiClient.get('/api/marketplace/notifications');
+        const response = await apiClient.get('/marketplace/notifications');
         if (!active) return;
 
         const allNotifications = response.data.notifications || [];

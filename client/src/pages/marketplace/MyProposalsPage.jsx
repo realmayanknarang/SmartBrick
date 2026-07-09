@@ -277,7 +277,7 @@ function MyProposalsPage() {
 
   const fetchProposals = useCallback(async () => {
     try {
-      const res = await apiClient.get('/api/marketplace/proposals/my');
+      const res = await apiClient.get('/marketplace/proposals/my');
       setProposals(res.data.proposals || []);
     } catch (err) {
       console.error('[MyProposalsPage] Failed to fetch proposals:', err);

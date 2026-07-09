@@ -157,6 +157,17 @@ router.get('/auth/me', requireAuth, (req, res) => {
   });
 });
 
+// ── SYNC ──────────────────────────────────────────
+// Returns the current user's MongoDB id and role.
+// Called by marketplace dashboards on mount to link
+// the JWT-authenticated session to a MongoDB User ID.
+router.post('/auth/sync', requireAuth, (req, res) => {
+  res.json({
+    id: req.user._id,
+    role: req.user.role,
+  });
+});
+
 // ── SIGN OUT ──────────────────────────────────────
 // JWT is stateless — sign out is client-side only
 // (delete the token). This endpoint exists for

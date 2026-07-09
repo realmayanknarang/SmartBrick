@@ -143,7 +143,7 @@ function BuilderOverviewPage() {
         setMetricsLoading(true);
 
         // Fetch all open projects count
-        const projectsRes = await apiClient.get('/api/marketplace/projects');
+        const projectsRes = await apiClient.get('/marketplace/projects');
         if (!active) return;
         const allProjects = projectsRes.data.projects || [];
         const openCount = allProjects.filter(p => p.status === 'open').length;
@@ -159,7 +159,7 @@ function BuilderOverviewPage() {
     async function fetchMyProposals() {
       try {
         setProposalsLoading(true);
-        const res = await apiClient.get('/api/marketplace/proposals/my');
+        const res = await apiClient.get('/marketplace/proposals/my');
         if (!active) return;
 
         const proposals = res.data.proposals || [];
@@ -178,7 +178,7 @@ function BuilderOverviewPage() {
 
     async function fetchNotifications() {
       try {
-        const res = await apiClient.get('/api/marketplace/notifications?isRead=false');
+        const res = await apiClient.get('/marketplace/notifications?isRead=false');
         if (!active) return;
         setUnreadCount(res.data.unreadCount || 0);
       } catch (err) {

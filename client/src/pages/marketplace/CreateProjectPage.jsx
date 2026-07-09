@@ -80,7 +80,7 @@ function CreateProjectPage() {
     async function fetchProject() {
       try {
         setLoading(true);
-        const res = await apiClient.get(`/api/marketplace/projects/${id}`);
+        const res = await apiClient.get(`/marketplace/projects/${id}`);
         if (!active) return;
 
         const p = res.data.project;
@@ -180,10 +180,10 @@ function CreateProjectPage() {
 
       if (!isEdit) {
         payload.constructionType = constructionType;
-        await apiClient.post('/api/marketplace/projects', payload);
+        await apiClient.post('/marketplace/projects', payload);
         setSubmitSuccess('Project posted successfully!');
       } else {
-        await apiClient.patch(`/api/marketplace/projects/${id}`, payload);
+        await apiClient.patch(`/marketplace/projects/${id}`, payload);
         setSubmitSuccess('Project updated successfully!');
       }
       

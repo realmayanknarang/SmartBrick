@@ -1,31 +1,6 @@
 import express from 'express';
 import request from 'supertest';
-import { jest } from '@jest/globals';
-
-const clerkUsers = new Map();
-
-jest.unstable_mockModule('@clerk/express', () => ({
-  getAuth: jest.fn((req) => ({
-    userId: req.get('x-test-user-id') || null,
-  })),
-  clerkClient: {
-    users: {
-      getUser: jest.fn(async (userId) => {
-        const email = clerkUsers.get(userId) || `${userId}@example.com`;
-        return {
-          id: userId,
-          firstName: 'Test',
-          lastName: 'User',
-          primaryEmailAddressId: `email_${userId}`,
-          emailAddresses: [
-            { id: `email_${userId}`, emailAddress: email },
-          ],
-        };
-      }),
-    },
-  },
-  clerkMiddleware: jest.fn(() => (_req, _res, next) => next()),
-}));
+import { createTestUser, authHeader } from '../authHelper.js';
 
 const User = (await import('../../models/User.js')).default;
 const authRouter = (await import('../../routes/auth.js')).default;
@@ -43,7 +18,6 @@ describe('auth integration routes', () => {
   let app;
 
   beforeEach(() => {
-    clerkUsers.clear();
     app = buildApp();
   });
 
@@ -51,42 +25,32 @@ describe('auth integration routes', () => {
     const res = await request(app).get('/api/test-auth/protected');
 
     expect(res.status).toBe(401);
-    expect(res.body.error).toBe('Unauthorized');
+    expect(res.body.error).toBe('Authentication required');
   });
 
   test('owner-only route returns 403 for the wrong role and 200 for owner', async () => {
-    await User.create({
-      name: 'Builder',
-      email: 'builder@example.com',
-      role: 'builder',
-      clerkUserId: 'user_builder',
-    });
-    await User.create({
-      name: 'Owner',
-      email: 'owner@example.com',
-      role: 'owner',
-      clerkUserId: 'user_owner',
-    });
+    const { token: builderToken } = await createTestUser({ name: 'Builder', role: 'builder' });
+    const { token: ownerToken } = await createTestUser({ name: 'Owner', role: 'owner' });
 
     const forbidden = await request(app)
       .get('/api/test-auth/owner-only')
-      .set('x-test-user-id', 'user_builder');
+      .set(authHeader(builderToken));
     expect(forbidden.status).toBe(403);
-    expect(forbidden.body.error).toBe('Forbidden');
+    expect(forbidden.body.error).toBe('Insufficient permissions');
 
     const allowed = await request(app)
       .get('/api/test-auth/owner-only')
-      .set('x-test-user-id', 'user_owner');
+      .set(authHeader(ownerToken));
     expect(allowed.status).toBe(200);
     expect(allowed.body.message).toBe('Owner access confirmed');
   });
 
   test('set-role endpoint blocks a second role selection for the same user', async () => {
-    clerkUsers.set('user_new', 'new.user@example.com');
+    const { token } = await createTestUser({ name: 'New User', email: 'new.user@example.com', role: null });
 
     const first = await request(app)
       .post('/api/auth/set-role')
-      .set('x-test-user-id', 'user_new')
+      .set(authHeader(token))
       .send({ role: 'builder' });
 
     expect(first.status).toBe(200);
@@ -94,14 +58,14 @@ describe('auth integration routes', () => {
 
     const second = await request(app)
       .post('/api/auth/set-role')
-      .set('x-test-user-id', 'user_new')
+      .set(authHeader(token))
       .send({ role: 'owner' });
 
     expect(second.status).toBe(403);
     expect(second.body.error).toBe('Forbidden');
     expect(second.body.message).toMatch(/Role already set/);
 
-    const stored = await User.findOne({ clerkUserId: 'user_new' }).lean();
+    const stored = await User.findOne({ email: 'new.user@example.com' }).lean();
     expect(stored.role).toBe('builder');
   });
 });

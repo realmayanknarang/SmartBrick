@@ -4,7 +4,7 @@
  * Vendor "My Materials" list page — Phase M6B.
  * Route: /marketplace/vendor/materials
  *
- * Fetches GET /api/marketplace/materials/my (all vendor's materials, active + inactive).
+ * Fetches GET /marketplace/materials/my (all vendor's materials, active + inactive).
  * Tabs filter client-side. Supports isActive toggle (PATCH), delete (soft-delete),
  * and navigates to Add/Edit forms.
  */
@@ -292,7 +292,7 @@ function MyMaterialsPage() {
   const fetchMaterials = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await apiClient.get('/api/marketplace/materials/my');
+      const res = await apiClient.get('/marketplace/materials/my');
       setMaterials(res.data.materials || []);
     } catch (err) {
       console.error('[MyMaterialsPage] fetch error:', err);
@@ -314,7 +314,7 @@ function MyMaterialsPage() {
   async function handleToggleActive(material) {
     setTogglingId(material._id);
     try {
-      const res = await apiClient.patch(`/api/marketplace/materials/${material._id}`, {
+      const res = await apiClient.patch(`/marketplace/materials/${material._id}`, {
         isActive: !material.isActive,
       });
       const updated = res.data.material;
@@ -337,7 +337,7 @@ function MyMaterialsPage() {
     if (!deleteTarget) return;
     setIsDeleting(true);
     try {
-      await apiClient.patch(`/api/marketplace/materials/${deleteTarget._id}`, { isActive: false });
+      await apiClient.patch(`/marketplace/materials/${deleteTarget._id}`, { isActive: false });
       setMaterials(prev => prev.filter(m => m._id !== deleteTarget._id));
       toast.success('Material removed from listings.');
       setDeleteTarget(null);

@@ -145,7 +145,7 @@ function ProgressTab({ projectId, updates, setUpdates, onToast }) {
         notes: notes.trim() || undefined,
         sitePhotos: photoUrl.trim() ? [{ url: photoUrl.trim() }] : undefined,
       };
-      const res = await apiClient.post(`/api/marketplace/progress/${projectId}`, payload);
+      const res = await apiClient.post(`/marketplace/progress/${projectId}`, payload);
       const newUpdate = res.data.update;
       setUpdates(prev => [newUpdate, ...prev]);
       setStage('');
@@ -306,7 +306,7 @@ function MilestonesTab({ projectId, milestones, setMilestones, onToast }) {
         description: description.trim() || undefined,
         dueDate: dueDate || undefined,
       };
-      const res = await apiClient.post(`/api/marketplace/milestones/${projectId}`, payload);
+      const res = await apiClient.post(`/marketplace/milestones/${projectId}`, payload);
       setMilestones(prev => [...prev, res.data.milestone]);
       setTitle('');
       setDescription('');
@@ -323,7 +323,7 @@ function MilestonesTab({ projectId, milestones, setMilestones, onToast }) {
   async function handleMarkComplete(milestoneId) {
     setMarkingId(milestoneId);
     try {
-      const res = await apiClient.patch(`/api/marketplace/milestones/${milestoneId}/complete`);
+      const res = await apiClient.patch(`/marketplace/milestones/${milestoneId}/complete`);
       const updated = res.data.milestone;
       setMilestones(prev => prev.map(m => m._id === milestoneId ? { ...m, ...updated } : m));
       onToast('Milestone marked complete!', 'success');
@@ -635,7 +635,7 @@ function ProjectWorkspacePage() {
       setError('');
 
       // Access control: builder must have approved proposal for this project
-      const proposalsRes = await apiClient.get('/api/marketplace/proposals/my');
+      const proposalsRes = await apiClient.get('/marketplace/proposals/my');
       const allProposals = proposalsRes.data.proposals || [];
       const approvedProposal = allProposals.find(
         p => (p.project?._id || p.project) === projectId && p.status === 'approved'
@@ -650,10 +650,10 @@ function ProjectWorkspacePage() {
       setMyProposal(approvedProposal);
 
       const [projRes, updRes, mileRes, convRes] = await Promise.allSettled([
-        apiClient.get(`/api/marketplace/projects/${projectId}`),
-        apiClient.get(`/api/marketplace/progress/${projectId}`),
-        apiClient.get(`/api/marketplace/milestones/${projectId}`),
-        apiClient.get(`/api/marketplace/conversations/${projectId}`),
+        apiClient.get(`/marketplace/projects/${projectId}`),
+        apiClient.get(`/marketplace/progress/${projectId}`),
+        apiClient.get(`/marketplace/milestones/${projectId}`),
+        apiClient.get(`/marketplace/conversations/${projectId}`),
       ]);
 
       if (projRes.status === 'fulfilled') setProject(projRes.value.data.project);

@@ -134,7 +134,7 @@ function OwnerDashboard() {
           setMongoUserId(syncResponse.data.id);
         }
 
-        const notificationsResponse = await apiClient.get('/api/marketplace/notifications?isRead=false');
+        const notificationsResponse = await apiClient.get('/marketplace/notifications?isRead=false');
         if (active) {
           setUnreadCount(notificationsResponse.data.unreadCount || 0);
         }
@@ -203,25 +203,25 @@ function OwnerDashboard() {
     {
       icon: <ClipboardIcon />,
       label: 'Sites & Vendors',
-      path: '/dashboard/sites-vendors',
+      path: '/marketplace/owner/sites-vendors',
       group: 'PROCUREMENT'
     },
     {
       icon: <CopilotIcon />,
       label: 'Copilot',
-      path: '/dashboard/copilot',
+      path: '/marketplace/owner/copilot',
       group: 'TOOLS'
     },
     {
       icon: <AnalyticsIcon />,
       label: 'Analytics & Reports',
-      path: '/dashboard/analytics-reports',
+      path: '/marketplace/owner/analytics',
       group: 'TOOLS'
     },
     {
       icon: <MapNavIcon />,
       label: 'Operations',
-      path: '/dashboard/operations',
+      path: '/marketplace/owner/operations',
       group: 'TOOLS'
     }
   ];

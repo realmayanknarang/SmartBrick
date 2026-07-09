@@ -1,13 +1,14 @@
 /**
  * server/middleware/rateLimiter.js
  *
- * Two rate-limit configurations for SmartBrick's API:
+ * Rate-limit configurations for SmartBrick's API.
  *
- *  apiLimiter   — 100 req / 15 min per IP, applied to all /api routes.
- *  authLimiter  — 20 req / 15 min per IP, applied to auth-related routes
- *                 (e.g. /api/auth/*) to protect against brute-force.
+ * In development the limits are generous to avoid false 429s from
+ * hot-reloads and React StrictMode double-fetches.  In production
+ * they should be tuned to match expected traffic and external API
+ * budgets (Climatiq, Groq, OpenRouteService, OpenWeatherMap).
  *
- * Both limiters return a structured JSON error instead of Express's
+ * All limiters return a structured JSON error instead of Express's
  * default plain-text "Too Many Requests" response.
  *
  * Usage
@@ -23,7 +24,9 @@
 
 import rateLimit from 'express-rate-limit';
 
-/** Shared JSON handler so both limiters return the same error shape. */
+const isDev = process.env.NODE_ENV !== 'production';
+
+/** Shared JSON handler so all limiters return the same error shape. */
 const jsonRateLimitHandler = (_req, res, _next, options) => {
   res.status(options.statusCode).json({
     error: 'Too Many Requests',
@@ -33,122 +36,150 @@ const jsonRateLimitHandler = (_req, res, _next, options) => {
 };
 
 /**
- * General API limiter — 100 requests per 15 minutes per IP.
+ * General API limiter.
+ * Dev:   600 req / 15 min per IP
+ * Prod:  100 req / 15 min per IP
  * Applied globally to all /api routes in index.js.
  */
+const API_MAX = isDev ? 600 : 100;
 export const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 100,
-  standardHeaders: 'draft-7', // Return RateLimit headers per RFC 6585 / draft-7
-  legacyHeaders: false,        // Disable X-RateLimit-* legacy headers
+  windowMs: 15 * 60 * 1000,
+  max: API_MAX,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
 
 /**
- * Auth-route limiter — 20 requests per 15 minutes per IP.
- * Apply directly on individual auth routers or endpoints:
- *   router.use(authLimiter)  or  router.post('/sync', authLimiter, handler)
+ * Auth-route limiter.
+ * Dev:   200 req / 15 min per IP
+ * Prod:   20 req / 15 min per IP
+ * Apply on individual auth routers or endpoints.
  */
+const AUTH_MAX = isDev ? 200 : 20;
 export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 20,
+  windowMs: 15 * 60 * 1000,
+  max: AUTH_MAX,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
 
 /**
- * OCR limiter — 10 requests per 15 minutes per IP.
- * Applied to POST /api/ocr/scan-invoice to protect against expensive
- * Groq vision API abuse.  Each call costs real LLM tokens.
+ * OCR limiter.
+ * Dev:   30 req / 15 min per IP
+ * Prod:  10 req / 15 min per IP
+ * Applied to POST /api/ocr/scan-invoice (Groq vision API).
  */
+const OCR_MAX = isDev ? 30 : 10;
 export const ocrLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 10,
+  windowMs: 15 * 60 * 1000,
+  max: OCR_MAX,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
 
 /**
- * Copilot limiter — 15 requests per 15 minutes per IP.
- * Applied to POST /api/copilot/ask to protect against expensive Groq chat abuse.
+ * Copilot limiter.
+ * Dev:   60 req / 15 min per IP
+ * Prod:  15 req / 15 min per IP
+ * Applied to POST /api/copilot/ask (Groq chat).
  */
+const COPILOT_MAX = isDev ? 60 : 15;
 export const copilotLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 15,
+  windowMs: 15 * 60 * 1000,
+  max: COPILOT_MAX,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
 
 /**
- * NL search limiter — 15 requests per 15 minutes per IP.
+ * NL search limiter.
+ * Dev:   60 req / 15 min per IP
+ * Prod:  15 req / 15 min per IP
  * Applied to POST /api/search/vendors (Groq parse + DB query).
  */
+const SEARCH_MAX = isDev ? 60 : 15;
 export const searchLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 15,
+  windowMs: 15 * 60 * 1000,
+  max: SEARCH_MAX,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
 
 /**
- * Carbon calculation limiter — 20 requests per 15 minutes per IP.
- * Applied to POST /api/carbon/calculate (Climatiq API - metered).
+ * Carbon calculation limiter.
+ * Dev:   60 req / 15 min per IP
+ * Prod:  20 req / 15 min per IP
+ * Applied to POST /api/carbon/calculate (Climatiq API).
  */
+const CARBON_MAX = isDev ? 60 : 20;
 export const carbonLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 20,
+  windowMs: 15 * 60 * 1000,
+  max: CARBON_MAX,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
 
 /**
- * Forecast limiter — 30 requests per 15 minutes per IP.
+ * Forecast limiter.
+ * Dev:   90 req / 15 min per IP
+ * Prod:  30 req / 15 min per IP
  * Applied to GET /api/forecast/* (external forecasting service).
  */
+const FORECAST_MAX = isDev ? 90 : 30;
 export const forecastLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 30,
+  windowMs: 15 * 60 * 1000,
+  max: FORECAST_MAX,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
 
 /**
- * Report generation limiter — 10 requests per 15 minutes per IP.
- * Applied to GET /api/reports/* (expensive PDF/Excel generation).
+ * Report generation limiter.
+ * Dev:   30 req / 15 min per IP
+ * Prod:  10 req / 15 min per IP
+ * Applied to GET /api/reports/* (PDF/Excel generation).
  */
+const REPORT_MAX = isDev ? 30 : 10;
 export const reportLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 10,
+  windowMs: 15 * 60 * 1000,
+  max: REPORT_MAX,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
 
 /**
- * Route calculation limiter — 20 requests per 15 minutes per IP.
- * Applied to POST /api/routes/calculate (OpenRouteService API - metered).
+ * Route calculation limiter.
+ * Dev:   60 req / 15 min per IP
+ * Prod:  20 req / 15 min per IP
+ * Applied to POST /api/routes/calculate (OpenRouteService API).
  */
+const ROUTE_MAX = isDev ? 60 : 20;
 export const routeLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 20,
+  windowMs: 15 * 60 * 1000,
+  max: ROUTE_MAX,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
 });
 
 /**
- * Weather limiter — 30 requests per 15 minutes per IP.
- * Applied to GET /api/weather/* (OpenWeatherMap API - metered).
+ * Weather limiter.
+ * Dev:   90 req / 15 min per IP
+ * Prod:  30 req / 15 min per IP
+ * Applied to GET /api/weather/* (OpenWeatherMap API).
  */
+const WEATHER_MAX = isDev ? 90 : 30;
 export const weatherLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 30,
+  windowMs: 15 * 60 * 1000,
+  max: WEATHER_MAX,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,

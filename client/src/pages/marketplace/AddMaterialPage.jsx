@@ -5,7 +5,7 @@
  * Route: /marketplace/vendor/materials/new
  *
  * Uses the shared MaterialForm component.
- * On submit: POST /api/marketplace/materials
+ * On submit: POST /marketplace/materials
  * On success: toast + redirect to /marketplace/vendor/materials after 1 second
  */
 
@@ -40,7 +40,7 @@ function AddMaterialPage() {
     setIsLoading(true);
     setSubmitError('');
     try {
-      await apiClient.post('/api/marketplace/materials', formData);
+      await apiClient.post('/marketplace/materials', formData);
       toast.success('Material added successfully!');
       setTimeout(() => navigate('/marketplace/vendor/materials'), 1000);
     } catch (err) {

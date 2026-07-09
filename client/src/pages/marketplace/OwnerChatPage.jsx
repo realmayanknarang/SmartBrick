@@ -54,8 +54,8 @@ function OwnerChatPage() {
 
         // Fetch project and conversation in parallel
         const [projRes, convRes] = await Promise.allSettled([
-          apiClient.get(`/api/marketplace/projects/${projectId}`),
-          apiClient.get(`/api/marketplace/conversations/${projectId}`)
+          apiClient.get(`/marketplace/projects/${projectId}`),
+          apiClient.get(`/marketplace/conversations/${projectId}`)
         ]);
 
         if (!active) return;

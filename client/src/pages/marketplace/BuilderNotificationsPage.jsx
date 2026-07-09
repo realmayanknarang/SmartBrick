@@ -23,7 +23,7 @@ function BuilderNotificationsPage() {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const res = await apiClient.get('/api/marketplace/notifications');
+      const res = await apiClient.get('/marketplace/notifications');
       setNotifications(res.data.notifications || []);
       // Update sidebar badge via outlet context
       if (setUnreadCount) {
@@ -42,7 +42,7 @@ function BuilderNotificationsPage() {
 
   const handleMarkAllRead = async () => {
     try {
-      await apiClient.patch('/api/marketplace/notifications/mark-read');
+      await apiClient.patch('/marketplace/notifications/mark-read');
       toast.success('All notifications marked as read.');
       await fetchNotifications();
     } catch (err) {
@@ -55,7 +55,7 @@ function BuilderNotificationsPage() {
     // Mark single notification as read in background
     if (!item.isRead) {
       try {
-        await apiClient.patch(`/api/marketplace/notifications/${item._id}/mark-read`);
+        await apiClient.patch(`/marketplace/notifications/${item._id}/mark-read`);
       } catch (err) {
         console.error('[BuilderNotificationsPage] Mark read failed:', err);
       }

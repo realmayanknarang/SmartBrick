@@ -84,9 +84,9 @@ function ProgressTrackingPage() {
   const fetchData = async () => {
     try {
       const [projRes, updRes, mileRes] = await Promise.all([
-        apiClient.get(`/api/marketplace/projects/${id}`),
-        apiClient.get(`/api/marketplace/progress/${id}`),
-        apiClient.get(`/api/marketplace/milestones/${id}`)
+        apiClient.get(`/marketplace/projects/${id}`),
+        apiClient.get(`/marketplace/progress/${id}`),
+        apiClient.get(`/marketplace/milestones/${id}`)
       ]);
       setProject(projRes.data.project);
       setUpdates(updRes.data.updates || []);

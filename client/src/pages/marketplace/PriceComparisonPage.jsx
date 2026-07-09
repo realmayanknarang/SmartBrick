@@ -477,7 +477,7 @@ function PriceComparisonPage() {
     setError('');
     try {
       const results = await Promise.allSettled(
-        idList.map(id => apiClient.get(`/api/marketplace/materials/${id}`))
+        idList.map(id => apiClient.get(`/marketplace/materials/${id}`))
       );
       const loaded = results
         .filter(r => r.status === 'fulfilled')

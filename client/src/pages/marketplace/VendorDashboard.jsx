@@ -146,25 +146,25 @@ function VendorDashboard() {
     {
       icon: <ClipboardIcon />,
       label: 'Sites & Vendors',
-      path: '/dashboard/sites-vendors',
+      path: '/marketplace/vendor/sites-vendors',
       group: 'PROCUREMENT'
     },
     {
       icon: <CopilotIcon />,
       label: 'Copilot',
-      path: '/dashboard/copilot',
+      path: '/marketplace/vendor/copilot',
       group: 'TOOLS'
     },
     {
       icon: <AnalyticsIcon />,
       label: 'Analytics & Reports',
-      path: '/dashboard/analytics-reports',
+      path: '/marketplace/vendor/analytics',
       group: 'TOOLS'
     },
     {
       icon: <MapNavIcon />,
       label: 'Operations',
-      path: '/dashboard/operations',
+      path: '/marketplace/vendor/operations',
       group: 'TOOLS'
     }
   ];
