@@ -4,8 +4,8 @@
  * Vendor REST API — Phase 8A
  * ─────────────────────────────────────────────────────────────────────────────
  * All routes are protected by requireAuth.  Role restriction is intentionally
- * omitted here: any authenticated SmartBrick user (owner, project_manager,
- * site_engineer, finance) may browse vendors.  Role-specific write routes
+ * omitted here: any authenticated SmartBrick user (owner, builder,
+ * vendor) may browse vendors.  Role-specific write routes
  * (create, update) will be added in a later sub-phase if required.
  *
  * Routes

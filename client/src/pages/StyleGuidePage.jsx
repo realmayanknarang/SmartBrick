@@ -178,10 +178,9 @@ function StyleGuidePage() {
   const [selectVal, setSelectVal] = useState('');
 
   const ROLE_OPTIONS = [
-    { value: 'owner',           label: 'Owner' },
-    { value: 'project_manager', label: 'Project Manager' },
-    { value: 'site_engineer',   label: 'Site Engineer' },
-    { value: 'finance',         label: 'Finance' },
+    { value: 'owner',   label: 'Owner' },
+    { value: 'builder', label: 'Builder / Contractor' },
+    { value: 'vendor',  label: 'Material Supplier' },
   ];
 
   return (

@@ -53,7 +53,7 @@ export async function resolveMarketplaceUser(req, res, next) {
  * router.patch(
  *   '/:id',
  *   requireAuth,
- *   requireRole('marketplace_owner'),
+ *   requireRole('owner'),
  *   resolveMarketplaceUser,
  *   checkProjectOwnership(),
  *   handler,

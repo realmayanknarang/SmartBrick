@@ -77,6 +77,25 @@ function PackageIcon() {
   );
 }
 
+function ClipboardIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      <path d="M9 14l2 2 4-4" />
+    </svg>
+  );
+}
+
+function TrendingIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
+    </svg>
+  );
+}
+
 // ─── BuilderDashboard Shell ───────────────────────────────────────────────────
 
 function BuilderDashboard() {
@@ -179,6 +198,18 @@ function BuilderDashboard() {
       label: 'Browse Materials',
       path: '/marketplace/builder/materials',
       group: 'MATERIALS'
+    },
+    {
+      icon: <ClipboardIcon />,
+      label: 'Purchase Orders',
+      path: '/dashboard/sites-vendors',
+      group: 'PROCUREMENT'
+    },
+    {
+      icon: <TrendingIcon />,
+      label: 'Order Pooling',
+      path: '/dashboard/sites-vendors',
+      group: 'PROCUREMENT'
     }
   ];
 

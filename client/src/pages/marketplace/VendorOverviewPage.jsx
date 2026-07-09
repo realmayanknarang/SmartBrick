@@ -2,7 +2,7 @@
  * client/src/pages/marketplace/VendorOverviewPage.jsx
  *
  * Vendor Dashboard Overview — Phase M6A.
- * Shows metrics and recent active listings for the vendor_supplier.
+ * Shows metrics and recent active listings for the vendor.
  */
 
 import { useState, useEffect } from 'react';

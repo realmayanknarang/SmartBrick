@@ -38,8 +38,8 @@
  *   <Select
  *     label="Role"
  *     options={[
- *       { value: 'owner',           label: 'Owner' },
- *       { value: 'project_manager', label: 'Project Manager' },
+ *       { value: 'owner',   label: 'Owner' },
+ *       { value: 'builder', label: 'Builder' },
  *     ]}
  *     value={role}
  *     onChange={e => setRole(e.target.value)}

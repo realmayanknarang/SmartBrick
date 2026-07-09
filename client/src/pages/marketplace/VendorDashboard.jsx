@@ -1,7 +1,7 @@
 /**
  * client/src/pages/marketplace/VendorDashboard.jsx
  *
- * Root layout for the vendor_supplier marketplace experience — Phase M6A.
+ * Root layout for the vendor marketplace experience — Phase M6A.
  * Renders the Sidebar and main content area with nested routing.
  * Mirrors the OwnerDashboard / BuilderDashboard pattern from M4A / M5A.
  */

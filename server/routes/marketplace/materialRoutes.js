@@ -212,9 +212,8 @@ router.get(
 /**
  * Browse active material listings.
  * Restricted to the three marketplace roles (owner, builder,
- * vendor). Internal platform roles (owner, project_manager,
- * site_engineer, finance) receive 403 — they have no marketplace access
- * (Phase M8A route audit, Rule 3: role isolation).
+ * vendor). Non-marketplace roles receive 403 (Phase M8A route audit,
+ * Rule 3: role isolation).
  *
  * Query params
  * ────────────
