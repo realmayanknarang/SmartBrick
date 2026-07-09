@@ -206,14 +206,8 @@ function BuilderDashboard() {
     },
     {
       icon: <SearchIcon />,
-      label: 'Browse Projects',
+      label: 'Find Projects',
       path: '/marketplace/builder/projects',
-      group: 'PROJECTS'
-    },
-    {
-      icon: <FileTextIcon />,
-      label: 'My Proposals',
-      path: '/marketplace/builder/proposals',
       group: 'PROJECTS'
     },
     {

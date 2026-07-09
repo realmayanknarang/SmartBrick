@@ -34,6 +34,23 @@
   color: var(--color-text-on-dark, #FFFFFF);
 }
 
+.browse-projects-page__my-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: var(--color-accent, #E8C547);
+  color: var(--color-text-on-accent, #1a1a2e);
+  border-radius: 6px;
+  font-size: var(--text-sm, 14px);
+  font-weight: var(--weight-semibold, 600);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.browse-projects-page__my-link:hover {
+  opacity: 0.85;
+}
+
 .browse-projects-page__count {
   display: inline-flex;
   align-items: center;

@@ -302,6 +302,9 @@ function BrowseProjectsPage() {
             </span>
           )}
         </div>
+        <Link to="/marketplace/builder/proposals" className="browse-projects-page__my-link">
+          My Proposals
+        </Link>
       </header>
 
       {/* Filter Bar */}
