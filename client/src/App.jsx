@@ -36,6 +36,7 @@ import ProjectDetailPage       from './pages/marketplace/ProjectDetailPage';
 import ProgressTrackingPage    from './pages/marketplace/ProgressTrackingPage';
 import OwnerChatPage           from './pages/marketplace/OwnerChatPage';
 import OwnerNotificationsPage  from './pages/marketplace/OwnerNotificationsPage';
+import OwnerProposalsPage      from './pages/marketplace/OwnerProposalsPage';
 import BuilderOverviewPage          from './pages/marketplace/BuilderOverviewPage';
 import BrowseProjectsPage           from './pages/marketplace/BrowseProjectsPage';
 import BuilderProjectDetailPage     from './pages/marketplace/BuilderProjectDetailPage';
@@ -224,6 +225,7 @@ function App() {
           <Route path="projects/:id/progress" element={<ProgressTrackingPage />} />
           <Route path="projects/:id/chat" element={<OwnerChatPage />} />
           <Route path="notifications" element={<OwnerNotificationsPage />} />
+          <Route path="proposals" element={<OwnerProposalsPage />} />
           <Route path="builders" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Find Builders Page Coming Soon</h3></div>} />
           <Route path="copilot" element={<MarketplaceCopilotPage />} />
           <Route path="sites-vendors" element={<MarketplaceSitesVendorsPage />} />

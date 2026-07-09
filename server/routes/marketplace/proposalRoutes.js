@@ -209,6 +209,47 @@ router.get(
   }
 );
 
+// ─── GET /api/marketplace/proposals/owner ─────────────────────────────────────
+
+/**
+ * Returns all proposals received across all of the owner's projects.
+ */
+router.get(
+  '/proposals/owner',
+  requireAuth,
+  requireRole('owner'),
+  resolveMarketplaceUser,
+  async (req, res) => {
+    try {
+      const ownerProjects = await MarketplaceProject
+        .find({ owner: req.user._id, isActive: true })
+        .select('_id title location constructionType status')
+        .lean();
+
+      const projectIds = ownerProjects.map(p => p._id);
+
+      if (projectIds.length === 0) {
+        return res.json({ proposals: [], projects: ownerProjects });
+      }
+
+      const proposals = await Proposal
+        .find({ project: { $in: projectIds } })
+        .populate('builder', 'name email')
+        .populate('project', 'title location constructionType status')
+        .sort({ createdAt: -1 })
+        .lean();
+
+      return res.json({ proposals, projects: ownerProjects });
+    } catch (err) {
+      console.error('[GET /api/marketplace/proposals/owner] Error:', err);
+      return res.status(500).json({
+        error:   'Internal Server Error',
+        message: 'Failed to fetch proposals.',
+      });
+    }
+  }
+);
+
 // ─── GET /api/marketplace/proposals/project/:projectId ───────────────────────
 
 /**
