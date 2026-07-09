@@ -202,15 +202,18 @@ function ProposalsList({ proposals }) {
 function OwnerProposalsPage() {
   const [proposals, setProposals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState('');
   const [activeTabIdx, setActiveTabIdx] = useState(0);
 
   const fetchProposals = useCallback(async () => {
     try {
       setLoading(true);
+      setFetchError('');
       const res = await apiClient.get('/marketplace/proposals/owner');
       setProposals(res.data.proposals || []);
     } catch (err) {
       console.error('[OwnerProposalsPage] Failed to fetch proposals:', err);
+      setFetchError(err?.response?.data?.message || err?.message || 'Failed to load proposals.');
     } finally {
       setLoading(false);
     }
@@ -256,9 +259,15 @@ function OwnerProposalsPage() {
         </div>
       </header>
 
+      {fetchError && (
+        <Card surface="navy-secondary" padding="var(--space-4)" style={{ marginBottom: 'var(--space-4)' }}>
+          <p style={{ color: '#e71d36', margin: 0 }}>{fetchError}</p>
+        </Card>
+      )}
+
       {loading ? (
         <SkeletonRows />
-      ) : proposals.length === 0 ? (
+      ) : proposals.length === 0 && !fetchError ? (
         <Card surface="navy-secondary" padding="var(--space-6)" className="op-empty-state">
           <div className="op-empty-state__icon" aria-hidden="true">
             <EmptyIcon />

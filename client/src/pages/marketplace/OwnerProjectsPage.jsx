@@ -67,6 +67,7 @@ function OwnerProjectsPage() {
   const [projects, setProjects] = useState([]);
   const [proposalCounts, setProposalCounts] = useState({});
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -74,6 +75,7 @@ function OwnerProjectsPage() {
     async function fetchProjectsAndProposals() {
       try {
         setLoading(true);
+        setFetchError('');
         const res = await apiClient.get('/marketplace/projects');
         if (!active) return;
 
@@ -102,6 +104,7 @@ function OwnerProjectsPage() {
         }
       } catch (err) {
         console.error('[OwnerProjectsPage] Failed to fetch data:', err);
+        setFetchError(err?.response?.data?.message || err?.message || 'Failed to load projects.');
       } finally {
         if (active) {
           setLoading(false);
@@ -161,6 +164,13 @@ function OwnerProjectsPage() {
           <PlusIcon /> Post New Project
         </Button>
       </header>
+
+      {/* Error Banner */}
+      {fetchError && (
+        <Card surface="navy-secondary" padding="var(--space-4)" style={{ marginBottom: 'var(--space-4)' }}>
+          <p style={{ color: '#e71d36', margin: 0 }}>{fetchError}</p>
+        </Card>
+      )}
 
       {/* Loading Skeleton */}
       {loading ? (
