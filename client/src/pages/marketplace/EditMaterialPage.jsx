@@ -14,6 +14,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Card from '../../components/Card';
 import MaterialForm from '../../components/marketplace/MaterialForm';
 import apiClient from '../../api/client';
+import { useToast } from '../../contexts/ToastContext';
 import './MaterialPageShared.css';
 
 // ─── Back Arrow Icon ──────────────────────────────────────────────────────────
@@ -24,17 +25,6 @@ function ArrowLeftIcon() {
       <line x1="19" y1="12" x2="5" y2="12" />
       <polyline points="12 19 5 12 12 5" />
     </svg>
-  );
-}
-
-// ─── Toast ────────────────────────────────────────────────────────────────────
-
-function Toast({ message, type }) {
-  if (!message) return null;
-  return (
-    <div className={`msp-toast msp-toast--${type}`} role="alert" aria-live="assertive">
-      {message}
-    </div>
   );
 }
 
@@ -49,12 +39,7 @@ function EditMaterialPage() {
   const [fetchError, setFetchError]       = useState('');
   const [isLoading, setIsLoading]         = useState(false);
   const [submitError, setSubmitError]     = useState('');
-  const [toast, setToast]                 = useState({ message: '', type: 'success' });
-
-  function showToast(message, type = 'success') {
-    setToast({ message, type });
-    setTimeout(() => setToast({ message: '', type: 'success' }), 4000);
-  }
+  const toast = useToast();
 
   // Fetch existing material on mount
   useEffect(() => {
@@ -80,7 +65,7 @@ function EditMaterialPage() {
     setSubmitError('');
     try {
       await apiClient.patch(`/api/marketplace/materials/${id}`, formData);
-      showToast('Changes saved!');
+      toast.success('Changes saved!');
       setTimeout(() => navigate('/marketplace/vendor/materials'), 1000);
     } catch (err) {
       console.error('[EditMaterialPage] submit error:', err);
@@ -94,8 +79,6 @@ function EditMaterialPage() {
 
   return (
     <div className="msp-page">
-      <Toast message={toast.message} type={toast.type} />
-
       {/* Header */}
       <header className="msp-header">
         <Link to="/marketplace/vendor/materials" className="msp-back-btn" aria-label="Back to My Materials">

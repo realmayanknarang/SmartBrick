@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import NotificationsList from '../../components/marketplace/NotificationsList';
 import apiClient from '../../api/client';
+import { useToast } from '../../contexts/ToastContext';
 
 function BuilderNotificationsPage() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ function BuilderNotificationsPage() {
 
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
 
   const fetchNotifications = async () => {
     try {
@@ -41,9 +43,11 @@ function BuilderNotificationsPage() {
   const handleMarkAllRead = async () => {
     try {
       await apiClient.patch('/api/marketplace/notifications/mark-read');
+      toast.success('All notifications marked as read.');
       await fetchNotifications();
     } catch (err) {
       console.error('[BuilderNotificationsPage] Bulk mark read failed:', err);
+      toast.error('Failed to mark notifications as read.');
     }
   };
 

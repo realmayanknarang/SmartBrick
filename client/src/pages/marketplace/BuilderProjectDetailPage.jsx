@@ -12,6 +12,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import apiClient from '../../api/client';
+import { useToast } from '../../contexts/ToastContext';
 import './BuilderProjectDetailPage.css';
 
 // ─── Icons ───────────────────────────────────────────────────────────────────
@@ -330,17 +331,6 @@ function LockedProjectPanel({ isApprovedBuilder, projectId }) {
   );
 }
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
-
-function Toast({ message, type }) {
-  if (!message) return null;
-  return (
-    <div className={`bpd-toast bpd-toast--${type}`} role="alert" aria-live="assertive">
-      {message}
-    </div>
-  );
-}
-
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 function BuilderProjectDetailPage() {
@@ -353,12 +343,7 @@ function BuilderProjectDetailPage() {
   const [error, setError] = useState('');
   const [descExpanded, setDescExpanded] = useState(false);
 
-  const [toast, setToast] = useState({ message: '', type: 'success' });
-
-  function showToast(message, type = 'success') {
-    setToast({ message, type });
-    setTimeout(() => setToast({ message: '', type: 'success' }), 4000);
-  }
+  const toast = useToast();
 
   useEffect(() => {
     let active = true;
@@ -397,7 +382,7 @@ function BuilderProjectDetailPage() {
 
   function handleProposalSubmitted(newProposal) {
     setMyProposal(newProposal);
-    showToast('Proposal submitted successfully! The owner will review it shortly.');
+    toast.success('Proposal submitted!');
   }
 
   // ── Loading ──
@@ -455,8 +440,6 @@ function BuilderProjectDetailPage() {
 
   return (
     <div className="bpd-page">
-      <Toast message={toast.message} type={toast.type} />
-
       {/* Page Header */}
       <header className="bpd-header">
         <Link to="/marketplace/builder/projects" className="bpd-back-link" aria-label="Back to open projects">

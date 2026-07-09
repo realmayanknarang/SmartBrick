@@ -11,6 +11,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import TabBar from '../../components/TabBar';
 import apiClient from '../../api/client';
+import { useToast } from '../../contexts/ToastContext';
 import './ProjectDetailPage.css';
 
 // ─── Inline SVG Icons ────────────────────────────────────────────────────────
@@ -78,8 +79,7 @@ function ProjectDetailPage() {
   // Approve / Reject Confirmation States
   const [confirmProposal, setConfirmProposal] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState('success');
+  const toast = useToast();
 
   // Description expand/collapse state
   const [descExpanded, setDescExpanded] = useState(false);
@@ -109,27 +109,18 @@ function ProjectDetailPage() {
     fetchData();
   }, [id]);
 
-  // Show self-dismissing toast helper
-  const showToast = (msg, type = 'success') => {
-    setToastMessage(msg);
-    setToastType(type);
-    setTimeout(() => {
-      setToastMessage('');
-    }, 4000);
-  };
-
   // Reject Flow
   const handleReject = async (proposalId) => {
     try {
       setActionLoading(true);
       await apiClient.patch(`/api/marketplace/proposals/${proposalId}/reject`);
-      showToast('Proposal rejected successfully.');
+      toast.success('Proposal rejected.');
       // Refresh proposals list
       const propRes = await apiClient.get(`/api/marketplace/proposals/project/${id}`);
       setProposals(propRes.data.proposals || []);
     } catch (err) {
       console.error('[ProjectDetailPage] Reject failed:', err);
-      showToast(err?.response?.data?.message || 'Failed to reject proposal.', 'error');
+      toast.error(err?.response?.data?.message || 'Failed to reject proposal.');
     } finally {
       setActionLoading(false);
     }
@@ -141,13 +132,13 @@ function ProjectDetailPage() {
     try {
       setActionLoading(true);
       await apiClient.patch(`/api/marketplace/proposals/${confirmProposal._id}/approve`);
-      showToast('Builder approved! Your project is now locked.');
+      toast.success('Builder approved! Project is now locked.');
       setConfirmProposal(null);
       // Refresh both project and proposals
       await fetchData();
     } catch (err) {
       console.error('[ProjectDetailPage] Approve failed:', err);
-      showToast(err?.response?.data?.message || 'Failed to approve builder.', 'error');
+      toast.error(err?.response?.data?.message || 'Failed to approve builder.');
     } finally {
       setActionLoading(false);
     }
@@ -239,13 +230,6 @@ function ProjectDetailPage() {
 
   return (
     <div className="project-detail-page">
-      {/* Toast Alert */}
-      {toastMessage && (
-        <div className={`toast-banner toast-banner--${toastType}`} role="alert">
-          {toastMessage}
-        </div>
-      )}
-
       {/* Header Row */}
       <header className="project-detail-header">
         <div className="project-detail-header__left">

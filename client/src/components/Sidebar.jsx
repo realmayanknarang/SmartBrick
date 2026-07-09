@@ -132,7 +132,7 @@ function Sidebar({
                     )}
                     <span className="sidebar__item-label">{label}</span>
                     {badge !== undefined && badge !== null && (
-                      <span className="sidebar__item-badge">{badge}</span>
+                      <span className="sidebar__item-badge">{badge > 9 ? '9+' : badge}</span>
                     )}
                   </Link>
                 </li>

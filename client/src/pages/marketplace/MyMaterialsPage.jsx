@@ -14,6 +14,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import apiClient from '../../api/client';
+import { useToast } from '../../contexts/ToastContext';
 import './MyMaterialsPage.css';
 
 // ─── Category colour map ──────────────────────────────────────────────────────
@@ -172,17 +173,6 @@ function DeleteModal({ material, onConfirm, onCancel, isDeleting }) {
   );
 }
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
-
-function Toast({ message, type }) {
-  if (!message) return null;
-  return (
-    <div className={`mmp-toast mmp-toast--${type}`} role="alert" aria-live="assertive">
-      {message}
-    </div>
-  );
-}
-
 // ─── Material Card ────────────────────────────────────────────────────────────
 
 function MaterialCard({ material, onToggleActive, onDelete, togglingId }) {
@@ -296,12 +286,7 @@ function MyMaterialsPage() {
   const [togglingId, setTogglingId]       = useState(null);
   const [deleteTarget, setDeleteTarget]   = useState(null);
   const [isDeleting, setIsDeleting]       = useState(false);
-  const [toast, setToast]                 = useState({ message: '', type: 'success' });
-
-  function showToast(message, type = 'success') {
-    setToast({ message, type });
-    setTimeout(() => setToast({ message: '', type: 'success' }), 4000);
-  }
+  const toast = useToast();
 
   // Fetch all vendor materials
   const fetchMaterials = useCallback(async () => {
@@ -334,10 +319,10 @@ function MyMaterialsPage() {
       });
       const updated = res.data.material;
       setMaterials(prev => prev.map(m => m._id === updated._id ? { ...m, isActive: updated.isActive } : m));
-      showToast(updated.isActive ? 'Listing activated.' : 'Listing deactivated.');
+      toast.success(updated.isActive ? 'Listing activated.' : 'Listing deactivated.');
     } catch (err) {
       console.error('[MyMaterialsPage] toggle error:', err);
-      showToast('Failed to update listing status.', 'error');
+      toast.error('Failed to update listing status.');
     } finally {
       setTogglingId(null);
     }
@@ -354,11 +339,11 @@ function MyMaterialsPage() {
     try {
       await apiClient.patch(`/api/marketplace/materials/${deleteTarget._id}`, { isActive: false });
       setMaterials(prev => prev.filter(m => m._id !== deleteTarget._id));
-      showToast('Material removed from listings.');
+      toast.success('Material removed from listings.');
       setDeleteTarget(null);
     } catch (err) {
       console.error('[MyMaterialsPage] delete error:', err);
-      showToast('Failed to remove material.', 'error');
+      toast.error('Failed to remove material.');
     } finally {
       setIsDeleting(false);
     }
@@ -366,8 +351,6 @@ function MyMaterialsPage() {
 
   return (
     <div className="mmp-page">
-      <Toast message={toast.message} type={toast.type} />
-
       {/* Page Header */}
       <header className="mmp-header">
         <div className="mmp-header__left">

@@ -14,6 +14,7 @@ import TextInput from '../../components/TextInput';
 import TabBar from '../../components/TabBar';
 import ChatWindow from '../../components/marketplace/ChatWindow';
 import apiClient from '../../api/client';
+import { useToast } from '../../contexts/ToastContext';
 import './ProjectWorkspacePage.css';
 
 // ─── Icons ───────────────────────────────────────────────────────────────────
@@ -98,16 +99,7 @@ function formatTypeLabel(type) {
   return type.charAt(0).toUpperCase() + type.slice(1);
 }
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
 
-function Toast({ message, type }) {
-  if (!message) return null;
-  return (
-    <div className={`pw-toast pw-toast--${type}`} role="alert" aria-live="assertive">
-      {message}
-    </div>
-  );
-}
 
 // ─── Project Status Badge ─────────────────────────────────────────────────────
 
@@ -627,11 +619,14 @@ function ProjectWorkspacePage() {
   const [myProposal, setMyProposal]     = useState(null);
 
   const [activeTabIdx, setActiveTabIdx] = useState(0);
-  const [toast, setToast] = useState({ message: '', type: 'success' });
+  const toastContext = useToast();
 
   function showToast(message, type) {
-    setToast({ message, type: type || 'success' });
-    setTimeout(() => setToast({ message: '', type: 'success' }), 4000);
+    if (type === 'error') {
+      toastContext.error(message);
+    } else {
+      toastContext.success(message);
+    }
   }
 
   const fetchData = useCallback(async () => {
@@ -771,7 +766,6 @@ function ProjectWorkspacePage() {
 
   return (
     <div className="pw-page">
-      <Toast message={toast.message} type={toast.type} />
       <header className="pw-header">
         <div className="pw-header__left">
           <Link to="/marketplace/builder/proposals" className="pw-back-link" aria-label="Back to My Proposals">
