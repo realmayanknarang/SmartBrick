@@ -37,14 +37,14 @@ const jsonRateLimitHandler = (_req, res, _next, options) => {
 
 /**
  * General API limiter.
- * Dev:   600 req / 15 min per IP
+ * Dev:   disabled (skip)
  * Prod:  100 req / 15 min per IP
  * Applied globally to all /api routes in index.js.
  */
-const API_MAX = isDev ? 6000 : 100;
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: API_MAX,
+  max: isDev ? 0 : 100,
+  skip: () => isDev,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
@@ -52,14 +52,14 @@ export const apiLimiter = rateLimit({
 
 /**
  * Auth-route limiter.
- * Dev:   200 req / 15 min per IP
- * Prod:   20 req / 15 min per IP
+ * Dev:   disabled (skip)
+ * Prod:  20 req / 15 min per IP
  * Apply on individual auth routers or endpoints.
  */
-const AUTH_MAX = isDev ? 200 : 20;
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: AUTH_MAX,
+  max: isDev ? 0 : 20,
+  skip: () => isDev,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
@@ -67,14 +67,14 @@ export const authLimiter = rateLimit({
 
 /**
  * OCR limiter.
- * Dev:   30 req / 15 min per IP
+ * Dev:   disabled (skip)
  * Prod:  10 req / 15 min per IP
  * Applied to POST /api/ocr/scan-invoice (Groq vision API).
  */
-const OCR_MAX = isDev ? 30 : 10;
 export const ocrLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: OCR_MAX,
+  max: isDev ? 0 : 10,
+  skip: () => isDev,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
@@ -82,14 +82,14 @@ export const ocrLimiter = rateLimit({
 
 /**
  * Copilot limiter.
- * Dev:   60 req / 15 min per IP
+ * Dev:   disabled (skip)
  * Prod:  15 req / 15 min per IP
  * Applied to POST /api/copilot/ask (Groq chat).
  */
-const COPILOT_MAX = isDev ? 60 : 15;
 export const copilotLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: COPILOT_MAX,
+  max: isDev ? 0 : 15,
+  skip: () => isDev,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
@@ -97,14 +97,14 @@ export const copilotLimiter = rateLimit({
 
 /**
  * NL search limiter.
- * Dev:   60 req / 15 min per IP
+ * Dev:   disabled (skip)
  * Prod:  15 req / 15 min per IP
  * Applied to POST /api/search/vendors (Groq parse + DB query).
  */
-const SEARCH_MAX = isDev ? 60 : 15;
 export const searchLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: SEARCH_MAX,
+  max: isDev ? 0 : 15,
+  skip: () => isDev,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
@@ -112,14 +112,14 @@ export const searchLimiter = rateLimit({
 
 /**
  * Carbon calculation limiter.
- * Dev:   60 req / 15 min per IP
+ * Dev:   disabled (skip)
  * Prod:  20 req / 15 min per IP
  * Applied to POST /api/carbon/calculate (Climatiq API).
  */
-const CARBON_MAX = isDev ? 60 : 20;
 export const carbonLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: CARBON_MAX,
+  max: isDev ? 0 : 20,
+  skip: () => isDev,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
@@ -127,14 +127,14 @@ export const carbonLimiter = rateLimit({
 
 /**
  * Forecast limiter.
- * Dev:   90 req / 15 min per IP
+ * Dev:   disabled (skip)
  * Prod:  30 req / 15 min per IP
  * Applied to GET /api/forecast/* (external forecasting service).
  */
-const FORECAST_MAX = isDev ? 90 : 30;
 export const forecastLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: FORECAST_MAX,
+  max: isDev ? 0 : 30,
+  skip: () => isDev,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
@@ -142,14 +142,14 @@ export const forecastLimiter = rateLimit({
 
 /**
  * Report generation limiter.
- * Dev:   30 req / 15 min per IP
+ * Dev:   disabled (skip)
  * Prod:  10 req / 15 min per IP
  * Applied to GET /api/reports/* (PDF/Excel generation).
  */
-const REPORT_MAX = isDev ? 30 : 10;
 export const reportLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: REPORT_MAX,
+  max: isDev ? 0 : 10,
+  skip: () => isDev,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
@@ -157,14 +157,14 @@ export const reportLimiter = rateLimit({
 
 /**
  * Route calculation limiter.
- * Dev:   60 req / 15 min per IP
+ * Dev:   disabled (skip)
  * Prod:  20 req / 15 min per IP
  * Applied to POST /api/routes/calculate (OpenRouteService API).
  */
-const ROUTE_MAX = isDev ? 60 : 20;
 export const routeLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: ROUTE_MAX,
+  max: isDev ? 0 : 20,
+  skip: () => isDev,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
@@ -172,14 +172,14 @@ export const routeLimiter = rateLimit({
 
 /**
  * Weather limiter.
- * Dev:   90 req / 15 min per IP
+ * Dev:   disabled (skip)
  * Prod:  30 req / 15 min per IP
  * Applied to GET /api/weather/* (OpenWeatherMap API).
  */
-const WEATHER_MAX = isDev ? 90 : 30;
 export const weatherLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: WEATHER_MAX,
+  max: isDev ? 0 : 30,
+  skip: () => isDev,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: jsonRateLimitHandler,
