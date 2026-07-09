@@ -9,22 +9,9 @@ import './LoginPage.css';
 import './SignUpPage.css';
 
 const SIGNUP_BENEFITS = [
-  'Role-based access across every site you manage',
-  'Live price and delay alerts for your whole team',
-  'One shared vendor list, synced in real time',
-];
-
-const INTERNAL_ROLES = [
-  { value: 'owner',           label: 'Owner' },
-  { value: 'project_manager', label: 'Project Manager' },
-  { value: 'site_engineer',   label: 'Site Engineer' },
-  { value: 'finance',         label: 'Finance' },
-];
-
-const MARKETPLACE_ROLES = [
-  { value: 'marketplace_owner', label: 'I want to build a property (Owner)' },
-  { value: 'builder',           label: 'Builder / Contractor' },
-  { value: 'vendor_supplier',   label: 'Material Supplier' },
+  'Choose your role — Owner, Builder, or Vendor',
+  'Post projects, submit proposals, manage materials',
+  'One account for the entire construction ecosystem',
 ];
 
 function SignUpPage() {
@@ -85,9 +72,9 @@ function SignUpPage() {
     try {
       const user = await signUp({ firstName, lastName, email, password, role });
       const routes = {
-        marketplace_owner: '/marketplace/owner',
+        owner: '/marketplace/owner',
         builder: '/marketplace/builder',
-        vendor_supplier: '/marketplace/vendor',
+        vendor: '/marketplace/vendor',
       };
       navigate(routes[user.role] || '/dashboard', { replace: true });
     } catch (err) {
@@ -171,46 +158,36 @@ function SignUpPage() {
               autoComplete="new-password"
             />
 
-            <div className="select-field">
-              <label className="select-field__label" htmlFor="signup-role">
-                Your role
+            <fieldset className="role-cards">
+              <legend className="role-cards__legend">
+                I want to join as a<span className="visually-hidden">:</span>
                 <span className="select-field__required" aria-hidden="true"> *</span>
-              </label>
-              <div className="select-field__wrapper">
-                <select
-                  id="signup-role"
-                  className="select-field__control"
-                  value={role}
-                  onChange={e => setRole(e.target.value)}
-                  required
-                  aria-required="true"
+              </legend>
+
+              {[
+                { value: 'owner',   icon: '🏗️', title: 'Owner',           desc: 'Post projects, hire builders, manage budgets' },
+                { value: 'builder', icon: '👷', title: 'Builder / Contractor', desc: 'Find projects, submit proposals, manage teams' },
+                { value: 'vendor',  icon: '🏭', title: 'Material Supplier', desc: 'List materials, get leads, fulfill orders' },
+              ].map(({ value: v, icon, title, desc }) => (
+                <button
+                  key={v}
+                  type="button"
+                  className={`role-card${role === v ? ' role-card--selected' : ''}`}
+                  onClick={() => setRole(v)}
+                  aria-pressed={role === v}
                 >
-                  <option value="" disabled>
-                    Select your role…
-                  </option>
-                  <optgroup label="INTERNAL TEAM">
-                    {INTERNAL_ROLES.map(({ value: v, label: l }) => (
-                      <option key={v} value={v}>{l}</option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="MARKETPLACE">
-                    {MARKETPLACE_ROLES.map(({ value: v, label: l }) => (
-                      <option key={v} value={v}>{l}</option>
-                    ))}
-                  </optgroup>
-                </select>
-                <span className="select-field__chevron" aria-hidden="true">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-              </div>
+                  <span className="role-card__icon">{icon}</span>
+                  <span className="role-card__title">{title}</span>
+                  <span className="role-card__desc">{desc}</span>
+                </button>
+              ))}
+
               {fieldErrors.role && (
-                <p className="auth-form__error" role="alert" style={{ marginTop: '4px', marginBottom: 0 }}>
+                <p className="auth-form__error role-cards__error" role="alert">
                   {fieldErrors.role}
                 </p>
               )}
-            </div>
+            </fieldset>
 
             {error && (
               <p className="auth-form__error" role="alert">{error}</p>

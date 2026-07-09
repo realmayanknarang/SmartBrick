@@ -56,9 +56,9 @@ function LoginPage() {
     try {
       const user = await signIn(email, password);
       const routes = {
-        marketplace_owner: '/marketplace/owner',
+        owner: '/marketplace/owner',
         builder: '/marketplace/builder',
-        vendor_supplier: '/marketplace/vendor',
+        vendor: '/marketplace/vendor',
       };
       navigate(routes[user.role] || '/dashboard', { replace: true });
     } catch (err) {

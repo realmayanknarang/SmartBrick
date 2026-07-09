@@ -1,37 +1,38 @@
 /**
  * server/utils/approvalWorkflow.js
  *
- * Approval stage transition rules — Phase 11D
+ * Approval stage transition rules — Phase 11D / C Series
  * ─────────────────────────────────────────────────────────────────────────────
- * ROLE-GATING DECISION (documented for product review):
- *
- * Pipeline stages (in order):
+ * Pipeline stages are fixed identifiers (not user roles):
  *   site_engineer → project_manager → finance → approved
  *
+ * Stage actors were updated in C Series to use the consolidated role set
+ * (owner / builder / vendor). Builder is the operational role that covers
+ * on-site engineering and project management actions.
+ *
  * Who can act at each stage:
- *   • site_engineer stage  → site_engineer OR owner
- *   • project_manager stage → project_manager OR owner
- *   • finance stage        → finance OR owner
+ *   • site_engineer stage  → builder OR owner
+ *   • project_manager stage → builder OR owner
+ *   • finance stage        → owner
  *
  * Rationale:
- *   • Each operational role advances orders only from THEIR stage to the next.
- *     A site engineer cannot skip ahead to finance or mark approved.
- *   • Owner is a super-approver who can act at any in-pipeline stage (typical
- *     for small construction firms where the owner signs off on everything).
- *   • Final "approved" status is reached only when finance (or owner acting at
- *     the finance stage) advances an order — no other role can jump to approved.
+ *   • Builder is the operational on-site role (covers what site_engineer and
+ *     project_manager used to do) — advances from their mapped stage.
+ *   • Owner is a super-approver who can act at any in-pipeline stage.
+ *   • Final "approved" status is reached only when owner (at the finance stage)
+ *     advances an order — no other role can jump to approved.
  *   • Any authorized actor at the current stage may reject (→ rejected).
  *
- * Invalid transitions (e.g. site_engineer → approved) are rejected with 400.
+ * Invalid transitions are rejected with 400.
  */
 
 export const PIPELINE_STAGES = ['site_engineer', 'project_manager', 'finance'];
 
 /** Roles permitted to advance/reject at each pipeline stage. */
 export const STAGE_ACTORS = {
-  site_engineer:   ['site_engineer', 'owner'],
-  project_manager: ['project_manager', 'owner'],
-  finance:         ['finance', 'owner'],
+  site_engineer:   ['builder', 'owner'],
+  project_manager: ['builder', 'owner'],
+  finance:         ['owner'],
 };
 
 export const STAGE_LABELS = {

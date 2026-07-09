@@ -61,13 +61,13 @@ import apiClient from './api/client';
  * The three marketplace roles introduced in Phase M1A.
  * Stored as a Set for O(1) lookup in route guards.
  */
-const MARKETPLACE_ROLES = new Set(['marketplace_owner', 'builder', 'vendor_supplier']);
+const MARKETPLACE_ROLES = new Set(['owner', 'builder', 'vendor']);
 
 function getDefaultPath(role) {
-  if (role === 'marketplace_owner') return '/marketplace/owner';
-  if (role === 'builder')           return '/marketplace/builder';
-  if (role === 'vendor_supplier')   return '/marketplace/vendor';
-  return '/dashboard'; // internal roles + null + undefined
+  if (role === 'owner')   return '/marketplace/owner';
+  if (role === 'builder') return '/marketplace/builder';
+  if (role === 'vendor')  return '/marketplace/vendor';
+  return '/dashboard';
 }
 
 function redirectByRole(role, navigate) {
