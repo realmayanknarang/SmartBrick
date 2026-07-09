@@ -211,7 +211,10 @@ router.get(
 
 /**
  * Browse active material listings.
- * Any authenticated user may call this regardless of role.
+ * Restricted to the three marketplace roles (marketplace_owner, builder,
+ * vendor_supplier). Internal platform roles (owner, project_manager,
+ * site_engineer, finance) receive 403 — they have no marketplace access
+ * (Phase M8A route audit, Rule 3: role isolation).
  *
  * Query params
  * ────────────
@@ -225,6 +228,7 @@ router.get(
 router.get(
   '/materials',
   requireAuth,
+  requireRole('marketplace_owner', 'builder', 'vendor_supplier'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {
@@ -291,11 +295,13 @@ router.get(
 
 /**
  * Single material detail.
- * Any authenticated user may view any material (active or inactive) by direct ID.
+ * Restricted to the three marketplace roles — internal platform roles receive
+ * 403 (Phase M8A route audit, Rule 3: role isolation).
  */
 router.get(
   '/materials/:id',
   requireAuth,
+  requireRole('marketplace_owner', 'builder', 'vendor_supplier'),
   resolveMarketplaceUser,
   async (req, res) => {
     try {

@@ -17,6 +17,14 @@
 
 import mongoose from 'mongoose';
 
+// Ensure a JWT secret exists for auth-dependent tests. This setup file is
+// evaluated (setupFilesAfterEnv) before any test file's module imports run,
+// so utils/jwt.js — which reads JWT_SECRET into a const at import time — sees
+// a value. Only sets a default when the env has not already provided one.
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = 'test-jwt-secret-m8a';
+}
+
 // Connect to the in-memory MongoDB before tests in this file run
 beforeAll(async () => {
   const uri = process.env.MONGODB_TEST_URI;
