@@ -224,6 +224,7 @@ export function initializeSocket(httpServer) {
     socket.on('typing_start', ({ conversationId }) => {
       // Emit to OTHER participants in the room only
       socket.to(`conversation:${conversationId}`).emit('user_typing', {
+        conversationId,
         userId: socket.data.userMongoId,
         isTyping: true
       });
@@ -231,6 +232,7 @@ export function initializeSocket(httpServer) {
 
     socket.on('typing_stop', ({ conversationId }) => {
       socket.to(`conversation:${conversationId}`).emit('user_typing', {
+        conversationId,
         userId: socket.data.userMongoId,
         isTyping: false
       });
@@ -287,4 +289,3 @@ export function emitNotificationUpdate(recipientId) {
     io.to(`user:${recipientId}`).emit('notification_update', { recipientId });
   }
 }
-
