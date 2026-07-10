@@ -1,6 +1,15 @@
 import { verifyToken } from '../utils/jwt.js';
 import User from '../models/User.js';
 
+// Role normalization map — ensures legacy/alternate role values
+// (e.g. "marketplace_owner", "vendor_supplier") are mapped to
+// the current role enum so downstream requireRole() checks pass.
+const ROLE_ALIASES = {
+  'marketplace_owner': 'owner',
+  'vendor_supplier':   'vendor',
+  'contractor':        'builder',
+};
+
 export async function requireAuth(req, res, next) {
   try {
     // Get token from Authorization header
@@ -34,6 +43,11 @@ export async function requireAuth(req, res, next) {
         error: 'User not found',
         code: 'USER_NOT_FOUND'
       });
+    }
+
+    // Normalize role so legacy DB values don't break requireRole checks
+    if (ROLE_ALIASES[user.role]) {
+      user.role = ROLE_ALIASES[user.role];
     }
 
     // Attach to req for downstream use
