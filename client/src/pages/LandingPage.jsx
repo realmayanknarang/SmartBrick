@@ -44,6 +44,7 @@
 
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import PublicNav    from '../components/PublicNav';
 import Button       from '../components/Button';
 import Card         from '../components/Card';
@@ -289,6 +290,13 @@ function FooterBrandMark() {
 // ─── LandingPage ─────────────────────────────────────────────────────────────
 
 function LandingPage() {
+  const { user } = useAuth();
+  const dashboardLink =
+    user?.role === 'owner' ? '/marketplace/owner' :
+    user?.role === 'builder' ? '/marketplace/builder' :
+    user?.role === 'vendor' ? '/marketplace/vendor' :
+    '/dashboard';
+
   useEffect(() => {
     if (window.location.hash) {
       const id = window.location.hash.substring(1);
@@ -556,19 +564,22 @@ function LandingPage() {
               <div key={heading} className="lp-footer__col">
                 <h4 className="lp-footer__col-heading">{heading}</h4>
                 <ul className="lp-footer__col-list" role="list">
-                  {links.map(({ label, to, href }) => (
-                    <li key={label}>
-                      {to ? (
-                        <Link to={to} className="lp-footer__col-link">
-                          {label}
-                        </Link>
-                      ) : (
-                        <a href={href} className="lp-footer__col-link">
-                          {label}
-                        </a>
-                      )}
-                    </li>
-                  ))}
+                  {links.map(({ label, to, href }) => {
+                    const linkTo = label === 'Dashboard' && user ? dashboardLink : to;
+                    return (
+                      <li key={label}>
+                        {linkTo ? (
+                          <Link to={linkTo} className="lp-footer__col-link">
+                            {label}
+                          </Link>
+                        ) : (
+                          <a href={href} className="lp-footer__col-link">
+                            {label}
+                          </a>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}

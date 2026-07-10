@@ -97,7 +97,15 @@ function PublicNav({ links = [], logoText = 'SmartBrick', className = '' }) {
           </>
         ) : (
           <>
-            <Link to="/dashboard" className="public-nav__dashboard-link">
+            <Link
+              to={
+                user?.role === 'owner' ? '/marketplace/owner' :
+                user?.role === 'builder' ? '/marketplace/builder' :
+                user?.role === 'vendor' ? '/marketplace/vendor' :
+                '/dashboard'
+              }
+              className="public-nav__dashboard-link"
+            >
               Dashboard
             </Link>
             <div className="public-nav__user-section">
