@@ -546,9 +546,15 @@ function ProjectDetailsTab({ project, proposal }) {
           <div className="pw-detail-item">
             <span className="pw-detail-label">Owner</span>
             <span className="pw-detail-value">
-              {project.owner?.name?.split(' ')[0] || project.owner?.name || 'Owner'}
+              {project.owner?.name || 'Owner'}
             </span>
           </div>
+          {project.owner?.email && (
+            <div className="pw-detail-item">
+              <span className="pw-detail-label">Owner Email</span>
+              <span className="pw-detail-value">{project.owner.email}</span>
+            </div>
+          )}
           <div className="pw-detail-item">
             <span className="pw-detail-label">Posted On</span>
             <span className="pw-detail-value">{formatDate(project.createdAt)}</span>

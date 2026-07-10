@@ -521,11 +521,17 @@ function BuilderProjectDetailPage() {
             {/* Posted info */}
             <div className="bpd-posted-row">
               <div className="bpd-posted-item">
-                <span className="bpd-detail-label">Posted by</span>
+                <span className="bpd-detail-label">Owner</span>
                 <span className="bpd-detail-value">
-                  {project.owner?.name?.split(' ')[0] || project.owner?.name || 'Owner'}
+                  {project.owner?.name || 'Owner'}
                 </span>
               </div>
+              {project.owner?.email && (
+                <div className="bpd-posted-item">
+                  <span className="bpd-detail-label">Owner Email</span>
+                  <span className="bpd-detail-value">{project.owner.email}</span>
+                </div>
+              )}
               <div className="bpd-posted-item">
                 <span className="bpd-detail-label">Posted On</span>
                 <span className="bpd-detail-value">{formatDate(project.createdAt)}</span>

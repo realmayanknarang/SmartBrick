@@ -99,8 +99,8 @@ router.get(
       }
 
       const conversation = await Conversation.findOne({ project: projectId })
-        .populate('owner',   'name')
-        .populate('builder', 'name')
+        .populate('owner',   'name email')
+        .populate('builder', 'name email')
         .lean();
 
       // No conversation yet — proposal has not been approved.
@@ -157,8 +157,8 @@ router.get(
       }
 
       const conversation = await Conversation.findById(conversationId)
-        .populate('owner',   'name')
-        .populate('builder', 'name')
+        .populate('owner',   'name email')
+        .populate('builder', 'name email')
         .lean();
 
       if (!conversation) {

@@ -41,6 +41,7 @@ import BuilderOverviewPage          from './pages/marketplace/BuilderOverviewPag
 import BrowseProjectsPage           from './pages/marketplace/BrowseProjectsPage';
 import BuilderProjectDetailPage     from './pages/marketplace/BuilderProjectDetailPage';
 import MyProposalsPage              from './pages/marketplace/MyProposalsPage';
+import ActiveProjectsPage           from './pages/marketplace/ActiveProjectsPage';
 import ProjectWorkspacePage         from './pages/marketplace/ProjectWorkspacePage';
 import BuilderNotificationsPage     from './pages/marketplace/BuilderNotificationsPage';
 
@@ -244,7 +245,7 @@ function App() {
           <Route path="projects" element={<BrowseProjectsPage />} />
           <Route path="projects/:id" element={<BuilderProjectDetailPage />} />
           <Route path="proposals" element={<MyProposalsPage />} />
-          <Route path="workspace" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Select a project from My Proposals to open the workspace.</h3></div>} />
+          <Route path="workspace" element={<ActiveProjectsPage />} />
           <Route path="workspace/:projectId" element={<ProjectWorkspacePage />} />
           {/* M6C — Browse Materials (shared with vendor) */}
           <Route path="materials" element={<BrowseMaterialsPage />} />

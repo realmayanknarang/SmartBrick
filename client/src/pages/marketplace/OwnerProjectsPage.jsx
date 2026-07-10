@@ -150,113 +150,97 @@ function OwnerProjectsPage() {
     }
   };
 
+  let body;
+  if (loading) {
+    body = (
+      <div className="projects-grid" aria-label="Loading projects">
+        {[1, 2, 3].map(i => (
+          <Card key={i} surface="navy" className="project-card project-card--loading">
+            <div className="skeleton-badge pulse" />
+            <div className="skeleton-title pulse" />
+            <div className="skeleton-text pulse" />
+            <div className="skeleton-text pulse" style={{ width: '60%' }} />
+            <div className="skeleton-footer pulse" />
+          </Card>
+        ))}
+      </div>
+    );
+  } else if (fetchError) {
+    body = (
+      <Card surface="navy-secondary" className="projects-empty-card" padding="var(--space-6)">
+        <div className="projects-empty-content">
+          <h3 className="projects-empty-title" style={{ color: '#e71d36' }}>Failed to load projects</h3>
+          <p className="projects-empty-subtitle">{fetchError}</p>
+          <Button variant="primary" onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </Card>
+    );
+  } else if (projects.length === 0) {
+    body = (
+      <Card surface="navy-secondary" className="projects-empty-card" padding="var(--space-6)">
+        <div className="projects-empty-content">
+          <div className="projects-empty-icon" aria-hidden="true"><EmptyStateIcon /></div>
+          <h3 className="projects-empty-title">No projects yet</h3>
+          <p className="projects-empty-subtitle">Post your first project to start receiving proposals from builders.</p>
+          <Button as={Link} to="/marketplace/owner/projects/new" variant="primary">Post a Project</Button>
+        </div>
+      </Card>
+    );
+  } else {
+    body = (
+      <div className="projects-grid">
+        {projects.map(project => {
+          const count = proposalCounts[project._id] ?? 0;
+          return (
+            <Card key={project._id} surface="navy" className="project-card">
+              <div className="project-card__top">
+                <span className={`type-badge ${typeBadgeClass(project.constructionType)}`}>
+                  {formatTypeLabel(project.constructionType)}
+                </span>
+                {statusBadge(project.status)}
+              </div>
+              <h3 className="project-card__title">{project.title}</h3>
+              <div className="project-card__meta">
+                <span className="project-card__meta-item"><PinIcon /> {project.location}</span>
+                {project.timeline && (
+                  <span className="project-card__meta-item"><CalendarIcon /> {project.timeline}</span>
+                )}
+              </div>
+              <div className="project-card__budget">
+                <span className="budget-label">Budget Range</span>
+                <span className="budget-value">{formatINR(project.budgetMin)} – {formatINR(project.budgetMax)}</span>
+              </div>
+              <div className="project-card__footer">
+                <span className="project-card__proposals-count">
+                  {count} {count === 1 ? 'proposal' : 'proposals'} received
+                </span>
+                <div className="project-card__actions">
+                  {(project.status === 'locked' || project.status === 'completed') ? (
+                    <>
+                      <Button as={Link} to={`/marketplace/owner/projects/${project._id}/progress`} variant="primary" size="sm">View Updates</Button>
+                      <Button as={Link} to={`/marketplace/owner/projects/${project._id}/chat`} variant="secondary" size="sm">Go to Chat</Button>
+                    </>
+                  ) : (
+                    <Button as={Link} to={`/marketplace/owner/projects/${project._id}`} variant="secondary" size="sm">View Details</Button>
+                  )}
+                </div>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <div className="owner-projects-page">
-      {/* Header Row */}
       <header className="owner-projects-page__header">
         <h2 className="owner-projects-page__title">My Projects</h2>
-        <Button
-          as={Link}
-          to="/marketplace/owner/projects/new"
-          variant="primary"
-          className="owner-projects-page__create-btn"
-        >
+        <Button as={Link} to="/marketplace/owner/projects/new" variant="primary" className="owner-projects-page__create-btn">
           <PlusIcon /> Post New Project
         </Button>
       </header>
-
-      {/* Error Banner */}
-      {fetchError && (
-        <Card surface="navy-secondary" padding="var(--space-4)" style={{ marginBottom: 'var(--space-4)' }}>
-          <p style={{ color: '#e71d36', margin: 0 }}>{fetchError}</p>
-        </Card>
-      )}
-
-      {/* Loading Skeleton */}
-      {loading ? (
-        <div className="projects-grid" aria-label="Loading projects">
-          {[1, 2, 3].map(i => (
-            <Card key={i} surface="navy" className="project-card project-card--loading">
-              <div className="skeleton-badge pulse" />
-              <div className="skeleton-title pulse" />
-              <div className="skeleton-text pulse" />
-              <div className="skeleton-text pulse" style={{ width: '60%' }} />
-              <div className="skeleton-footer pulse" />
-            </Card>
-          ))}
-        </div>
-      ) : projects.length === 0 ? (
-        /* Empty State */
-        <Card surface="navy-secondary" className="projects-empty-card" padding="var(--space-6)">
-          <div className="projects-empty-content">
-            <div className="projects-empty-icon" aria-hidden="true">
-              <EmptyStateIcon />
-            </div>
-            <h3 className="projects-empty-title">No projects yet</h3>
-            <p className="projects-empty-subtitle">
-              Post your first project to start receiving proposals from builders.
-            </p>
-            <Button
-              as={Link}
-              to="/marketplace/owner/projects/new"
-              variant="primary"
-            >
-              Post a Project
-            </Button>
-          </div>
-        </Card>
-      ) : (
-        /* Project Cards Grid */
-        <div className="projects-grid">
-          {projects.map(project => {
-            const count = proposalCounts[project._id] ?? 0;
-            return (
-              <Card key={project._id} surface="navy" className="project-card">
-                <div className="project-card__top">
-                  <span className={`type-badge ${typeBadgeClass(project.constructionType)}`}>
-                    {formatTypeLabel(project.constructionType)}
-                  </span>
-                  {statusBadge(project.status)}
-                </div>
-
-                <h3 className="project-card__title">{project.title}</h3>
-
-                <div className="project-card__meta">
-                  <span className="project-card__meta-item">
-                    <PinIcon /> {project.location}
-                  </span>
-                  {project.timeline && (
-                    <span className="project-card__meta-item">
-                      <CalendarIcon /> {project.timeline}
-                    </span>
-                  )}
-                </div>
-
-                <div className="project-card__budget">
-                  <span className="budget-label">Budget Range</span>
-                  <span className="budget-value">
-                    {formatINR(project.budgetMin)} – {formatINR(project.budgetMax)}
-                  </span>
-                </div>
-
-                <div className="project-card__footer">
-                  <span className="project-card__proposals-count">
-                    {count} {count === 1 ? 'proposal' : 'proposals'} received
-                  </span>
-                  <Button
-                    as={Link}
-                    to={`/marketplace/owner/projects/${project._id}`}
-                    variant="secondary"
-                    size="sm"
-                  >
-                    View Details
-                  </Button>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+      {body}
     </div>
   );
 }

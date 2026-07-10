@@ -194,7 +194,7 @@ router.get(
   async (req, res) => {
     try {
       const proposals = await Proposal.find({ builder: req.user._id })
-        .populate('project', 'title location constructionType status')
+        .populate('project', 'title location constructionType status budgetMin budgetMax plotSize timeline')
         .sort({ createdAt: -1 })
         .lean();
 
