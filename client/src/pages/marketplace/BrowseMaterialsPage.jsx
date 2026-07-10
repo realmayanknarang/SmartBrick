@@ -15,7 +15,8 @@
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import apiClient from '../../api/client';
@@ -163,7 +164,7 @@ function Pagination({ page, totalPages, onPageChange }) {
 
 const MAX_COMPARE = 3;
 
-function MaterialCard({ material, isSelected, onCompareChange, compareDisabled }) {
+function MaterialCard({ material, isSelected, onCompareChange, compareDisabled, isBuilder }) {
   const catColors = CATEGORY_COLORS[material.category] || CATEGORY_COLORS.other;
   const imageUrl  = material.images && material.images[0]?.url;
   const vendorName = material.vendor?.name || 'Unknown Vendor';
@@ -226,7 +227,6 @@ function MaterialCard({ material, isSelected, onCompareChange, compareDisabled }
         <p className="bmp-card__vendor">Supplied by {vendorName}</p>
       </div>
 
-      {/* Compare checkbox */}
       <div className="bmp-card__footer">
         <label
           className={`bmp-compare-label${checkboxDisabled ? ' bmp-compare-label--disabled' : ''}`}
@@ -244,6 +244,17 @@ function MaterialCard({ material, isSelected, onCompareChange, compareDisabled }
           <span className="bmp-compare-box" />
           Compare
         </label>
+
+        {isBuilder && (
+          <Button
+            as={Link}
+            to={`/marketplace/builder/order/${material._id}`}
+            variant="primary"
+            size="sm"
+          >
+            Order
+          </Button>
+        )}
       </div>
     </Card>
   );
@@ -302,6 +313,8 @@ const PAGE_SIZE = 12;
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 function BrowseMaterialsPage() {
+  const { user } = useAuth();
+  const isBuilder = user?.role === 'builder';
   const navigate = useNavigate();
 
   // Filter state (controlled inputs, not sent until Search click)
@@ -548,6 +561,7 @@ function BrowseMaterialsPage() {
                 isSelected={selectedIds.includes(material._id)}
                 onCompareChange={handleCompareChange}
                 compareDisabled={compareDisabled}
+                isBuilder={isBuilder}
               />
             ))}
           </div>

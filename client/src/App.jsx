@@ -56,6 +56,9 @@ import MarketplaceCopilotPage from './pages/marketplace/MarketplaceCopilotPage';
 import MarketplaceSitesVendorsPage from './pages/marketplace/MarketplaceSitesVendorsPage';
 import MarketplaceAnalyticsReportsPage from './pages/marketplace/MarketplaceAnalyticsReportsPage';
 import MarketplaceOperationsPage from './pages/marketplace/MarketplaceOperationsPage';
+import OrderPage            from './pages/marketplace/OrderPage';
+import MyOrdersPage         from './pages/marketplace/MyOrdersPage';
+import VendorOrdersPage     from './pages/marketplace/VendorOrdersPage';
 
 import apiClient from './api/client';
 
@@ -249,6 +252,8 @@ function App() {
           <Route path="workspace/:projectId" element={<ProjectWorkspacePage />} />
           {/* M6C — Browse Materials (shared with vendor) */}
           <Route path="materials" element={<BrowseMaterialsPage />} />
+          <Route path="order/:materialId" element={<OrderPage />} />
+          <Route path="orders" element={<MyOrdersPage />} />
           {/* M5F — Builder Notifications */}
           <Route path="notifications" element={<BuilderNotificationsPage />} />
           <Route path="copilot" element={<MarketplaceCopilotPage />} />
@@ -282,6 +287,7 @@ function App() {
           <Route path="materials/:id/edit" element={<EditMaterialPage />} />
           {/* M6C — Browse All Materials (shared) */}
           <Route path="browse" element={<BrowseMaterialsPage />} />
+          <Route path="orders" element={<VendorOrdersPage />} />
           {/* M6D — Price Comparison */}
           <Route path="compare" element={<PriceComparisonPage />} />
           <Route path="copilot" element={<MarketplaceCopilotPage />} />
