@@ -89,14 +89,19 @@ function ProjectDetailPage() {
     try {
       setLoading(true);
       setError('');
-      
-      const [projRes, propRes] = await Promise.all([
-        apiClient.get(`/marketplace/projects/${id}`),
-        apiClient.get(`/marketplace/proposals/project/${id}`)
-      ]);
 
+      const projRes = await apiClient.get(`/marketplace/projects/${id}`);
       setProject(projRes.data.project);
-      setProposals(propRes.data.proposals || []);
+
+      // Fetch proposals separately so a failure there doesn't
+      // prevent the project details from rendering.
+      try {
+        const propRes = await apiClient.get(`/marketplace/proposals/project/${id}`);
+        setProposals(propRes.data.proposals || []);
+      } catch (propErr) {
+        console.warn('[ProjectDetailPage] Failed to fetch proposals:', propErr);
+        // Non-fatal — project details still render without the proposals list.
+      }
     } catch (err) {
       console.error('[ProjectDetailPage] Fetch failed:', err);
       setError(err?.response?.data?.message || 'Failed to load project details.');

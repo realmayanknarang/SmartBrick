@@ -352,21 +352,26 @@ function BuilderProjectDetailPage() {
         setLoading(true);
         setError('');
 
-        const [projRes, myProposalsRes] = await Promise.all([
-          apiClient.get(`/marketplace/projects/${id}`),
-          apiClient.get('/marketplace/proposals/my'),
-        ]);
-
+        const projRes = await apiClient.get(`/marketplace/projects/${id}`);
         if (!active) return;
 
         setProject(projRes.data.project);
 
-        // Find if this builder already has a proposal for this project
-        const allMyProposals = myProposalsRes.data.proposals || [];
-        const existing = allMyProposals.find(
-          p => (p.project?._id || p.project) === id
-        );
-        setMyProposal(existing || null);
+        // Fetch builder's proposals separately so a failure there doesn't
+        // prevent the project details from rendering.
+        try {
+          const myProposalsRes = await apiClient.get('/marketplace/proposals/my');
+          if (!active) return;
+
+          const allMyProposals = myProposalsRes.data.proposals || [];
+          const existing = allMyProposals.find(
+            p => (p.project?._id || p.project) === id
+          );
+          setMyProposal(existing || null);
+        } catch (propErr) {
+          console.warn('[BuilderProjectDetailPage] Failed to fetch proposals:', propErr);
+          // Non-fatal — project details still render with the proposal form.
+        }
       } catch (err) {
         console.error('[BuilderProjectDetailPage] Fetch failed:', err);
         if (active) {

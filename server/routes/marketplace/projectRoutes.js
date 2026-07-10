@@ -37,6 +37,7 @@ import { requireAuth, requireRole }
 import { resolveMarketplaceUser }
                           from '../../middleware/marketplace/checkOwnership.js';
 import MarketplaceProject from '../../models/marketplace/MarketplaceProject.js';
+import Proposal           from '../../models/marketplace/Proposal.js';
 
 const router = Router();
 
@@ -289,12 +290,18 @@ router.get(
         }
       }
 
-      // Builders can only see open projects.
+      // Builders can see open projects, or any project they have a proposal for.
       if (role === 'builder' && project.status !== 'open') {
-        return res.status(403).json({
-          error:   'Forbidden',
-          message: 'This project is no longer accepting builder views.',
+        const hasProposal = await Proposal.exists({
+          project: project._id,
+          builder: req.user._id,
         });
+        if (!hasProposal) {
+          return res.status(403).json({
+            error:   'Forbidden',
+            message: 'This project is no longer accepting builder views.',
+          });
+        }
       }
 
       return res.json({ project });
