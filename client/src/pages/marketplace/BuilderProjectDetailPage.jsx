@@ -148,8 +148,12 @@ function ProposalForm({ projectId, onSubmitSuccess }) {
       });
       onSubmitSuccess(res.data.proposal);
     } catch (err) {
+      const serverData = err?.response?.data;
       setApiError(
-        err?.response?.data?.message || 'Failed to submit proposal. Please try again.'
+        serverData?.message
+          || serverData?.messages?.[0]
+          || serverData?.error
+          || 'Failed to submit proposal. Please try again.'
       );
     } finally {
       setSubmitting(false);
