@@ -78,8 +78,7 @@ function BuilderNotificationsPage() {
           target = `/marketplace/builder/workspace/${projectId}`;
           break;
         case 'new_message':
-          // Navigate to workspace Chat tab (tab index 2 — handled via URL or state)
-          target = `/marketplace/builder/workspace/${projectId}`;
+          target = `/marketplace/builder/workspace/${projectId}?tab=chat`;
           break;
         default:
           target = '/marketplace/builder/proposals';

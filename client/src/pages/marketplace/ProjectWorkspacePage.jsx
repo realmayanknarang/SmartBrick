@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useOutletContext } from 'react-router-dom';
+import { useParams, Link, useOutletContext, useSearchParams } from 'react-router-dom';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
@@ -600,6 +600,7 @@ function ProjectDetailsTab({ project, proposal }) {
 
 function ProjectWorkspacePage() {
   const { projectId } = useParams();
+  const [searchParams] = useSearchParams();
   const {
     mongoUserId,
     sendMessage,
@@ -624,7 +625,9 @@ function ProjectWorkspacePage() {
   const [conversation, setConversation] = useState(null);
   const [myProposal, setMyProposal]     = useState(null);
 
-  const [activeTabIdx, setActiveTabIdx] = useState(0);
+  const tabParam = searchParams.get('tab');
+  const initialTab = tabParam === 'chat' ? 2 : tabParam === 'milestones' ? 1 : 0;
+  const [activeTabIdx, setActiveTabIdx] = useState(initialTab);
   const toastContext = useToast();
 
   function showToast(message, type) {

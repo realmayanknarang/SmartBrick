@@ -31,10 +31,13 @@ import mongoose                    from 'mongoose';
 import { requireAuth }             from '../../middleware/auth.js';
 import {
   resolveMarketplaceUser,
+  isApprovedBuilder,
 }                                  from '../../middleware/marketplace/checkOwnership.js';
 import Conversation                from '../../models/marketplace/Conversation.js';
 import Message                     from '../../models/marketplace/Message.js';
 import MarketplaceNotification     from '../../models/marketplace/MarketplaceNotification.js';
+import MarketplaceProject          from '../../models/marketplace/MarketplaceProject.js';
+import Proposal                    from '../../models/marketplace/Proposal.js';
 import { getIO, emitNotificationUpdate } from '../../config/socket.js';
 
 const router = Router();
@@ -98,13 +101,49 @@ router.get(
         return res.status(400).json({ error: 'Bad Request', message: 'Invalid project ID.' });
       }
 
-      const conversation = await Conversation.findOne({ project: projectId })
+      let conversation = await Conversation.findOne({ project: projectId })
         .populate('owner',   'name email')
         .populate('builder', 'name email')
         .lean();
 
-      // No conversation yet — proposal has not been approved.
+      // No conversation yet — try to auto-create from approved proposal.
       if (!conversation) {
+        const project = await MarketplaceProject.findById(projectId)
+          .select('owner approvedProposal')
+          .lean();
+
+        if (project?.approvedProposal) {
+          const approvedProposal = await Proposal.findById(project.approvedProposal)
+            .select('builder')
+            .lean();
+
+          if (approvedProposal) {
+            const isOwner = project.owner.toString() === req.user._id.toString();
+            const isBuilder = approvedProposal.builder.toString() === req.user._id.toString();
+
+            if (isOwner || isBuilder) {
+              conversation = await Conversation.findOneAndUpdate(
+                {
+                  project: project._id,
+                  owner: project.owner,
+                  builder: approvedProposal.builder,
+                },
+                {
+                  project: project._id,
+                  owner: project.owner,
+                  builder: approvedProposal.builder,
+                },
+                { upsert: true, new: true }
+              )
+                .populate('owner', 'name email')
+                .populate('builder', 'name email')
+                .lean();
+
+              return res.json({ conversation });
+            }
+          }
+        }
+
         return res.status(404).json({
           available: false,
           message:   'Chat is only available after a proposal is approved.',

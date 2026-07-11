@@ -53,6 +53,9 @@ import EditMaterialPage       from './pages/marketplace/EditMaterialPage';
 import BrowseMaterialsPage    from './pages/marketplace/BrowseMaterialsPage';
 import PriceComparisonPage    from './pages/marketplace/PriceComparisonPage';
 import MarketplaceCopilotPage from './pages/marketplace/MarketplaceCopilotPage';
+import OwnerAIChatPage   from './pages/marketplace/OwnerAIChatPage';
+
+import VendorAIChatPage  from './pages/marketplace/VendorAIChatPage';
 import MarketplaceSitesVendorsPage from './pages/marketplace/MarketplaceSitesVendorsPage';
 import MarketplaceAnalyticsReportsPage from './pages/marketplace/MarketplaceAnalyticsReportsPage';
 import MarketplaceOperationsPage from './pages/marketplace/MarketplaceOperationsPage';
@@ -232,6 +235,7 @@ function App() {
           <Route path="proposals" element={<OwnerProposalsPage />} />
           <Route path="builders" element={<div style={{ padding: '2rem', color: '#fff' }}><h3>Find Builders Page Coming Soon</h3></div>} />
           <Route path="copilot" element={<MarketplaceCopilotPage />} />
+          <Route path="ai-chat" element={<OwnerAIChatPage />} />
           <Route path="sites-vendors" element={<MarketplaceSitesVendorsPage />} />
           <Route path="analytics" element={<MarketplaceAnalyticsReportsPage />} />
           <Route path="operations" element={<MarketplaceOperationsPage />} />
@@ -291,6 +295,7 @@ function App() {
           {/* M6D — Price Comparison */}
           <Route path="compare" element={<PriceComparisonPage />} />
           <Route path="copilot" element={<MarketplaceCopilotPage />} />
+          <Route path="ai-chat" element={<VendorAIChatPage />} />
           <Route path="sites-vendors" element={<MarketplaceSitesVendorsPage />} />
           <Route path="analytics" element={<MarketplaceAnalyticsReportsPage />} />
           <Route path="operations" element={<MarketplaceOperationsPage />} />

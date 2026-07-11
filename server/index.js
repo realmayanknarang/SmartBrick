@@ -17,6 +17,7 @@ import vendorRouter    from './routes/vendorRoutes.js';    // Phase 8A
 import analyticsRouter from './routes/analyticsRoutes.js'; // Phase 8C
 import alertRouter    from './routes/alertRoutes.js';    // Phase 8D
 import copilotRouter  from './routes/copilotRoutes.js';  // Phase 9B
+import roleCopilotRouter from './routes/roleCopilotRoutes.js'; // Role-based AI chat
 import searchRouter    from './routes/searchRoutes.js';    // Phase 9D
 import forecastRouter  from './routes/forecastRoutes.js';  // Phase 10C
 import reportRouter    from './routes/reportRoutes.js';    // Phase 11A
@@ -120,6 +121,9 @@ app.use('/api/alerts', alertRouter);
 // AI Copilot (Groq chat) — Phase 9B
 app.use('/api/copilot', copilotRouter);
 
+// Role-based AI chat (owner / builder / vendor) — Phase M8A
+app.use('/api/copilot', roleCopilotRouter);
+
 // Natural language vendor search — Phase 9D
 app.use('/api/search', searchRouter);
 
@@ -157,6 +161,7 @@ app.use('/api/marketplace', orderRouter);
 // Marketplace — chat & notification APIs — Phase M2D
 app.use('/api/marketplace', chatRouter);
 app.use('/api/marketplace', notificationRouter);
+
 
 const httpServer = app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);

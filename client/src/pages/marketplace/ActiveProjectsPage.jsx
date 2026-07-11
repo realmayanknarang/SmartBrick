@@ -85,15 +85,28 @@ function ActiveProjectCard({ proposal }) {
       </div>
 
       <div className="ap-project-card__footer">
-        <Button
-          as={Link}
-          to={`/marketplace/builder/workspace/${projectId}`}
-          variant="primary"
-          className="ap-project-card__action"
-          id={`workspace-btn-${proposal._id}`}
-        >
-          Open Workspace <ArrowRightIcon />
-        </Button>
+        <div className="ap-project-card__actions">
+          <Button
+            as={Link}
+            to={`/marketplace/builder/workspace/${projectId}?tab=chat`}
+            variant="primary"
+            size="sm"
+            className="ap-project-card__action"
+            id={`chat-btn-${proposal._id}`}
+          >
+            Chat
+          </Button>
+          <Button
+            as={Link}
+            to={`/marketplace/builder/workspace/${projectId}`}
+            variant="secondary"
+            size="sm"
+            className="ap-project-card__action"
+            id={`workspace-btn-${proposal._id}`}
+          >
+            Workspace <ArrowRightIcon />
+          </Button>
+        </div>
       </div>
     </Card>
   );
