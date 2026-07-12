@@ -6,7 +6,7 @@
 
 [![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-smartbrick--pi.vercel.app-E8C547?style=for-the-badge&labelColor=1A2B3C)](https://smartbrick-pi.vercel.app)
 [![Backend](https://img.shields.io/badge/⚙️%20Backend-Render-46E3B7?style=for-the-badge&labelColor=1A2B3C)](https://smartbrick-backend.onrender.com/api/health)
-[![Stack](https://img.shields.io/badge/Stack-MERN%20%2B%20Socket.io%20%2B%20Groq-blue?style=for-the-badge&labelColor=1A2B3C)](#tech-stack)
+[![Stack](https://img.shields.io/badge/Stack-MERN%20%2B%20Groq-blue?style=for-the-badge&labelColor=1A2B3C)](#tech-stack)
 
 *A full-stack platform where property owners post construction projects, builders manage builds and procurement, and material suppliers list products — all in one system with real-time chat and AI tools.*
 
@@ -87,7 +87,7 @@ Both sides are the same application, separated by role — a builder gets both.
 ---
 
 ### Notifications — Real-Time
-> Proposal approval notification arrives in real time via Socket.io. Badge count updates without a page refresh.
+> Proposal approval notification arrives in real time. Badge count updates without a page refresh.
 
 ![Notifications](Screenshots/builder4.png)
 
@@ -260,7 +260,7 @@ Both sides are the same application, separated by role — a builder gets both.
 
 ---
 
-### Real-Time Chat (Socket.io)
+### Real-Time Chat
 
 - Chat unlocks only after proposal approval — enforced server-side, not just client-side
 - Optimistic message delivery with REST API fallback if socket drops
@@ -288,7 +288,6 @@ Both sides are the same application, separated by role — a builder gets both.
 | React 18 + Vite | UI framework and build tool |
 | React Router v6 | Nested client-side routing |
 | Axios | HTTP client with JWT interceptor |
-| Socket.io-client | Real-time WebSocket chat |
 | Recharts | Analytics and forecasting charts |
 | Leaflet | Interactive delivery route maps |
 
@@ -297,7 +296,6 @@ Both sides are the same application, separated by role — a builder gets both.
 |------------|---------|
 | Node.js + Express | REST API server |
 | MongoDB + Mongoose | Database — 15 schemas |
-| Socket.io | WebSocket server |
 | bcryptjs + jsonwebtoken | Auth — password hashing + JWT |
 | express-rate-limit | Rate limiting on AI and auth routes |
 
@@ -314,7 +312,7 @@ Both sides are the same application, separated by role — a builder gets both.
 | Service | Hosts |
 |---------|-------|
 | Vercel | React frontend |
-| Render (Node.js) | Express API + Socket.io |
+| Render (Node.js) | Express API |
 | Render (Python) | Flask + Prophet forecasting microservice |
 | MongoDB Atlas | Database (free tier) |
 
@@ -332,11 +330,11 @@ Both sides are the same application, separated by role — a builder gets both.
 │  (marketplace)      (marketplace +       (materials)          │
 │                      procurement)                             │
 │                                                               │
-│              axios (JWT) + Socket.io-client                   │
+│              axios (JWT)                                      │
 └───────────────────────────┬───────────────────────────────────┘
                             │ HTTP + WebSocket
 ┌───────────────────────────▼───────────────────────────────────┐
-│               Render — Express + Socket.io                     │
+│               Render — Express                                 │
 │                                                               │
 │  /api/auth/*          Custom JWT auth                         │
 │  /api/dashboard/*     Procurement overview                    │
@@ -352,11 +350,6 @@ Both sides are the same application, separated by role — a builder gets both.
 │  /api/reports/*       PDF + Excel generation                  │
 │  /api/marketplace/*   Owner/Builder/Vendor marketplace        │
 │                                                               │
-│  Socket.io events:                                            │
-│    send_message → new_message                                 │
-│    typing_start/stop → user_typing                            │
-│    mark_read → messages_read                                  │
-│    user_online/offline → presence                             │
 └───────────┬───────────────────────────────┬───────────────────┘
             │                               │
 ┌───────────▼───────────┐   ┌───────────────▼───────────────────┐
@@ -555,7 +548,7 @@ SmartBrick/
 │       ├── api/client.js              Axios + JWT interceptor
 │       ├── components/
 │       │   ├── marketplace/
-│       │   │   ├── ChatWindow.jsx     Real-time Socket.io chat
+│       │   │   ├── ChatWindow.jsx     Real-time chat
 │       │   │   ├── MaterialForm.jsx   Shared add/edit form
 │       │   │   └── NotificationsList.jsx
 │       │   ├── Button.jsx             Gold/navy/outlined variants
@@ -565,9 +558,9 @@ SmartBrick/
 │       │   └── Toast.jsx              Bottom-right toasts
 │       ├── contexts/
 │       │   ├── AuthContext.jsx        JWT auth state
-│       │   ├── SocketContext.jsx      Socket.io context
+│       │   ├── SocketContext.jsx      Socket context
 │       │   └── ToastContext.jsx       Toast context
-│       ├── hooks/useSocket.js         Socket.io hook
+│       ├── hooks/useSocket.js         Socket hook
 │       ├── pages/
 │       │   ├── marketplace/
 │       │   │   ├── BuilderDashboard.jsx   Merged marketplace+procurement
@@ -585,7 +578,7 @@ SmartBrick/
 │   ├── config/
 │   │   ├── db.js                      MongoDB connection
 │   │   ├── groq.js                    Groq client
-│   │   └── socket.js                  Socket.io setup + event handlers
+│   │   └── socket.js                  WebSocket setup + event handlers
 │   ├── middleware/
 │   │   ├── auth.js                    requireAuth + requireRole
 │   │   └── rateLimiter.js             Rate limiting
@@ -622,7 +615,7 @@ Built by **Anmol Goyal and Mayank Narang** — second-year B.Tech Computer Scien
 
 | Name | GitHub |
 |------|--------|
-| **Anmol Goyal** | — |
+| **Anmol Goyal** | [@anmolgoyal2006](https://github.com/anmolgoyal2006) |
 | **Mayank Narang** | [@realmayanknarang](https://github.com/realmayanknarang) |
 
 ---
@@ -635,7 +628,7 @@ MIT — use this as a reference, fork it, or build on top of it.
 
 <div align="center">
 
-**Built with** Node.js · React · MongoDB · Groq · Socket.io · Prophet · OpenWeatherMap · Leaflet · Climatiq
+**Built with** Node.js · React · MongoDB · Groq · Prophet · OpenWeatherMap · Leaflet · Climatiq
 
 *SmartBrick — Punjab Engineering College, Chandigarh · 2026*
 
