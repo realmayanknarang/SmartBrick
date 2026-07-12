@@ -4,7 +4,6 @@
 
 ### AI-Powered Construction Procurement & Marketplace Platform
 
-[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-smartbrick--pi.vercel.app-E8C547?style=for-the-badge&labelColor=1A2B3C)](https://smartbrick-pi.vercel.app)
 [![Backend](https://img.shields.io/badge/⚙️%20Backend-Render-46E3B7?style=for-the-badge&labelColor=1A2B3C)](https://smartbrick-backend.onrender.com/api/health)
 [![Stack](https://img.shields.io/badge/Stack-MERN%20%2B%20Groq-blue?style=for-the-badge&labelColor=1A2B3C)](#tech-stack)
 
@@ -16,7 +15,6 @@
 
 ## 📋 Table of Contents
 
-- [Live Demo](#-live-demo)
 - [What is SmartBrick?](#-what-is-smartbrick)
 - [Screenshots](#-screenshots)
 - [Features](#-features)
@@ -31,21 +29,7 @@
 
 ---
 
-## 🌐 Live Demo
 
-**→ https://smartbrick-pi.vercel.app**
-
-> The backend runs on Render's free tier — first request may take 30–60 seconds to wake up.
-
-### Demo Credentials (no sign-up required)
-
-| Role | Email | Password | Dashboard |
-|------|-------|----------|-----------|
-| 🏠 Property Owner | `owner@smartbrick-demo.com` | `SmartBrick2026!` | Post projects, review proposals, track builds |
-| 🏗️ Builder | `builder@smartbrick-demo.com` | `SmartBrick2026!` | Browse projects + full procurement toolkit |
-| 📦 Material Supplier | `vendor@smartbrick-demo.com` | `SmartBrick2026!` | List materials, manage inventory |
-
----
 
 ## 🏗️ What is SmartBrick?
 
