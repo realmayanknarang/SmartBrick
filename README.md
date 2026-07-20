@@ -6,6 +6,7 @@
 
 [![Backend](https://img.shields.io/badge/⚙️%20Backend-Render-46E3B7?style=for-the-badge&labelColor=1A2B3C)](https://smartbrick-backend.onrender.com/api/health)
 [![Stack](https://img.shields.io/badge/Stack-MERN%20%2B%20Groq-blue?style=for-the-badge&labelColor=1A2B3C)](#tech-stack)
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Vercel-000000?style=for-the-badge&labelColor=1A2B3C)](https://smartbrick-pi.vercel.app/)
 
 *A full-stack platform where property owners post construction projects, builders manage builds and procurement, and material suppliers list products — all in one system with real-time chat and AI tools.*
 
